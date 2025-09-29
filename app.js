@@ -2,8 +2,10 @@
    StarsBox Mini App — JS
    - Telegram SDK init
    - Заглушки
-   - Ограничение длины имени в шапке (≤23 символов)
+   - Шапка: подстановка имени/username/аватара из Telegram
+   - Ограничение длины имени (≤23 символов)
    - Бесшовная карусель подарков (requestAnimationFrame)
+   - Debug overlay (?debug=1)
 ========================================================= */
 
 const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
@@ -29,18 +31,78 @@ function bindStubs(){
   });
 }
 
+/* ---------- Debug overlay (?debug=1) ---------- */
+function debugOverlay(){
+  const qs = new URLSearchParams(location.search);
+  if (!qs.has("debug")) return;
+  const pre = document.createElement("pre");
+  pre.style.cssText = "position:fixed;left:8px;bottom:8px;max-width:92vw;max-height:45vh;overflow:auto;z-index:99999;background:rgba(0,0,0,.75);color:#9fef00;padding:10px 12px;border-radius:10px;font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;box-shadow:0 8px 24px rgba(0,0,0,.4)";
+  const dump = {
+    isTelegram: !!tg,
+    version: tg?.version || null,
+    platform: tg?.platform || null,
+    initDataUnsafe: tg?.initDataUnsafe || null
+  };
+  pre.textContent = JSON.stringify(dump, null, 2);
+  document.body.appendChild(pre);
+}
+
+/* ---------- Шапка: данные пользователя из Telegram ---------- */
+function populateHeaderFromTelegram(){
+  const titleEl  = document.querySelector(".app-header .account .title");
+  const subEl    = document.querySelector(".app-header .account .subtitle");
+  const avatarEl = document.querySelector(".app-header .avatar");
+  if (!titleEl || !subEl || !avatarEl) return;
+
+  // вне Telegram оставляем макет как есть
+  const data = tg?.initDataUnsafe || null;
+  if (!data) return;
+
+  // user — в приватном чате; chat — если открыли в группе/канале (на всякий случай)
+  const u = data.user || null;
+  const chat = data.chat || null;
+
+  // составим отображаемое имя
+  let displayName = null;
+  if (u) {
+    const first = u.first_name || "";
+    const last  = u.last_name  || "";
+    displayName = (first + " " + last).trim() || (u.username ? "@" + u.username : null);
+  } else if (chat) {
+    displayName = chat.title || null; // fallback для случаев старта из групп/каналов
+  }
+
+  if (displayName) titleEl.textContent = displayName;
+  subEl.textContent = u?.username ? "@" + u.username : (subEl.textContent || "");
+
+  // аватар
+  if (u?.photo_url) {
+    avatarEl.textContent = "";
+    const img = new Image();
+    img.alt = ((u.first_name?.[0] || "") + (u.last_name?.[0] || "")).toUpperCase();
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.src = u.photo_url;
+    img.onload = ()=>{ avatarEl.innerHTML = ""; avatarEl.appendChild(img); };
+    img.onerror = ()=>{ /* оставим инициалы/градиент */ };
+    avatarEl.appendChild(img);
+  } else if (u) {
+    const initials = ((u.first_name?.[0] || "") + (u.last_name?.[0] || "")).toUpperCase();
+    if (initials) avatarEl.textContent = initials;
+  }
+
+  // ограничим длину
+  applyTitleLimit(23);
+}
+
 /* ---------- Лимит длины имени в шапке (<= 23 символов) ---------- */
 function applyTitleLimit(maxLen = 23){
   const el = document.querySelector(".app-header .account .title");
   if (!el) return;
-
-  // используем текст, отданный разметкой или позже подставленный из TG
   const original = (el.textContent || "").trim();
-
-  // хотим итоговую длину <= maxLen; '...' занимает 3 символа
   const dots = "...";
   if (original.length > maxLen){
-    const keep = Math.max(0, maxLen - dots.length); // 20 при maxLen=23
+    const keep = Math.max(0, maxLen - dots.length);
     el.textContent = original.slice(0, keep).trimEnd() + dots;
   }
 }
@@ -66,19 +128,15 @@ async function initInfiniteCarousel(){
 
   await waitImages(track);
 
-  // исходные элементы (один набор)
   const originals = Array.from(track.children);
   if (originals.length === 0) return;
 
-  // ширина одного набора (учитывая gap)
   const cs = getComputedStyle(track);
   const gap = parseFloat(cs.gap || cs.columnGap || "0") || 0;
   let cycleWidth = originals.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0) + gap * (originals.length - 1);
 
-  // продублируем набор ещё 2 раза (в сумме 3 набора)
   for (let i=0;i<2;i++) originals.forEach(n=>track.appendChild(n.cloneNode(true)));
 
-  // скорость из CSS-переменной панели (px/сек)
   const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 120;
   let speed = cssSpeed;
 
@@ -89,15 +147,12 @@ async function initInfiniteCarousel(){
     const dt = (now - last) / 1000;
     last = now;
     offset -= speed * dt;
-
     if (offset <= -cycleWidth) offset += cycleWidth;
-
     track.style.transform = `translateX(${offset}px)`;
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
 
-  // пересчёт после ресайза
   let t;
   window.addEventListener("resize", ()=>{
     clearTimeout(t);
@@ -112,6 +167,8 @@ async function initInfiniteCarousel(){
 /* ---------- Init ---------- */
 bindStubs();
 window.addEventListener("DOMContentLoaded", ()=>{
+  populateHeaderFromTelegram();  // подставим данные TG (если есть)
   applyTitleLimit(23);
   initInfiniteCarousel();
+  debugOverlay();                // посмотреть initData прямо в Телеграме: добавь ?debug=1 к URL
 });
