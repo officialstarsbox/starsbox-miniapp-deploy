@@ -2,7 +2,8 @@
    StarsBox Mini App — JS
    - Telegram SDK init
    - Заглушки
-   - Ограничение длины имени в шапке (≤23 символов)
+   - Шапка: подстановка имени/username/аватара из Telegram
+   - Ограничение длины имени (≤23 символов)
    - Бесшовная карусель подарков (requestAnimationFrame)
 ========================================================= */
 
@@ -29,15 +30,47 @@ function bindStubs(){
   });
 }
 
+/* ---------- Шапка: данные пользователя из Telegram ---------- */
+function populateHeaderFromTelegram(){
+  const titleEl  = document.querySelector(".app-header .account .title");
+  const subEl    = document.querySelector(".app-header .account .subtitle");
+  const avatarEl = document.querySelector(".app-header .avatar");
+  if (!titleEl || !subEl || !avatarEl) return;
+
+  // вне Telegram оставляем макет как есть
+  const u = tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+  if (!u) return;
+
+  const first = u.first_name || "";
+  const last  = u.last_name  || "";
+  const full  = (first + " " + last).trim() || (u.username ? "@" + u.username : "User");
+
+  titleEl.textContent = full;
+  subEl.textContent   = u.username ? "@" + u.username : "";
+
+  // аватар: если есть photo_url — показываем, иначе инициалы
+  if (u.photo_url) {
+    avatarEl.textContent = "";
+    const img = new Image();
+    img.alt = ((first[0]||"") + (last[0]||"")).toUpperCase();
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
+    img.src = u.photo_url; // Telegram отдаёт https
+    avatarEl.appendChild(img);
+  } else {
+    const initials = ((first[0]||"") + (last[0]||"")).toUpperCase();
+    if (initials) avatarEl.textContent = initials;
+  }
+
+  // лимит отображаемой длины
+  applyTitleLimit(23);
+}
+
 /* ---------- Лимит длины имени в шапке (<= 23 символов) ---------- */
 function applyTitleLimit(maxLen = 23){
   const el = document.querySelector(".app-header .account .title");
   if (!el) return;
-
-  // используем текст, отданный разметкой или позже подставленный из TG
   const original = (el.textContent || "").trim();
-
-  // хотим итоговую длину <= maxLen; '...' занимает 3 символа
   const dots = "...";
   if (original.length > maxLen){
     const keep = Math.max(0, maxLen - dots.length); // 20 при maxLen=23
@@ -112,6 +145,7 @@ async function initInfiniteCarousel(){
 /* ---------- Init ---------- */
 bindStubs();
 window.addEventListener("DOMContentLoaded", ()=>{
-  applyTitleLimit(23);
+  populateHeaderFromTelegram();  // подставим данные TG (если есть)
+  applyTitleLimit(23);           // и ограничим длину
   initInfiniteCarousel();
 });
