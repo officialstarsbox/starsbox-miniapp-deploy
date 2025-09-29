@@ -82,6 +82,8 @@ function populateHeaderFromTelegram(){
     img.alt = ((u.first_name?.[0] || "") + (u.last_name?.[0] || "")).toUpperCase();
     img.decoding = "async";
     img.referrerPolicy = "no-referrer";
+ img.style.borderRadius = "50%";
+ img.draggable = false;
     img.src = u.photo_url;
     img.onload = ()=>{ avatarEl.innerHTML = ""; avatarEl.appendChild(img); };
     img.onerror = ()=>{ /* оставим инициалы/градиент */ };
@@ -172,3 +174,4 @@ window.addEventListener("DOMContentLoaded", ()=>{
   initInfiniteCarousel();
   debugOverlay();                // посмотреть initData прямо в Телеграме: добавь ?debug=1 к URL
 });
+
