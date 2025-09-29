@@ -61,20 +61,20 @@ body{
 ========================= */
 .app-header{
   max-width: 520px;
-  margin: 100px auto 8px;
+  margin: 130px auto 8px;
   padding: 8px 12px;
   display:flex; align-items:center; gap:12px;
 }
 .avatar{
-  width:55px; height:55px; border-radius:50%;
+  width:45px; height:45px; border-radius:50%;
   display:grid; place-items:center;
   background: linear-gradient(135deg,#151a2b,#2b3558);
   border:1px solid var(--card-brd);
   box-shadow: var(--shadow);
   font-weight:800; letter-spacing:.5px;
 }
-.account .title{font-size:25px; font-weight:700}
-.account .subtitle{font-size:16px; color:var(--muted)}
+.account .title{font-size:22px; font-weight:700}
+.account .subtitle{font-size:15px; color:var(--muted)}
 .icon-btn{
   margin-left:auto;
   width:45px; height:45px; border-radius:12px;
@@ -84,7 +84,7 @@ body{
   cursor:pointer;
 }
 
-.content{ max-width: 520px; padding:  12px 12px 88px; margin: 0 auto; }
+.content{ max-width: 520px; padding:  25px 25px 88px; margin: 0 auto; }
 .grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 
 /* =================================
@@ -506,3 +506,23 @@ body{
    Или точечно для одного пункта:
    .nav-item[data-action="tab-market"]{ --nav-ic-size:26px; } 
 */
+/* === Layout overrides (настройки отступов) === */
+:root{
+  --page-xpad: 24px;   /* Боковые поля страницы и шапки */
+  --header-top: 120px;  /* Отступ шапки от верхнего края */
+  --content-gap: 5px;  /* Зазор между шапкой и основным контентом */
+}
+
+/* Шапка: сверху --header-top, снизу зазор до контента --content-gap */
+.app-header{
+  margin: var(--header-top) auto var(--content-gap);
+  padding-left:  var(--page-xpad);
+  padding-right: var(--page-xpad);
+}
+
+/* Контент: синхроним горизонтальные поля и уменьшаем верхний паддинг */
+.content{
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 8px var(--page-xpad) 88px; /* top=8px (раньше было 25px) */
+}
