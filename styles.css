@@ -69,7 +69,7 @@ body{
   width:45px; height:45px; border-radius:50%;
   display:grid; place-items:center;
   background: linear-gradient(135deg,#151a2b,#2b3558);
-  border:1px solid var(--card-brd);
+  border:0px solid var(--card-brd);
   box-shadow: var(--shadow);
   font-weight:800; letter-spacing:.5px;
 }
@@ -227,7 +227,7 @@ body{
   background-image: url("./assets/backgrounds/stars4.png");
 }
 .panel--buy .panel__icon{
-  width:20px; height:20px; right:12px; bottom:12px;
+  width:20px; height:20px; right:18px; bottom:12px;
   background-image: url("./assets/icons/icon3.png");
 }
 
@@ -254,7 +254,7 @@ body{
   background-image: url("./assets/backgrounds/stars4.png");
 }
 .panel--sell .panel__icon{
-  width:20px; height:20px; right:12px; bottom:12px;
+  width:20px; height:20px; right:18px; bottom:12px;
   background-image: url("./assets/icons/icon2.png");
 }
 
@@ -284,7 +284,7 @@ body{
   background-image: url("./assets/backgrounds/gifts.jpg");
 }
 .panel--gifts .panel__icon{
-  width:40px; height:40px; right: 18px; bottom: 240px;
+  width:30px; height:30px; right: 18px; bottom: 245px;
   background-image: url("./assets/icons/подарок.png");
 }
 /* Карусель — над градиентом, под текстом */
@@ -333,7 +333,7 @@ body{
   background-image: url("./assets/backgrounds/steam2.jpg");
 }
 .panel--steam .panel__icon{
-  width:50px; height:50px; right: 18px; bottom:120px;
+  width:30px; height:30px; right: 18px; bottom:130px;
   background-image: url("./assets/icons/icon4.png");
 }
 .panel--steam .panel__content{ /* паддинги уже заданы переменной */ }
@@ -362,7 +362,7 @@ body{
   display:flex; flex-direction:column; align-items:center; gap:4px;
   padding:8px 6px; border-radius:12px; cursor:pointer;
 }
-.nav-item.is-active{ color:#fff; background: rgba(255,255,255,.06); border:1px solid var(--card-brd) }
+.nav-item.is-active{ color:#fff; background: rgba(3, 0, 169, 0.06); border:1px solid var(--card-brd) }
 .nav-ic{font-size:18px} .nav-tx{font-size:12px}
 
 /* =========================
@@ -509,7 +509,7 @@ body{
 /* === Layout overrides (настройки отступов) === */
 :root{
   --page-xpad: 22px;   /* Боковые поля страницы и шапки */
-  --header-top: 110px;  /* Отступ шапки от верхнего края */
+  --header-top: 20px;  /* Отступ шапки от верхнего края */
   --content-gap: 5px;  /* Зазор между шапкой и основным контентом */
 }
 
@@ -563,3 +563,35 @@ body::before{
 
 /* Подстрахуем низ, чтобы контент «заходил» под нижнюю навигацию */
 .content{ padding-bottom: 88px; }
+/* === Floating bottom nav (fixed, rounded, elevated) === */
+:root{
+  --nav-bottom: 25px;                 /* на сколько поднять меню от низа */
+  --nav-sidepad: var(--page-xpad);    /* отступы слева/справа (как у контента) */
+  --nav-radius: var(--radius);        /* скругление как у остальных элементов */
+  --content-bottom-pad: 140px;        /* запас снизу, чтобы контент не прятался под меню */
+}
+
+.bottom-nav{
+  position: fixed;
+  left:  var(--nav-sidepad);
+  right: var(--nav-sidepad);
+  bottom: var(--nav-bottom);
+  z-index: 1000;                      /* поверх контента */
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+
+  padding: 10px;                      /* внутренний отступ самой плашки */
+  border-radius: var(--nav-radius);
+  background: rgba(11,14,27,0.85);    /* полупрозрачная плашка */
+  border: 1px solid var(--card-brd);  /* тонкая рамка по периметру */
+  box-shadow: var(--shadow);          /* «парящая» тень */
+  backdrop-filter: blur(10px);
+}
+
+/* контенту даём запас снизу, чтобы не перекрывался меню */
+.content{
+  padding-bottom: var(--content-bottom-pad) !important;
+}
+
