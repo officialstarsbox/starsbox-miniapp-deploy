@@ -2,7 +2,8 @@
    BUY PAGE — ТЕМА / ПЕРЕМЕННЫЕ
 ========================= */
 .buy-page{
-  --w: min(520px, 92vw);
+  /* ширина колонки синхронизируем с глобальной, если она есть */
+  --w: min(var(--column-w, 520px), 92vw);
 
   /* поля ввода */
   --fields-gap: 12px;
@@ -28,7 +29,7 @@
   --pkg-selected-text: #000;
   --pkg-selected-brd: #fff;
 
-  /* радио */
+  /* радио (по умолчанию) */
   --radio-size: 12px;
   --radio-brd: #9aa0a6;
   --radio-dot: #fff;
@@ -46,14 +47,42 @@
   --legal-brd: var(--card-brd);
   --legal-text: var(--muted);
 
+  /* ПЛАТЁЖНЫЕ ИКОНКИ (текущие твои значения; ниже адаптивно переопределим) */
+  --pay-ic-size: 22px;
+  --pay-ic-left: 95px;   /* у тебя было так — сохраняю базу */
+  --pay-ic-gap: -60px;    /* и это тоже */
+  --pay-ic-opacity: 1;
+  --pay-ic-filter: none;
+  --ic-sbp:    url("../assets/icons/icon10.png");
+  --ic-crypto: url("../assets/icons/icon9.png");
+
   margin: 0 auto;
   max-width: var(--w);
   color: var(--text);
 }
 
 /* Заголовки */
-.buy-title{ margin:0 0 6px; font: 800 22px/1.2 var(--font-accent); }
+.buy-title{ margin:0 0 6px; font: 800 clamp(20px, 2.8vw, 22px)/1.2 var(--font-accent); }
 .buy-sub{   margin:0 0 14px; color:var(--muted); }
+
+/* Заголовок над полем username + действия справа */
+.buy-page .field-head{
+  max-width:500px; margin: 0 auto 6px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 4px;
+}
+.buy-page .field-title{
+  font: 700 clamp(16px, 2.2vw, 18px)/1 var(--font-ui);
+  color: #fff; opacity:.9;
+}
+.buy-page .field-actions{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.buy-page .text-link{
+  appearance:none; border:0; background:transparent; padding:4px 6px;
+  font: 600 clamp(13px, 2vw, 14px)/1 var(--font-ui);
+  color: #cfe0ff; cursor:pointer; border-radius: 8px;
+}
+.buy-page .text-link:active{ transform: translateY(1px); }
+.buy-page .text-link:focus{ outline: none; }
 
 /* ---------- Поля ввода ---------- */
 .stars-username-container,
@@ -63,11 +92,11 @@
   margin:0 auto var(--fields-gap);
   display:flex; align-items:center;
 }
-
 .stars-username-input,
 .stars-qty-input{
-  width:100%; height:40px;
-  padding-left:50px; padding-right:10px;
+  width:100%;
+  height: clamp(38px, 6vh, 44px);
+  padding-left:50px; padding-right:12px;
   font-size:13px; letter-spacing:1.05px;
   background: var(--field-bg);
   color: var(--field-text);
@@ -117,7 +146,7 @@
 .stars-username-logo,
 .stars-field-icon{
   position:absolute; left:20px; top:50%; transform:translateY(-50%);
-  width:20px; height:20px;
+  width: clamp(18px, 4.5vw, 20px); height: clamp(18px, 4.5vw, 20px);
 }
 
 .stars-qty-subtitle{
@@ -126,8 +155,6 @@
 }
 
 /* ---------- Пакеты ---------- */
-/* БЕЗ flex-gap — блочный поток + margin-top на каждом, кроме первого.
-   Это даёт стабильные интервалы и для видимых, и для скрытых пакетов. */
 .stars-packages,
 .stars-packages-hidden{
   max-width:500px;
@@ -138,9 +165,9 @@
 .stars-packages-hidden > .stars-package-item:not(:first-child){
   margin-top: var(--pkg-gap);
 }
-
 .stars-package-item{
-  display:grid; grid-template-columns:22px 24px 1fr auto; align-items:center; column-gap:10px;
+  display:grid; grid-template-columns:22px 24px 1fr auto;
+  align-items:center; column-gap:10px;
   width:100%; padding:12px 14px; border-radius: var(--pkg-radius);
   background: var(--pkg-bg); color: var(--pkg-text);
   border:1px solid var(--pkg-brd);
@@ -152,7 +179,6 @@
   color: var(--pkg-selected-text);
   border-color: var(--pkg-selected-brd);
 }
-
 /* радиокнопки */
 .stars-package-radio{
   appearance:none; -webkit-appearance:none;
@@ -171,7 +197,7 @@
 .stars-packages-hidden{ display:none; opacity:0; transition:opacity .25s; }
 .stars-packages-hidden.is-open{ display:block; opacity:1; }
 
-/* кнопка «Показать/Свернуть…» — БЕЗ состояния активного */
+/* кнопка «Показать/Свернуть…» — без «активного» состояния */
 .stars-toggle{
   margin: var(--pkg-gap) auto 0;
   width:100%; max-width:500px; padding:10px 20px;
@@ -195,18 +221,33 @@
   border:none; border-bottom:1px solid #fff; padding:10px 8px 8px; outline:none; caret-color:transparent; user-select:none;
 }
 
-/* платёжные кнопки — вертикально, на всю ширину */
+/* ПЛАТЁЖНЫЕ КНОПКИ — вертикально + иконки */
 .stars-payment-actions{
   max-width:500px; margin:18px auto 0;
   display:grid; grid-template-columns:1fr; gap: var(--pkg-gap);
 }
-.stars-btn{
+.stars-payment-actions .stars-btn{
+  position: relative;
   width:100%;
-  padding:12px 14px; border-radius:12px; border:1px solid var(--card-brd);
-  background:rgba(255,255,255,.9); color:#0b0e1b; font-weight:700; cursor:pointer; transition: transform .15s ease;
+  padding:12px 14px;
+  /* текст отступит на (смещение иконки + её ширина + зазор) */
+  padding-left: calc(var(--pay-ic-left) + var(--pay-ic-size) + var(--pay-ic-gap));
+  border-radius:12px; border:1px solid var(--card-brd);
+  background:rgba(255,255,255,.9); color:#0b0e1b;
+  font-weight:400; cursor:pointer; transition: transform .15s ease;
 }
-.stars-btn:active{ transform:scale(.98); }
-.stars-btn[disabled]{ opacity:.6; pointer-events:none; }
+.stars-payment-actions .stars-btn:active{ transform: scale(.98); }
+.stars-payment-actions .stars-btn[disabled]{ opacity:.6; pointer-events:none; }
+/* слой иконки */
+.stars-payment-actions .stars-btn::before{
+  content:""; position:absolute; left: var(--pay-ic-left); top:50%; transform:translateY(-50%);
+  width: var(--pay-ic-size); height: var(--pay-ic-size);
+  background-repeat:no-repeat; background-position:center; background-size:contain;
+  opacity: var(--pay-ic-opacity); filter: var(--pay-ic-filter); pointer-events:none;
+}
+/* привязка иконок */
+.stars-btn[data-method="sbp_qr"]::before { background-image: var(--ic-sbp); }
+.stars-btn[data-method="crypto"]::before { background-image: var(--ic-crypto); }
 
 /* блок оферты */
 .buy-legal-box{
@@ -220,92 +261,82 @@
   cursor: pointer;
 }
 
-/* Заголовок над полем username + действия справа */
-.buy-page .field-head{
-  max-width:500px; margin: 0 auto 6px;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 0 4px;
-}
-.buy-page .field-title{
-  font: 700 18px/1 var(--font-ui);
-  color: #fff; opacity:.9;
-}
-.buy-page .field-actions{ display:flex; align-items:center; gap:1px; }
-.buy-page .text-link{
-  appearance:none; border:0; background:transparent; padding:4px 6px;
-  font: 600 14px/1 var(--font-ui);
-  color: #cfe0ff; cursor:pointer;
-  border-radius: 8px;
-}
-.buy-page .text-link:active{ transform: translateY(1px); }
-.buy-page .text-link:focus{ outline: none; }
+/* =========================
+   АДАПТИВНЫЕ ОВЕРРАЙДЫ
+========================= */
 
-/* ==== ПЛАТЁЖНЫЕ КНОПКИ — вертикально + иконки (готово к замене блока) ==== */
-.buy-page{
-  /* Иконки: общие настройки (можно править в одном месте) */
-  --pay-ic-size: 22px;                         /* размер иконки */
-  --pay-ic-left: 80px;                         /* смещение иконки слева */
-  --pay-ic-gap: -70px;                          /* зазор между иконкой и текстом */
-  --pay-ic-opacity: 1;                         /* прозрачность иконок */
-  --pay-ic-filter: none;                       /* например: invert(1) для тёмных svg */
+/* Узкие телефоны ≤ 360px */
+@media (max-width: 360px){
+  .buy-page{
+    --fields-gap: 10px;
+    --pkg-gap: 8px;
+    --field-radius: 24px;
+    --radio-size: 10px;
 
-  /* Пути к иконкам (замени на свои при необходимости) */
-  --ic-sbp:    url("../assets/icons/icon8.png");
-  --ic-crypto: url("../assets/icons/icon9.png");
+    /* Иконки оплаты делаем ближе к левому краю и без трюков с отриц. gap */
+    --pay-ic-size: 18px;
+    --pay-ic-left: 16px;
+    --pay-ic-gap: 10px;
+  }
+  .stars-package-item{ padding:10px 12px; column-gap:8px; }
+  .stars-username-logo, .stars-field-icon{ left:16px; }
+  .stars-total-input{ font-size:18px; }
 }
 
-/* Контейнер кнопок оплаты: одна колонка, на всю ширину */
-.stars-payment-actions{
-  max-width:500px;
-  margin:18px auto 0;
-  display:grid;
-  grid-template-columns:1fr;
-  gap: var(--pkg-gap, 10px);
+/* Малые телефоны 361–428px */
+@media (min-width: 361px) and (max-width: 428px){
+  .buy-page{
+    --pay-ic-size: 20px;
+    --pay-ic-left: 20px;
+    --pay-ic-gap: 12px;
+  }
 }
 
-/* Кнопка оплаты с «местом» под иконку слева */
-.stars-payment-actions .stars-btn{
-  position: relative;
-  width: 100%;
-  padding: 12px 14px;
-  /* текст отступит на (смещение иконки + её ширина + зазор) */
-  padding-left: calc(var(--pay-ic-left) + var(--pay-ic-size) + var(--pay-ic-gap));
-  border-radius:12px;
-  border:1px solid var(--card-brd);
-  background:rgba(255,255,255,.9);
-  color:#0b0e1b;
-  font-weight:700;
-  cursor:pointer;
-  transition: transform .15s ease;
-}
-.stars-payment-actions .stars-btn:active{ transform: scale(.98); }
-.stars-payment-actions .stars-btn[disabled]{ opacity:.6; pointer-events:none; }
-
-/* Универсальный слой иконки (подключается через data-method) */
-.stars-payment-actions .stars-btn::before{
-  content:"";
-  position:absolute;
-  left: var(--pay-ic-left);
-  top: 50%;
-  transform: translateY(-50%);
-  width: var(--pay-ic-size);
-  height: var(--pay-ic-size);
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:contain;
-  opacity: var(--pay-ic-opacity);
-  filter: var(--pay-ic-filter);
-  pointer-events:none;
+/* Ландшафтные смартфоны (низкая высота) */
+@media (max-height: 520px) and (orientation: landscape){
+  .buy-page{
+    --fields-gap: 8px;
+    --pkg-gap: 8px;
+    --radio-size: 10px;
+  }
+  .stars-qty-subtitle{ margin: calc(var(--fields-gap) * 0.6) auto; }
+  .stars-payment-actions{ margin:12px auto 0; }
 }
 
-/* Привязка иконок к методам */
-.stars-btn[data-method="sbp_qr"]::before { background-image: var(--ic-sbp); }
-.stars-btn[data-method="crypto"]::before { background-image: var(--ic-crypto); }
+/* Планшеты ≥ 768px */
+@media (min-width: 768px){
+  .buy-page{
+    --w: min(var(--column-w, 640px), 90vw);
+    --fields-gap: 14px;
+    --pkg-gap: 12px;
+    --radio-size: 13px;
 
-/* (опционально) Пример индивидуальной подстройки только для crypto
-.stars-btn[data-method="crypto"]{ --pay-ic-left: 28px; }
-*/
+    --pay-ic-size: 22px;
+    --pay-ic-left: 28px;
+    --pay-ic-gap: 14px;
+  }
+  .stars-package-item{ padding:14px 16px; column-gap:12px; }
+}
 
+/* Десктопы ≥ 1024px */
+@media (min-width: 1024px){
+  .buy-page{
+    --w: min(var(--column-w, 760px), 88vw);
+    --fields-gap: 16px;
+    --pkg-gap: 14px;
+    --radio-size: 14px;
+
+    --pay-ic-size: 24px;
+    --pay-ic-left: 32px;
+    --pay-ic-gap: 16px;
+  }
+}
+
+/* Очень высокие экраны — чуть больше «воздуха» снизу */
+@media (min-height: 900px){
+  .stars-payment-actions{ margin:22px auto 0; }
+  .buy-legal-box{ margin-top: calc(var(--pkg-gap) + 6px); }
+}
 
 
 
