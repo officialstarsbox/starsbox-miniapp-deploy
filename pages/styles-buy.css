@@ -1,9 +1,10 @@
 /* =========================
-   BUY PAGE — ТЕМА / ПЕРЕМЕННЫЕ
+   BUY PAGE — тема / переменные
+   ВСЁ ограничено .buy-page → не трогаем главную
 ========================= */
 .buy-page{
-  /* ширина колонки синхронизируем с глобальной, если она есть */
-  --w: min(var(--column-w, 520px), 92vw);
+  /* колонка формы — одинаковая на всех устройствах */
+  --form-w: clamp(320px, 92vw, 520px);
 
   /* поля ввода */
   --fields-gap: 12px;
@@ -29,7 +30,7 @@
   --pkg-selected-text: #000;
   --pkg-selected-brd: #fff;
 
-  /* радио (по умолчанию) */
+  /* радио */
   --radio-size: 12px;
   --radio-brd: #9aa0a6;
   --radio-dot: #fff;
@@ -39,7 +40,7 @@
   --toggle-brd: #fff;
   --toggle-text: #fff;
   --toggle-bg: transparent;
-  --toggle-active-bg: #fff;   /* меняется только на время нажатия */
+  --toggle-active-bg: #fff;   /* только нажатие */
   --toggle-active-text: #000;
 
   /* блок оферты */
@@ -47,55 +48,50 @@
   --legal-brd: var(--card-brd);
   --legal-text: var(--muted);
 
-  /* ПЛАТЁЖНЫЕ ИКОНКИ (текущие твои значения; ниже адаптивно переопределим) */
+  /* иконки платёжных кнопок — РЕСПОНСИВ без абсолютов */
   --pay-ic-size: 22px;
-  --pay-ic-left: 95px;   /* у тебя было так — сохраняю базу */
-  --pay-ic-gap: -60px;    /* и это тоже */
+  --pay-ic-gap: 12px; /* зазор между иконкой и текстом */
   --pay-ic-opacity: 1;
   --pay-ic-filter: none;
   --ic-sbp:    url("../assets/icons/icon10.png");
   --ic-crypto: url("../assets/icons/icon9.png");
 
   margin: 0 auto;
-  max-width: var(--w);
+  max-width: var(--form-w);
   color: var(--text);
 }
 
-/* Заголовки */
-.buy-title{ margin:0 0 6px; font: 800 clamp(20px, 2.8vw, 22px)/1.2 var(--font-accent); }
-.buy-sub{   margin:0 0 14px; color:var(--muted); }
+/* Заголовки/подзаголовки страницы */
+.buy-page .buy-title{ margin:0 0 6px; font: 800 22px/1.2 var(--font-accent); }
+.buy-page .buy-sub{   margin:0 0 14px; color:var(--muted); }
 
-/* Заголовок над полем username + действия справа */
+/* Заголовок над username + действия справа */
 .buy-page .field-head{
-  max-width:500px; margin: 0 auto 6px;
+  max-width: var(--form-w);
+  margin: 0 auto 6px;
   display:flex; align-items:center; justify-content:space-between;
   padding: 0 4px;
 }
-.buy-page .field-title{
-  font: 700 clamp(16px, 2.2vw, 18px)/1 var(--font-ui);
-  color: #fff; opacity:.9;
-}
-.buy-page .field-actions{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+.buy-page .field-title{ font: 400 18px/1 var(--font-ui); color:#fff; opacity:.9; }
+.buy-page .field-actions{ display:flex; align-items:center; gap:8px; }
 .buy-page .text-link{
   appearance:none; border:0; background:transparent; padding:4px 6px;
-  font: 600 clamp(13px, 2vw, 14px)/1 var(--font-ui);
+  font: 400 14px/1 var(--font-ui);
   color: #cfe0ff; cursor:pointer; border-radius: 8px;
 }
 .buy-page .text-link:active{ transform: translateY(1px); }
-.buy-page .text-link:focus{ outline: none; }
 
 /* ---------- Поля ввода ---------- */
-.stars-username-container,
-.stars-qty-container{
+.buy-page .stars-username-container,
+.buy-page .stars-qty-container{
   position:relative;
-  max-width:500px;
+  max-width: var(--form-w);
   margin:0 auto var(--fields-gap);
   display:flex; align-items:center;
 }
-.stars-username-input,
-.stars-qty-input{
-  width:100%;
-  height: clamp(38px, 6vh, 44px);
+.buy-page .stars-username-input,
+.buy-page .stars-qty-input{
+  width:100%; height:40px;
   padding-left:50px; padding-right:12px;
   font-size:13px; letter-spacing:1.05px;
   background: var(--field-bg);
@@ -105,67 +101,68 @@
   box-shadow: inset 0 0 0 0 transparent;
   transition: border-color .2s, box-shadow .2s;
 }
-.stars-username-input::placeholder,
-.stars-qty-input::placeholder{ color: var(--field-ph); }
+.buy-page .stars-username-input::placeholder,
+.buy-page .stars-qty-input::placeholder{ color: var(--field-ph); }
 
-/* наш фокус */
-.stars-username-input:focus,
-.stars-qty-input:focus,
-.stars-username-input:focus-visible,
-.stars-qty-input:focus-visible{
+/* наш фокус (без системных красных/оранжевых) */
+.buy-page .stars-username-input:focus,
+.buy-page .stars-qty-input:focus,
+.buy-page .stars-username-input:focus-visible,
+.buy-page .stars-qty-input:focus-visible{
   outline: none !important;
   border-color: var(--field-focus-brd) !important;
   box-shadow: 0 0 8px var(--field-focus-glow) !important;
 }
-/* отключаем системные оранжевые/красные обводки */
 .buy-page input{ -webkit-tap-highlight-color: transparent; }
 .buy-page input:-moz-focusring{ outline: none; }
 .buy-page input::-moz-focus-inner{ border:0; }
 .buy-page *:focus-visible{ outline:none; }
 
 /* ошибка только когда поле не пустое */
-.stars-username-input:invalid:not(:placeholder-shown),
-.stars-qty-input:invalid:not(:placeholder-shown),
-.stars-username-input:-moz-ui-invalid:not(:placeholder-shown),
-.stars-qty-input:-moz-ui-invalid:not(:placeholder-shown){
+.buy-page .stars-username-input:invalid:not(:placeholder-shown),
+.buy-page .stars-qty-input:invalid:not(:placeholder-shown),
+.buy-page .stars-username-input:-moz-ui-invalid:not(:placeholder-shown),
+.buy-page .stars-qty-input:-moz-ui-invalid:not(:placeholder-shown){
   border-color: var(--field-invalid-brd) !important;
   box-shadow: inset 0 0 0 2px var(--field-invalid-glow) !important;
 }
-.stars-username-input:placeholder-shown:invalid,
-.stars-qty-input:placeholder-shown:invalid{
+.buy-page .stars-username-input:placeholder-shown:invalid,
+.buy-page .stars-qty-input:placeholder-shown:invalid{
   border-color: var(--field-brd);
   box-shadow: none;
 }
 /* явный класс ошибки из JS */
-.input--error{
+.buy-page .input--error{
   border-color: var(--field-invalid-brd) !important;
   box-shadow: inset 0 0 0 3px var(--field-invalid-glow) !important;
 }
 
 /* иконки в полях */
-.stars-username-logo,
-.stars-field-icon{
+.buy-page .stars-username-logo,
+.buy-page .stars-field-icon{
   position:absolute; left:20px; top:50%; transform:translateY(-50%);
-  width: clamp(18px, 4.5vw, 20px); height: clamp(18px, 4.5vw, 20px);
+  width:20px; height:20px;
 }
 
-.stars-qty-subtitle{
-  max-width:500px; margin: calc(var(--fields-gap) * 0.9) auto;
+/* подпись перед пакетами */
+.buy-page .stars-qty-subtitle{
+  max-width: var(--form-w); margin: calc(var(--fields-gap) * 0.9) auto;
   text-align:center; color:#ddd; font-size:14px; opacity:.9;
 }
 
 /* ---------- Пакеты ---------- */
-.stars-packages,
-.stars-packages-hidden{
-  max-width:500px;
+.buy-page .stars-packages,
+.buy-page .stars-packages-hidden{
+  max-width: var(--form-w);
   margin:8px auto 0;
   display:block;
 }
-.stars-packages > .stars-package-item:not(:first-child),
-.stars-packages-hidden > .stars-package-item:not(:first-child){
+.buy-page .stars-packages > .stars-package-item:not(:first-child),
+.buy-page .stars-packages-hidden > .stars-package-item:not(:first-child){
   margin-top: var(--pkg-gap);
 }
-.stars-package-item{
+
+.buy-page .stars-package-item{
   display:grid; grid-template-columns:22px 24px 1fr auto;
   align-items:center; column-gap:10px;
   width:100%; padding:12px 14px; border-radius: var(--pkg-radius);
@@ -174,168 +171,158 @@
   font-size:15px; letter-spacing:1.1px;
   transition: background-color .2s, color .2s, border-color .2s, transform .2s;
 }
-.stars-package-item.is-selected{
+.buy-page .stars-package-item.is-selected{
   background: var(--pkg-selected-bg);
   color: var(--pkg-selected-text);
   border-color: var(--pkg-selected-brd);
 }
-/* радиокнопки */
-.stars-package-radio{
+
+/* радио */
+.buy-page .stars-package-radio{
   appearance:none; -webkit-appearance:none;
   width: var(--radio-size); height: var(--radio-size);
   border:2px solid var(--radio-brd); border-radius:50%;
   background:transparent; position:relative; cursor:pointer;
   transition: box-shadow .2s, border-color .2s;
 }
-.stars-package-radio:focus-visible{ outline:none; box-shadow:0 0 0 4px var(--radio-focus); }
-.stars-package-radio:checked{ border-color: var(--pkg-selected-brd); }
-.stars-package-radio:checked::after{ content:""; position:absolute; inset:3px; background: var(--radio-dot); border-radius:50%; }
+.buy-page .stars-package-radio:focus-visible{ outline:none; box-shadow:0 0 0 4px var(--radio-focus); }
+.buy-page .stars-package-radio:checked{ border-color: var(--pkg-selected-brd); }
+.buy-page .stars-package-radio:checked::after{
+  content:""; position:absolute; inset:3px; background: var(--radio-dot); border-radius:50%;
+}
+.buy-page .stars-package-icon{ width:15px; height:15px; justify-self:center; }
 
-.stars-package-icon{ width:15px; height:15px; justify-self:center; }
+/* скрытые пакеты */
+.buy-page .stars-packages-hidden{ display:none; opacity:0; transition:opacity .25s; }
+.buy-page .stars-packages-hidden.is-open{ display:block; opacity:1; }
 
-/* скрытые пакеты (раскрывашка) */
-.stars-packages-hidden{ display:none; opacity:0; transition:opacity .25s; }
-.stars-packages-hidden.is-open{ display:block; opacity:1; }
-
-/* кнопка «Показать/Свернуть…» — без «активного» состояния */
-.stars-toggle{
+/* Кнопка показать/свернуть — без залипания состояния */
+.buy-page .stars-toggle{
   margin: var(--pkg-gap) auto 0;
-  width:100%; max-width:500px; padding:10px 20px;
+  width:100%; max-width: var(--form-w); padding:10px 20px;
   border-radius:25px; text-align:center;
   border:1px solid var(--toggle-brd); color: var(--toggle-text); background: var(--toggle-bg);
   font-size:13px; letter-spacing:1.1px;
   transition: transform .12s;
 }
-.stars-toggle:focus{ outline:none; box-shadow:none; }
-.stars-toggle:active{
+.buy-page .stars-toggle:focus{ outline:none; box-shadow:none; }
+.buy-page .stars-toggle:active{
   background: var(--toggle-active-bg);
   color: var(--toggle-active-text);
   transform:scale(.98);
 }
 
-/* ---------- Итого + оплата ---------- */
-.stars-total-line{ max-width:500px; margin:16px auto 0; display:flex; flex-direction:column; align-items:center; gap:0; }
-.stars-total-label{ font-size:14px; color:#fff; opacity:.8; }
-.stars-total-input{
+/* ---------- Итого ---------- */
+.buy-page .stars-total-line{
+  max-width: var(--form-w); margin:16px auto 0;
+  display:flex; flex-direction:column; align-items:center; gap:0;
+}
+.buy-page .stars-total-label{ font-size:14px; color:#fff; opacity:.8; }
+.buy-page .stars-total-input{
   width:100%; background:transparent; color:#fff; font-size:20px; text-align:center;
   border:none; border-bottom:1px solid #fff; padding:10px 8px 8px; outline:none; caret-color:transparent; user-select:none;
 }
 
-/* ПЛАТЁЖНЫЕ КНОПКИ — вертикально + иконки */
-.stars-payment-actions{
-  max-width:500px; margin:18px auto 0;
-  display:grid; grid-template-columns:1fr; gap: var(--pkg-gap);
-}
-.stars-payment-actions .stars-btn{
-  position: relative;
-  width:100%;
-  padding:12px 14px;
-  /* текст отступит на (смещение иконки + её ширина + зазор) */
-  padding-left: calc(var(--pay-ic-left) + var(--pay-ic-size) + var(--pay-ic-gap));
-  border-radius:12px; border:1px solid var(--card-brd);
-  background:rgba(255,255,255,.9); color:#0b0e1b;
-  font-weight:400; cursor:pointer; transition: transform .15s ease;
-}
-.stars-payment-actions .stars-btn:active{ transform: scale(.98); }
-.stars-payment-actions .stars-btn[disabled]{ opacity:.6; pointer-events:none; }
-/* слой иконки */
-.stars-payment-actions .stars-btn::before{
-  content:""; position:absolute; left: var(--pay-ic-left); top:50%; transform:translateY(-50%);
-  width: var(--pay-ic-size); height: var(--pay-ic-size);
-  background-repeat:no-repeat; background-position:center; background-size:contain;
-  opacity: var(--pay-ic-opacity); filter: var(--pay-ic-filter); pointer-events:none;
-}
-/* привязка иконок */
-.stars-btn[data-method="sbp_qr"]::before { background-image: var(--ic-sbp); }
-.stars-btn[data-method="crypto"]::before { background-image: var(--ic-crypto); }
+/* ===== ПЛАТЁЖНЫЕ КНОПКИ — иконка справа, привязана к тексту ===== */
 
-/* блок оферты */
-.buy-legal-box{
-  margin: var(--pkg-gap) auto 0; padding:10px 12px; max-width:520px;
+/* общие переменные (можно менять где-то выше в .buy-page) */
+.buy-page{
+  --pay-ic-size: 22px;         /* размер иконки */
+  --pay-ic-gap: 5px;          /* расстояние от текста до иконки = 20px */
+  --pay-ic-opacity: 1;
+  --pay-ic-filter: none;
+
+  /* пути к иконкам */
+  --ic-sbp:    url("../assets/icons/icon10.png");
+  --ic-crypto: url("../assets/icons/icon9.png");
+}
+
+/* контейнер кнопок — одна колонка, на всю ширину формы */
+.buy-page .stars-payment-actions{
+  max-width: var(--form-w);
+  margin:18px auto 0;
+  display:grid;
+  grid-template-columns:1fr;
+  gap: var(--pkg-gap);
+}
+
+/* сама кнопка: центрируем "текст + иконка" как ЕДИНЫЙ блок */
+.buy-page .stars-payment-actions .stars-btn{
+  display:inline-flex;                 /* ← важное: текст и иконка — в одном флекс-блоке */
+  align-items:center;
+  justify-content:center;              /* центрируем группу целиком */
+  gap: var(--pay-ic-gap);              /* зазор между текстом и иконкой = 20px */
+  white-space: nowrap;                 /* чтобы иконка не "падала" на следующую строку */
+  width:100%;
+  padding:12px 16px;
+  border-radius:12px;
+  border:1px solid var(--card-brd);
+  background:rgba(255,255,255,.9);
+  color:#0b0e1b;
+  font-weight:400;
+  text-align:center;
+  cursor:pointer;
+  transition: transform .15s ease;
+}
+.buy-page .stars-payment-actions .stars-btn:active{ transform: scale(.98); }
+.buy-page .stars-payment-actions .stars-btn[disabled]{ opacity:.6; pointer-events:none; }
+
+/* иконка как flex-элемент справа от текста (внутри той же кнопки) */
+.buy-page .stars-payment-actions .stars-btn::after{
+  content:"";
+  flex: 0 0 var(--pay-ic-size);
+  width: var(--pay-ic-size);
+  height: var(--pay-ic-size);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  opacity: var(--pay-ic-opacity);
+  filter: var(--pay-ic-filter);
+  pointer-events:none;
+
+  /* fallback, если вдруг gap в flex не поддерживается старым WebView */
+  margin-left: var(--pay-ic-gap);
+}
+
+/* назначаем разные иконки по методу оплаты */
+.buy-page .stars-btn[data-method="sbp_qr"]::after { background-image: var(--ic-sbp); }
+.buy-page .stars-btn[data-method="crypto"]::after { background-image: var(--ic-crypto); }
+
+/* (опционально) на очень узких экранах можно дать кнопкам перенос текста.
+   Тогда иконка всё равно останется «рядом», но может уйти на новую строку.
+   Убери комментарий, если нужно:
+@media (max-width: 340px){
+  .buy-page .stars-payment-actions .stars-btn{ white-space: normal; }
+}
+
+/* ---------- Блок оферты ---------- */
+.buy-page .buy-legal-box{
+  margin: var(--pkg-gap) auto 0; padding:10px 12px; max-width: var(--form-w);
   background: var(--legal-bg); border:1px solid var(--legal-brd); border-radius:12px;
 }
-.buy-legal{ margin:0; color: var(--legal-text); font-size:12px; text-align:center; }
-.buy-legal a, .buy-legal .buy-legal-link{
+.buy-page .buy-legal{ margin:0; color: var(--legal-text); font-size:12px; text-align:center; }
+.buy-page .buy-legal a,
+.buy-page .buy-legal .buy-legal-link{
   color: inherit; text-decoration: underline;
   text-decoration-thickness: from-font; text-underline-offset: 2px;
   cursor: pointer;
 }
 
 /* =========================
-   АДАПТИВНЫЕ ОВЕРРАЙДЫ
+   АДАПТИВ
 ========================= */
-
-/* Узкие телефоны ≤ 360px */
+/* узкие экраны (старые iPhone SE и подобные) */
 @media (max-width: 360px){
-  .buy-page{
-    --fields-gap: 10px;
-    --pkg-gap: 8px;
-    --field-radius: 24px;
-    --radio-size: 10px;
-
-    /* Иконки оплаты делаем ближе к левому краю и без трюков с отриц. gap */
-    --pay-ic-size: 18px;
-    --pay-ic-left: 16px;
-    --pay-ic-gap: 10px;
-  }
-  .stars-package-item{ padding:10px 12px; column-gap:8px; }
-  .stars-username-logo, .stars-field-icon{ left:16px; }
-  .stars-total-input{ font-size:18px; }
+  .buy-page{ --field-radius: 22px; --pkg-radius: 22px; --pay-ic-size: 20px; }
+  .buy-page .stars-package-item{ padding:10px 12px; font-size:14px; }
+  .buy-page .stars-total-input{ font-size:18px; }
 }
 
-/* Малые телефоны 361–428px */
-@media (min-width: 361px) and (max-width: 428px){
-  .buy-page{
-    --pay-ic-size: 20px;
-    --pay-ic-left: 20px;
-    --pay-ic-gap: 12px;
-  }
-}
-
-/* Ландшафтные смартфоны (низкая высота) */
-@media (max-height: 520px) and (orientation: landscape){
-  .buy-page{
-    --fields-gap: 8px;
-    --pkg-gap: 8px;
-    --radio-size: 10px;
-  }
-  .stars-qty-subtitle{ margin: calc(var(--fields-gap) * 0.6) auto; }
-  .stars-payment-actions{ margin:12px auto 0; }
-}
-
-/* Планшеты ≥ 768px */
-@media (min-width: 768px){
-  .buy-page{
-    --w: min(var(--column-w, 640px), 90vw);
-    --fields-gap: 14px;
-    --pkg-gap: 12px;
-    --radio-size: 13px;
-
-    --pay-ic-size: 22px;
-    --pay-ic-left: 28px;
-    --pay-ic-gap: 14px;
-  }
-  .stars-package-item{ padding:14px 16px; column-gap:12px; }
-}
-
-/* Десктопы ≥ 1024px */
-@media (min-width: 1024px){
-  .buy-page{
-    --w: min(var(--column-w, 760px), 88vw);
-    --fields-gap: 16px;
-    --pkg-gap: 14px;
-    --radio-size: 14px;
-
-    --pay-ic-size: 24px;
-    --pay-ic-left: 32px;
-    --pay-ic-gap: 16px;
-  }
-}
-
-/* Очень высокие экраны — чуть больше «воздуха» снизу */
-@media (min-height: 900px){
-  .stars-payment-actions{ margin:22px auto 0; }
-  .buy-legal-box{ margin-top: calc(var(--pkg-gap) + 6px); }
+/* широкие (планшеты/десктоп) — чуть крупнее типографика, но сетка та же */
+@media (min-width: 600px){
+  .buy-page{ --pay-ic-size: 24px; }
+  .buy-page .stars-package-item{ font-size:16px; }
+  .buy-page .stars-total-input{ font-size:22px; }
 }
 
 

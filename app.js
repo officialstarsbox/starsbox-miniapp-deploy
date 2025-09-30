@@ -149,7 +149,7 @@ async function initInfiniteCarousel(){
 
   for (let i=0;i<2;i++) originals.forEach(n=>track.appendChild(n.cloneNode(true)));
 
-  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 0;
+  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 30;
   let speed = cssSpeed;
 
   let offset = 0;
@@ -191,3 +191,15 @@ window.addEventListener("DOMContentLoaded", () => {
     homeBtn.classList.add('is-active');
   }
 });
+
+// уже есть: initInfiniteCarousel() в DOMContentLoaded
+// добавим переинициализацию при возврате на вкладку/при ресайзе
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    try { initInfiniteCarousel(); } catch (e) {}
+  }
+});
+window.addEventListener('resize', () => {
+  try { initInfiniteCarousel(); } catch (e) {}
+});
+
