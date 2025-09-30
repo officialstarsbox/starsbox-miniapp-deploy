@@ -1,0 +1,313 @@
+/* =========================
+   BUY PAGE — ТЕМА / ПЕРЕМЕННЫЕ
+========================= */
+.buy-page{
+  --w: min(520px, 92vw);
+
+  /* поля ввода */
+  --fields-gap: 12px;
+  --field-bg: #fff;
+  --field-text: #000;
+  --field-ph: #9aa0a6;
+  --field-brd: #d9dbe0;
+  --field-radius: 30px;
+  --field-focus-brd: #030056;
+  --field-focus-glow: rgba(255,255,255,.2);
+  --field-invalid-brd: #000000;
+  --field-invalid-glow: rgb(255, 255, 255);
+
+  /* пакеты */
+  --pkg-gap: 10px;
+  --pkg-bg: rgba(255,255,255,.06);
+  --pkg-text: #fff;
+  --pkg-brd: rgba(255,255,255,.35);
+  --pkg-radius: 30px;
+
+  /* пакет — выбранный */
+  --pkg-selected-bg: #fff;
+  --pkg-selected-text: #000;
+  --pkg-selected-brd: #fff;
+
+  /* радио */
+  --radio-size: 12px;
+  --radio-brd: #9aa0a6;
+  --radio-dot: #fff;
+  --radio-focus: rgba(255,255,255,.35);
+
+  /* кнопка «Показать все пакеты» */
+  --toggle-brd: #fff;
+  --toggle-text: #fff;
+  --toggle-bg: transparent;
+  --toggle-active-bg: #fff;   /* меняется только на время нажатия */
+  --toggle-active-text: #000;
+
+  /* блок оферты */
+  --legal-bg: rgba(255,255,255,.06);
+  --legal-brd: var(--card-brd);
+  --legal-text: var(--muted);
+
+  margin: 0 auto;
+  max-width: var(--w);
+  color: var(--text);
+}
+
+/* Заголовки */
+.buy-title{ margin:0 0 6px; font: 800 22px/1.2 var(--font-accent); }
+.buy-sub{   margin:0 0 14px; color:var(--muted); }
+
+/* ---------- Поля ввода ---------- */
+.stars-username-container,
+.stars-qty-container{
+  position:relative;
+  max-width:500px;
+  margin:0 auto var(--fields-gap);
+  display:flex; align-items:center;
+}
+
+.stars-username-input,
+.stars-qty-input{
+  width:100%; height:40px;
+  padding-left:50px; padding-right:10px;
+  font-size:13px; letter-spacing:1.05px;
+  background: var(--field-bg);
+  color: var(--field-text);
+  border: 1px solid var(--field-brd);
+  border-radius: var(--field-radius);
+  box-shadow: inset 0 0 0 0 transparent;
+  transition: border-color .2s, box-shadow .2s;
+}
+.stars-username-input::placeholder,
+.stars-qty-input::placeholder{ color: var(--field-ph); }
+
+/* наш фокус */
+.stars-username-input:focus,
+.stars-qty-input:focus,
+.stars-username-input:focus-visible,
+.stars-qty-input:focus-visible{
+  outline: none !important;
+  border-color: var(--field-focus-brd) !important;
+  box-shadow: 0 0 8px var(--field-focus-glow) !important;
+}
+/* отключаем системные оранжевые/красные обводки */
+.buy-page input{ -webkit-tap-highlight-color: transparent; }
+.buy-page input:-moz-focusring{ outline: none; }
+.buy-page input::-moz-focus-inner{ border:0; }
+.buy-page *:focus-visible{ outline:none; }
+
+/* ошибка только когда поле не пустое */
+.stars-username-input:invalid:not(:placeholder-shown),
+.stars-qty-input:invalid:not(:placeholder-shown),
+.stars-username-input:-moz-ui-invalid:not(:placeholder-shown),
+.stars-qty-input:-moz-ui-invalid:not(:placeholder-shown){
+  border-color: var(--field-invalid-brd) !important;
+  box-shadow: inset 0 0 0 2px var(--field-invalid-glow) !important;
+}
+.stars-username-input:placeholder-shown:invalid,
+.stars-qty-input:placeholder-shown:invalid{
+  border-color: var(--field-brd);
+  box-shadow: none;
+}
+/* явный класс ошибки из JS */
+.input--error{
+  border-color: var(--field-invalid-brd) !important;
+  box-shadow: inset 0 0 0 3px var(--field-invalid-glow) !important;
+}
+
+/* иконки в полях */
+.stars-username-logo,
+.stars-field-icon{
+  position:absolute; left:20px; top:50%; transform:translateY(-50%);
+  width:20px; height:20px;
+}
+
+.stars-qty-subtitle{
+  max-width:500px; margin: calc(var(--fields-gap) * 0.9) auto;
+  text-align:center; color:#ddd; font-size:14px; opacity:.9;
+}
+
+/* ---------- Пакеты ---------- */
+/* БЕЗ flex-gap — блочный поток + margin-top на каждом, кроме первого.
+   Это даёт стабильные интервалы и для видимых, и для скрытых пакетов. */
+.stars-packages,
+.stars-packages-hidden{
+  max-width:500px;
+  margin:8px auto 0;
+  display:block;
+}
+.stars-packages > .stars-package-item:not(:first-child),
+.stars-packages-hidden > .stars-package-item:not(:first-child){
+  margin-top: var(--pkg-gap);
+}
+
+.stars-package-item{
+  display:grid; grid-template-columns:22px 24px 1fr auto; align-items:center; column-gap:10px;
+  width:100%; padding:12px 14px; border-radius: var(--pkg-radius);
+  background: var(--pkg-bg); color: var(--pkg-text);
+  border:1px solid var(--pkg-brd);
+  font-size:15px; letter-spacing:1.1px;
+  transition: background-color .2s, color .2s, border-color .2s, transform .2s;
+}
+.stars-package-item.is-selected{
+  background: var(--pkg-selected-bg);
+  color: var(--pkg-selected-text);
+  border-color: var(--pkg-selected-brd);
+}
+
+/* радиокнопки */
+.stars-package-radio{
+  appearance:none; -webkit-appearance:none;
+  width: var(--radio-size); height: var(--radio-size);
+  border:2px solid var(--radio-brd); border-radius:50%;
+  background:transparent; position:relative; cursor:pointer;
+  transition: box-shadow .2s, border-color .2s;
+}
+.stars-package-radio:focus-visible{ outline:none; box-shadow:0 0 0 4px var(--radio-focus); }
+.stars-package-radio:checked{ border-color: var(--pkg-selected-brd); }
+.stars-package-radio:checked::after{ content:""; position:absolute; inset:3px; background: var(--radio-dot); border-radius:50%; }
+
+.stars-package-icon{ width:15px; height:15px; justify-self:center; }
+
+/* скрытые пакеты (раскрывашка) */
+.stars-packages-hidden{ display:none; opacity:0; transition:opacity .25s; }
+.stars-packages-hidden.is-open{ display:block; opacity:1; }
+
+/* кнопка «Показать/Свернуть…» — БЕЗ состояния активного */
+.stars-toggle{
+  margin: var(--pkg-gap) auto 0;
+  width:100%; max-width:500px; padding:10px 20px;
+  border-radius:25px; text-align:center;
+  border:1px solid var(--toggle-brd); color: var(--toggle-text); background: var(--toggle-bg);
+  font-size:13px; letter-spacing:1.1px;
+  transition: transform .12s;
+}
+.stars-toggle:focus{ outline:none; box-shadow:none; }
+.stars-toggle:active{
+  background: var(--toggle-active-bg);
+  color: var(--toggle-active-text);
+  transform:scale(.98);
+}
+
+/* ---------- Итого + оплата ---------- */
+.stars-total-line{ max-width:500px; margin:16px auto 0; display:flex; flex-direction:column; align-items:center; gap:0; }
+.stars-total-label{ font-size:14px; color:#fff; opacity:.8; }
+.stars-total-input{
+  width:100%; background:transparent; color:#fff; font-size:20px; text-align:center;
+  border:none; border-bottom:1px solid #fff; padding:10px 8px 8px; outline:none; caret-color:transparent; user-select:none;
+}
+
+/* платёжные кнопки — вертикально, на всю ширину */
+.stars-payment-actions{
+  max-width:500px; margin:18px auto 0;
+  display:grid; grid-template-columns:1fr; gap: var(--pkg-gap);
+}
+.stars-btn{
+  width:100%;
+  padding:12px 14px; border-radius:12px; border:1px solid var(--card-brd);
+  background:rgba(255,255,255,.9); color:#0b0e1b; font-weight:700; cursor:pointer; transition: transform .15s ease;
+}
+.stars-btn:active{ transform:scale(.98); }
+.stars-btn[disabled]{ opacity:.6; pointer-events:none; }
+
+/* блок оферты */
+.buy-legal-box{
+  margin: var(--pkg-gap) auto 0; padding:10px 12px; max-width:520px;
+  background: var(--legal-bg); border:1px solid var(--legal-brd); border-radius:12px;
+}
+.buy-legal{ margin:0; color: var(--legal-text); font-size:12px; text-align:center; }
+.buy-legal a, .buy-legal .buy-legal-link{
+  color: inherit; text-decoration: underline;
+  text-decoration-thickness: from-font; text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* Заголовок над полем username + действия справа */
+.buy-page .field-head{
+  max-width:500px; margin: 0 auto 6px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 0 4px;
+}
+.buy-page .field-title{
+  font: 700 18px/1 var(--font-ui);
+  color: #fff; opacity:.9;
+}
+.buy-page .field-actions{ display:flex; align-items:center; gap:1px; }
+.buy-page .text-link{
+  appearance:none; border:0; background:transparent; padding:4px 6px;
+  font: 600 14px/1 var(--font-ui);
+  color: #cfe0ff; cursor:pointer;
+  border-radius: 8px;
+}
+.buy-page .text-link:active{ transform: translateY(1px); }
+.buy-page .text-link:focus{ outline: none; }
+
+/* ==== ПЛАТЁЖНЫЕ КНОПКИ — вертикально + иконки (готово к замене блока) ==== */
+.buy-page{
+  /* Иконки: общие настройки (можно править в одном месте) */
+  --pay-ic-size: 22px;                         /* размер иконки */
+  --pay-ic-left: 80px;                         /* смещение иконки слева */
+  --pay-ic-gap: -70px;                          /* зазор между иконкой и текстом */
+  --pay-ic-opacity: 1;                         /* прозрачность иконок */
+  --pay-ic-filter: none;                       /* например: invert(1) для тёмных svg */
+
+  /* Пути к иконкам (замени на свои при необходимости) */
+  --ic-sbp:    url("../assets/icons/icon8.png");
+  --ic-crypto: url("../assets/icons/icon9.png");
+}
+
+/* Контейнер кнопок оплаты: одна колонка, на всю ширину */
+.stars-payment-actions{
+  max-width:500px;
+  margin:18px auto 0;
+  display:grid;
+  grid-template-columns:1fr;
+  gap: var(--pkg-gap, 10px);
+}
+
+/* Кнопка оплаты с «местом» под иконку слева */
+.stars-payment-actions .stars-btn{
+  position: relative;
+  width: 100%;
+  padding: 12px 14px;
+  /* текст отступит на (смещение иконки + её ширина + зазор) */
+  padding-left: calc(var(--pay-ic-left) + var(--pay-ic-size) + var(--pay-ic-gap));
+  border-radius:12px;
+  border:1px solid var(--card-brd);
+  background:rgba(255,255,255,.9);
+  color:#0b0e1b;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .15s ease;
+}
+.stars-payment-actions .stars-btn:active{ transform: scale(.98); }
+.stars-payment-actions .stars-btn[disabled]{ opacity:.6; pointer-events:none; }
+
+/* Универсальный слой иконки (подключается через data-method) */
+.stars-payment-actions .stars-btn::before{
+  content:"";
+  position:absolute;
+  left: var(--pay-ic-left);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--pay-ic-size);
+  height: var(--pay-ic-size);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  opacity: var(--pay-ic-opacity);
+  filter: var(--pay-ic-filter);
+  pointer-events:none;
+}
+
+/* Привязка иконок к методам */
+.stars-btn[data-method="sbp_qr"]::before { background-image: var(--ic-sbp); }
+.stars-btn[data-method="crypto"]::before { background-image: var(--ic-crypto); }
+
+/* (опционально) Пример индивидуальной подстройки только для crypto
+.stars-btn[data-method="crypto"]{ --pay-ic-left: 28px; }
+*/
+
+
+
+
+
+

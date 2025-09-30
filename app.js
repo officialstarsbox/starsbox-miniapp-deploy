@@ -18,13 +18,23 @@ function showStub(title, message){
 }
 function bindStubs(){
   document.querySelectorAll("[data-action]").forEach(el=>{
-    el.addEventListener("click", ()=>{
+    el.addEventListener("click", (ev)=>{
       const act = el.getAttribute("data-action");
+
+      // вкладки — просто подсветка
       if (act?.startsWith("tab-")) {
         document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("is-active"));
         el.classList.add("is-active");
         return;
       }
+
+      // <<< ДОБАВЛЕНО: переход на страницу покупки
+      if (act === "buy-stars") {
+        location.href = "pages/buy.html";
+        return;
+      }
+
+      // остальные пока заглушкой
       const nice = { "buy-stars":"Купить звёзды", "sell-stars":"Продать звёзды", "gifts":"Подарки", "steam":"STEAM", "settings":"Настройки" }[act] || act;
       showStub(nice, "Раздел в разработке.");
     });
@@ -139,7 +149,7 @@ async function initInfiniteCarousel(){
 
   for (let i=0;i<2;i++) originals.forEach(n=>track.appendChild(n.cloneNode(true)));
 
-  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 30;
+  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 0;
   let speed = cssSpeed;
 
   let offset = 0;
@@ -168,10 +178,16 @@ async function initInfiniteCarousel(){
 
 /* ---------- Init ---------- */
 bindStubs();
-window.addEventListener("DOMContentLoaded", ()=>{
-  populateHeaderFromTelegram();  // подставим данные TG (если есть)
+window.addEventListener("DOMContentLoaded", () => {
+  populateHeaderFromTelegram();
   applyTitleLimit(23);
   initInfiniteCarousel();
-  debugOverlay();                // посмотреть initData прямо в Телеграме: добавь ?debug=1 к URL
-});
+  debugOverlay();
 
+  // держим активной «Главная» на внутренних страницах
+  const homeBtn = document.querySelector('.bottom-nav [data-action="tab-home"]');
+  if (homeBtn) {
+    document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('is-active'));
+    homeBtn.classList.add('is-active');
+  }
+});

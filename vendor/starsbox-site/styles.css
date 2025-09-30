@@ -1,0 +1,2446 @@
+/* ==========================================================================
+   ШРИФТЫ: Tilda Sans
+   --------------------------------------------------------------------------
+   - Подключаем woff2 (основной) и woff (фолбэк)
+   - Меняйте пути под вашу структуру файлов
+   - font-display: swap — текст виден сразу, шрифт подменится после загрузки
+   ========================================================================== */
+@font-face {
+  font-family: "Tilda Sans";
+  src: url("fonts/TildaSans-Light.woff2") format("woff2"),
+       url("fonts/TildaSans-Light.woff")  format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tilda Sans";
+  src: url("fonts/TildaSans-Regular.woff2") format("woff2"),
+       url("fonts/TildaSans-Regular.woff")  format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tilda Sans";
+  src: url("fonts/TildaSans-Medium.woff2") format("woff2"),
+       url("fonts/TildaSans-Medium.woff")  format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tilda Sans";
+  src: url("fonts/TildaSans-Semibold.woff2") format("woff2"),
+       url("fonts/TildaSans-Semibold.woff")  format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Tilda Sans";
+  src: url("fonts/TildaSans-Bold.woff2") format("woff2"),
+       url("fonts/TildaSans-Bold.woff")  format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
+   ГЛОБАЛЬНАЯ ПЕРЕМЕННАЯ + ПРИМЕНЕНИЕ НА САЙТЕ
+   ========================================================================== */
+:root{
+  --font-main: "Tilda Sans", system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+
+/* ==========================================================================
+   БАЗА (фон, типографика)
+   ========================================================================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-main);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #fff;
+
+  background-color: #0b0e1b;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* ========================================================================
+   НАСТРОЙКИ МЕНЮ (меняйте только эти переменные)
+   ------------------------------------------------------------------------
+   --nav-max        — ширина рабочей области (по ТЗ 1200px)
+   --nav-shell-max  — ширина фоновой плашки (можно расширять/сужать отдельно)
+   --nav-bg         — цвет фона плашки (rgba — регулируйте прозрачность)
+   --nav-blur       — сила blur под плашкой
+   --nav-radius     — скругление плашки
+   ======================================================================== */
+:root{
+  --nav-max: 1200px;                  /* ← рабочая область меню (контент) */
+  --nav-shell-max: 100%;            /* ← ширина фоновой плашки */
+  --nav-bg: rgb(11, 14, 27);   /* фон плашки */
+  --nav-blur: 5px;                    /* размытие */
+  --nav-radius: 0px;                 /* скругление */
+}
+
+/* Внешняя фиксация меню */
+.navbar{
+  position: fixed;
+  top: 0px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* ФОНОВАЯ ПЛАШКА — ширина изменяется отдельно от внутреннего контента */
+.navbar__shell{
+  width: 100%;
+  max-width: var(--nav-shell-max);   /* ← настраиваемая ширина плашки */
+  margin: 0 auto;
+  padding: 0 12px;                   /* небольшой внутренний отступ по краям */
+  backdrop-filter: blur(var(--nav-blur));
+  -webkit-backdrop-filter: blur(var(--nav-blur));
+  background: var(--nav-bg);
+  border-radius: var(--nav-radius);
+}
+
+/* Рабочая область — фиксированная (обычно 1200px), выравнивание элементов */
+.navbar__inner{
+  width: 100%;
+  max-width: var(--nav-max);         /* ← рабочая ширина меню */
+  margin: 0 auto;
+  padding: 12px 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* ЛЕВАЯ ЧАСТЬ: логотип + текст */
+.brand{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  color:#fff;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.brand__logo{ height:35px; width:auto; display:block; }
+.brand__text{ font-size:18px; font-weight:600; letter-spacing:1px; }
+
+/* ЦЕНТР: ссылки */
+.nav-links{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  flex:1 1 auto;                     /* центр может растягиваться */
+  justify-content:center;            /* ссылки — по центру */
+  min-width:0;
+}
+.nav-links a{
+  color:#ffffff;
+  text-decoration:none;
+  font-size:14px;
+  letter-spacing:1.2px;
+  padding:8px 10px;
+  border-radius:30px;
+  transition: color .2s ease, background-color .2s ease, transform .15s ease;
+}
+.nav-links a:hover{ color:#b3b3b3; background:rgba(255, 255, 255, 0); }
+.nav-links a:active{ transform:scale(.98); }
+
+/* ПРАВАЯ ЧАСТЬ: две кнопки */
+.navbar__actions{
+  display:flex;
+  align-items:center;
+  gap:10px;                          /* расстояние между кнопками справа */
+}
+
+/* Базовый стиль кнопок справа */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:10px 16px;
+  border-radius:20px;
+  border:1px solid transparent;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:400;
+  letter-spacing:1px;
+  transition: color .2s, background-color .2s, border-color .2s, transform .15s;
+}
+
+/* Вариант: Telegram бот (белая) */
+.btn-tg{
+  background:#ffffff00;
+  color:#ffffff;
+  border-color:#fff;
+}
+.btn-tg:hover{
+  opacity: .8;
+  color: #fff;
+  border-color: #fff;
+  background-color: #ffffff00;
+  transform: scale(1.05);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+.btn-tg:active { transform: scale(0.95); }
+
+/* Вариант: Поддержка (прозрачная с белой обводкой) */
+.btn-support{
+  background:#ffffff00;
+  color:#ffffff;
+  border-color:#fff;
+}
+.btn-support:hover{
+  opacity: .8;
+  color: #fff;
+  border-color: #fff;
+  background-color: #ffffff00;
+  transform: scale(1.05);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+.btn-support:active { transform: scale(0.95); }
+
+/* АДАПТИВ — плавно уменьшаем размеры */
+@media (max-width:1280px){
+  :root{ --nav-shell-max: 1200px; }  /* по желанию сужаем плашку */
+}
+@media (max-width:992px){
+  :root{ --nav-shell-max: 92vw; }    /* плашка — в процентах */
+  .brand__text{ font-size:16px; }
+  .nav-links{ gap:12px; }
+}
+@media (max-width:640px){
+  .brand__logo{ height:28px; }
+  .brand__text{ display:none; }      /* при желании можно скрыть название */
+  .nav-links{ display:none; }        /* на очень узких экранах прячем ссылки */
+  .btn{ padding:8px 12px; font-size:13px; }
+}
+
+/* ==========================================================================
+   ГЛАВНЫЙ ЭКРАН (hero)
+   ========================================================================== */
+/* ==========================================================================
+   HERO: НАСТРОЙКИ ШИРИНЫ КОНТЕЙНЕРА ДЛЯ ТЕКСТА H1
+   --------------------------------------------------------------------------
+   - Настраиваемые переменные:
+     --hero-h1-width     — относительная ширина контейнера h1 (в % или px)
+     --hero-h1-max       — максимальная ширина контейнера h1 (в px/rem)
+     --hero-h1-padding-x — горизонтальные отступы внутри h1 (для «воздуха»)
+   ========================================================================== */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 20px;
+  z-index: 0;
+
+  /* ↓↓↓ Можете менять эти значения под себя ↓↓↓ */
+  --hero-h1-width: 100%;       /* ширина контейнера заголовка */
+  --hero-h1-max: 1100px;      /* максимальная ширина заголовка */
+  --hero-h1-padding-x: 0px;   /* внутренние отступы слева/справа у h1 */
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  z-index: 0;
+}
+
+.hero > * { position: relative; z-index: 1; }
+
+.hero h1 {
+  margin: 0;
+  font-size: 50px;
+  line-height: 1.1;
+  font-weight: 700;
+
+  /* Позиционирование по центру экрана */
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* ↓↓↓ Добавлено: управление шириной контейнера текста ↓↓↓ */
+  width: var(--hero-h1-width);     /* общая ширина блока заголовка */
+  max-width: var(--hero-h1-max);   /* ограничение сверху */
+  padding: 0 var(--hero-h1-padding-x);
+  box-sizing: border-box;
+
+  /* Безопасная переносимость текста внутри контейнера */
+  overflow-wrap: anywhere;   /* перенос длинных слов при необходимости */
+  word-wrap: break-word;     /* поддержка старых браузеров */
+  text-wrap: balance;        /* аккуратные переносы строк (современные браузеры) */
+}
+
+/* Адаптив: можно изменить ширину/паддинги заголовка на мобилках */
+@media (max-width: 768px) {
+  .hero {
+    --hero-h1-width: 92%;
+    --hero-h1-max: 92%;
+    --hero-h1-padding-x: 0px;
+  }
+}
+
+/* ==========================================================================
+   HERO: ПОДЗАГОЛОВОК (СТАТИЧНЫЙ ТЕКСТ)
+   --------------------------------------------------------------------------
+   - Абсолютное позиционирование аналогично полю ввода
+   - Настройки через переменные
+   ========================================================================== */
+.hero-subtitle {
+  position: absolute;
+  left: 50%;
+  top: var(--hero-subtop, 55%);             /* ← Положение по вертикали */
+  transform: translate(-50%, -50%);
+  margin: 0;
+  padding: 0 12px;
+  font-size: var(--hero-subsize, 18px);     /* ← Размер текста */
+  line-height: 1.4;
+  color: var(--hero-subcolor, #fff);        /* ← Цвет текста */
+  opacity: .92;
+  text-align: center;
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .hero-subtitle { 
+    top: var(--hero-subtop-m, 58%);
+    font-size: var(--hero-subsize-m, 16px);
+    max-width: 90%;
+  }
+}
+
+.buttons {
+  position: absolute;
+  top: 62%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+}
+
+button {
+  padding: 20px 40px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  color: #ffffff;
+  background-color: #00000000;
+  border: 1px solid #fff;
+  border-radius: 30px;
+  transition: background-color .3s, border-color .3s, transform .3s;
+}
+button:hover {
+  opacity: .8;
+  color: #fff;
+  border-color: #fff;
+  background-color: #ffffff00;
+  transform: scale(1.1);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+button:active { transform: scale(0.95); }
+
+/* ==========================================================================
+   ФОНОВЫЙ ДЕКОР: СВЕТЯЩИЙСЯ КРУГ + КОЛЬЦА
+   --------------------------------------------------------------------------
+   ВЕРСИЯ БЕЗ ВЛИЯНИЯ НА РАЗМЕР СТРАНИЦЫ:
+   - Размещаем декор ВНУТРИ .hero
+   - Абсолютно позиционируем у нижней границы hero
+   - Сдвигаем на 50% вниз → половина в hero, половина над #stars
+   ========================================================================== */
+
+/* Контейнер декора внутри hero — не влияет на поток, не перехватывает клики */
+.hero .decor--halo-overlap {
+  position: absolute;
+  left: 50%;
+  bottom: 0;                        /* привязка к нижнему краю hero */
+  transform: translate(-50%, 50%);  /* половина фигуры ниже границы */
+  width: 100%;
+  max-width: var(--halo-max-width, 1200px);
+  height: var(--halo-area-height, 240px);
+
+  pointer-events: none;             /* не мешает кликам по контенту */
+  z-index: 0;                       /* под контентом hero, но над фоном */
+}
+
+/* Внутренний контейнер с центральным кругом и кольцами */
+.halo-floating {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;               /* корректная отрисовка свечения */
+}
+
+/* Центральный белый круг со свечением */
+.halo-core {
+  position: relative;
+  z-index: 2;
+  width: var(--halo-diameter, 100px);
+  height: var(--halo-diameter, 100px);
+  border-radius: 50%;
+  background: var(--ring-color, #fff);
+  box-shadow: var(--halo-glow, 0 0 50px 18px rgba(255,255,255,.55), 0 0 140px 60px rgba(255,255,255,.25));
+}
+
+/* Концентрические кольца — радиальный repeating-градиент */
+.halo-rings {
+  position: absolute;
+  z-index: 1;
+  width: calc(var(--halo-diameter, 100px) * 12);
+  height: calc(var(--halo-diameter, 100px) * 12);
+  border-radius: 50%;
+  background:
+    repeating-radial-gradient(
+      circle at center,
+      transparent 0 calc(var(--ring-gap, 22px) - var(--ring-thickness, 1px)),
+      color-mix(in srgb, var(--ring-color, #fff) 5%, transparent)
+        calc(var(--ring-gap, 22px) - var(--ring-thickness, 1px))
+        var(--ring-gap, 22px)
+    );
+  opacity: .35;
+  filter: blur(.2px);
+}
+
+/* ==========================================================================
+   ДВИЖУЩИЕСЯ ТОЧКИ ПО КОНЦЕНТРИЧЕСКИМ КОЛЬЦАМ
+   --------------------------------------------------------------------------
+   - .halo-orbit — контейнер, который вращается вокруг центра
+   - .halo-dot   — сама светящаяся точка, отнесённая на радиус вправо
+   - Идут поверх колец, но под контентом страницы
+   ========================================================================== */
+.halo-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);    /* держим центр орбиты в центре */
+  transform-origin: center;
+  width: 0;
+  height: 0;
+
+  /* Настройки через переменные (можете менять прямо в HTML inline-style) */
+  /* --orbit-radius    — радиус орбиты (например, 180px) */
+  /* --orbit-duration  — длительность полного оборота */
+  /* --orbit-delay     — смещение по фазе (негативные — старт впереди) */
+
+  animation: halo-orbit-rot var(--orbit-duration, 24s) linear infinite;
+  animation-delay: var(--orbit-delay, 0s);
+
+  z-index: 3;                /* над кольцами (которые z-index:1), ниже контента hero (z:1+) */
+  pointer-events: none;      /* не перехватывают клики */
+}
+
+/* Сама «точка» на орбите */
+.halo-orbit .halo-dot {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: var(--orbit-size, 6px);
+  height: var(--orbit-size, 6px);
+  background: #ffffff79;
+  border-radius: 50%;
+  box-shadow: var(--orbit-glow, 0 0 10px rgba(255,255,255,.6));
+
+  /* ставим точку на радиус вправо от центра;
+     когда .halo-orbit вращается — это и даёт круговое движение */
+  transform: translateX(var(--orbit-radius, 140px));
+}
+
+/* Ключевые кадры — равномерная круговая анимация */
+@keyframes halo-orbit-rot {
+  from { transform: translate(-50%, -50%) rotate(0deg);   }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Нежная анимация дыхания (по желанию) */
+.halo-floating.is-animated .halo-core {
+  animation: halo-pulse 4.5s ease-in-out infinite;
+}
+.halo-floating.is-animated .halo-rings {
+  animation: halo-rings-fade 6s ease-in-out infinite;
+}
+
+@keyframes halo-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.10); }
+}
+@keyframes halo-rings-fade {
+  0%, 100% { opacity: .35; }
+  50%      { opacity: .5;  }
+}
+
+/* ПОДСТРАХОВКА: контент блоков должен быть поверх декора */
+.hero,
+.page-block--stars {
+  position: relative;
+  z-index: 1;
+}
+
+/* ПОДСТРАХОВКА ОТ ГОРИЗОНТАЛЬНОГО СКРОЛЛА ПРИ ОЧЕНЬ БОЛЬШОМ СВЕЧЕНИИ (ОПЦИОНАЛЬНО) */
+html, body {
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   БЛОК #2 (⭐ STARS): КАРТОЧКА, ЛОГОТИП, ЗАГОЛОВОК
+   --------------------------------------------------------------------------
+   ⚙️ Основная геометрия и оформление карточки звёзд.
+   - Можете редактировать ширину/фон/скругления и т.д.
+   ========================================================================== */
+.page-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: all .3s ease;
+  margin-bottom: 50px;
+}
+.page-block--stars,
+.stars-section {
+  position: relative;
+  width: 50%;
+  max-width: 1200px;
+  margin: 50px auto 0;
+  padding: 40px 20px;
+  background-color: #0b0e1b;
+  backdrop-filter: blur(15px);
+  border-radius: 30px;
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.101));
+}
+
+/* ==========================================================================
+   (⭐ STARS) ПОЛЕ USERNAME (иконка внутри)
+   --------------------------------------------------------------------------
+   - Контейнер: .stars-username-container
+   - Поле: .stars-username-input (и #telegramUsername для совместимости)
+   - Иконка: .stars-username-logo
+   ========================================================================== */
+.stars-username-container,
+.username-container.stars-username-container {
+  position: relative;
+  width: 100%;
+  max-width: var(--username-container-width, 500px);
+  margin: var(--username-container-mt, 0px) auto 0;
+  display: flex;
+  align-items: center;
+}
+.stars-username-input,
+#telegramUsername {
+  width: 100%;
+  height: var(--telegramUsername-height, 40px);
+  padding-left: var(--telegramUsername-padding-left, 50px);
+  padding-right: 10px;
+  font-size: 13px;
+  font-weight: 200;
+  letter-spacing: 1px;
+  border: 1px solid #ffffff;
+  border-radius: 30px;
+  text-align: left;
+  transition: border-color .3s ease, box-shadow .3s ease;
+  background: #ffffff;       /* если хотите прозрачное — замените на transparent */
+  color: #000000;
+}
+.stars-username-input:focus,
+#telegramUsername:focus {
+  border-color: #af934c;
+  box-shadow: 0 0 8px rgba(191, 177, 55, 0.6);
+}
+.stars-username-logo,
+.username-logo.stars-username-logo {
+  position: absolute;
+  left: var(--username-logo-left, 20px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--username-logo-width, 20px);
+  height: var(--username-logo-height, 20px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   STARS: ПОДЗАГОЛОВКИ ВОКРУГ ПОЛЯ КОЛИЧЕСТВА
+   --------------------------------------------------------------------------
+   - Общий стиль: .stars-qty-subtitle
+   - Отдельные отступы для "до" и "после": модификаторы --before / --after
+   - Настройка через переменные:
+       --stars-qty-subtitle-size     ← размер шрифта
+       --stars-qty-subtitle-color    ← цвет текста
+       --stars-qty-subtitle-opacity  ← прозрачность
+       --stars-qty-before-mt/mb      ← отступы для ПЕРЕД полем
+       --stars-qty-after-mt/mb       ← отступы для ПОСЛЕ поля
+   - Ширина и центрирование подогнаны под 500px (как у поля ввода)
+   ========================================================================== */
+.stars-qty-subtitle {
+  width: 100%;
+  max-width: 500px;                                      /* ← ширина строки */
+  margin: 16px auto;                                     /* ← базовые отступы */
+  text-align: center;
+  font-size: var(--stars-qty-subtitle-size, 14px);       /* ← размер шрифта */
+  color: var(--stars-qty-subtitle-color, #dddddd);       /* ← цвет текста */
+  opacity: var(--stars-qty-subtitle-opacity, 0.9);       /* ← прозрачность */
+  line-height: 1.4;
+}
+
+/* Подзаголовок ПОСЛЕ поля */
+.stars-qty-subtitle--after {
+  margin-top: var(--stars-qty-after-mt, 20px);
+  margin-bottom: var(--stars-qty-after-mb, 10px);
+}
+
+/* Адаптив: немного уменьшаем шрифт на узких экранах */
+@media (max-width: 480px) {
+  .stars-qty-subtitle {
+    font-size: var(--stars-qty-subtitle-size-mob, 13px);
+  }
+}
+
+/* ==========================================================================
+   (⭐ STARS) ПОЛЕ КОЛИЧЕСТВА ЗВЕЗД (иконка внутри)
+   --------------------------------------------------------------------------
+   - Контейнер: .stars-qty-container
+   - Поле: .stars-qty-input (и #starsQuantity для совместимости)
+   - Иконка слева: .stars-field-icon
+   ========================================================================== */
+.stars-qty-container,
+.stars-container.stars-qty-container {
+  position: relative;
+  width: 100%;
+  max-width: var(--stars-container-width, 500px);
+  margin: var(--stars-container-mt, 10px) auto 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0px; /* чтобы пакеты не «наезжали» на поле */
+}
+.stars-qty-input,
+#starsQuantity {
+  width: 100%;
+  height: var(--starsQuantity-height, 40px);
+  padding-left: var(--starsQuantity-padding-left, 50px);
+  padding-right: 10px;
+  font-size: 13px;
+  font-weight: 200;
+  letter-spacing: 1.1px;
+  border: 1px solid #ccc;
+  border-radius: var(--starsQuantity-border-radius, 30px);
+  text-align: left;
+  transition: border-color .3s ease, box-shadow .3s ease;
+  background: #ffffff;
+  color: #000000;
+}
+.stars-qty-input:focus,
+#starsQuantity:focus {
+  border-color: #af934c;
+  box-shadow: 0 0 8px rgba(191, 177, 55, 0.6);
+}
+/* Иконка внутри поля количества */
+.stars-field-icon,
+.stars-qty-container .stars-logo {
+  position: absolute;
+  left: var(--stars-logo-left, 20px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--stars-logo-width, 20px);
+  height: var(--stars-logo-height, 20px);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   (⭐ STARS) СПИСОК ПАКЕТОВ (контейнер)
+   --------------------------------------------------------------------------
+   - Контейнер со списком: .stars-packages (старый .stars-options)
+   - Единые отступы и ширина
+   ========================================================================== */
+.stars-packages,
+.stars-options {
+  width: 100%;
+  max-width: 500px;                  /* общая ширина колонки пакетов */
+  margin: 0 auto;                    /* центрируем */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--pkg-gap-visible, 10px);
+}
+
+/* ==========================================================================
+   (⭐ STARS) КАРТОЧКА ПАКЕТА (Grid с фиксированным порядком)
+   --------------------------------------------------------------------------
+   Порядок: 1) радио, 2) иконка, 3) название, 4) цена
+   - Сам пакет: .stars-package-item (старый .package-item)
+   - Радио: .stars-package-radio
+   - Иконка: .stars-package-icon
+   - Название/Цена: .stars-package-title / .stars-package-price
+   ========================================================================== */
+.stars-package-item,
+.package-item.stars-package-item {
+  display: grid;
+  grid-template-columns: 22px 24px 1fr auto;
+  align-items: center;
+  column-gap: 10px;
+
+  background-color: #ffffff17; /* обычный фон */
+  border: 1px solid #ffffff; /* обычная обводка */
+  color: #ffffff;            /* обычный цвет текста */
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing:1.1px;
+
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 14px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+/* Подсветка наведения */
+.stars-package-item:hover { border-color: #ffc40091; }
+
+/* Выбранное состояние карточки */
+.stars-package-item.is-selected,
+.stars-package-item:has(.stars-package-radio:checked) {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+/* Радио-кнопка */
+.stars-package-radio,
+.package-radio.stars-package-radio {
+  grid-column: 1;
+  justify-self: center;
+
+  -webkit-appearance: none;
+  appearance: none;
+
+  width: 10px;
+  height: 10px;
+  border: 2px solid #9aa0a6;
+  border-radius: 50%;
+  background-color: transparent;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+.stars-package-radio:hover { box-shadow: 0 0 0 4px rgba(255, 196, 0, 0.06); }
+.stars-package-radio:focus-visible { box-shadow: 0 0 0 4px rgba(255, 196, 0, 0.35); }
+.stars-package-radio:checked {
+  border-color: #ffbb00;
+  background-color: transparent;
+}
+.stars-package-radio:checked::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: #ffbb00;
+  border-radius: 50%;
+}
+
+/* Иконка пакета */
+.stars-package-icon,
+.package-icon.stars-package-icon {
+  grid-column: 2;
+  width: var(--pkg-icon-w, 15px);
+  height: var(--pkg-icon-h, 15px);
+  justify-self: center;
+  transform: translate(
+    var(--pkg-icon-dx, 0),
+    var(--pkg-icon-dy, 0)
+  );
+}
+/* Название и цена */
+.stars-package-title,
+.package-title.stars-package-title { grid-column: 3; text-align: left; }
+.stars-package-price,
+.package-price.stars-package-price { grid-column: 4; justify-self: end; }
+
+/* Скрытые пакеты (контейнер) */
+.stars-packages-hidden,
+.packages-hidden.stars-packages-hidden {
+  width: 100%;
+  display: none;
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.stars-packages-hidden.is-open,
+.packages-hidden.stars-packages-hidden.is-open {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--pkg-gap-hidden, 10px); /* отступы между скрытыми карточками */
+  opacity: 1;
+}
+
+/* ==========================================================================
+   (⭐ STARS) КНОПКА «ПОКАЗАТЬ ВСЕ ПАКЕТЫ»
+   --------------------------------------------------------------------------
+   - Таргетируем и id, и класс: #togglePackages, .stars-toggle
+   ========================================================================== */
+/* Обычное состояние */
+#togglePackages,
+.stars-toggle {
+  margin-top: 10px;
+  padding: 10px 20px;
+  width: 100%;
+  max-width: 500px;
+  box-sizing: border-box;
+  border-radius: 25px;
+  cursor: pointer;
+  text-align: center;
+
+  border: 1px solid #ffffff;
+  border-color: #ffffff;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing:1.1px;
+  background-color: #00000000;
+
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease, transform .15s ease;
+}
+/* Hover */
+#togglePackages:hover,
+.stars-toggle:hover {
+  border-color: #ffffff00;
+  color: #000000;
+  background-color: #ffffff;
+  transform: scale(1.03);
+}
+#togglePackages:active,
+.stars-toggle:active { transform: scale(0.97); }
+
+/* ==========================================================================
+   (⭐ STARS) ИТОГОВАЯ СУММА
+   --------------------------------------------------------------------------
+   - Контейнер: .stars-total-line
+   - Поле: .stars-total-input
+   ========================================================================== */
+.stars-total-line,
+.total-line.stars-total-line {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;
+}
+.stars-total-line .stars-total-label,
+.total-label.stars-total-label {
+  font-size: 14px;
+  letter-spacing:1.2px;
+  color: #ffffff;
+  opacity: 0.8;
+}
+.stars-total-input,
+.total-input.stars-total-input {
+  width: 100%;
+  background: transparent;
+  color: #ffffff;
+  font-size: 20px;
+  text-align: center;
+
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  padding: 10px 8px 8px;
+
+  outline: none;
+  caret-color: transparent;
+  user-select: none;
+}
+
+/* ==========================================================================
+   (⭐ STARS) ПЛАТЕЖНЫЕ КНОПКИ (с иконками внутри)
+   --------------------------------------------------------------------------
+   - Контейнер: .stars-payment-actions
+   - Кнопки: .stars-btn / .stars-btn--sbp / .stars-btn--crypto
+   - Иконка в кнопке: .stars-btn-icon
+   ========================================================================== */
+.stars-payment-actions,
+.payment-actions.stars-payment-actions {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto -10px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stars-payment-actions .stars-btn,
+.payment-actions.stars-payment-actions .btn.stars-btn {
+  position: relative;
+  flex: 1 1 200px;
+  padding: 14px 18px 14px 52px; /* слева место под иконку */
+  font-size: 15px;
+  letter-spacing:1.1px;
+  border-radius: 25px;
+  border: 2px solid transparent;
+  text-align: center;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #000000;
+  transition: transform .2s ease, background-color .2s ease,
+              color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+
+.stars-payment-actions .stars-btn-icon,
+.payment-actions.stars-payment-actions .btn .stars-btn-icon {
+  position: absolute;
+  left: 25px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Вариант: СБП */
+.stars-payment-actions .stars-btn--sbp { 
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 13px;
+  border-color: #ffffff;
+}
+
+.stars-payment-actions .stars-btn--sbp:hover {
+  background-color: #00000000;
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+
+.stars-payment-actions .stars-btn--sbp:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Вариант: Крипто */
+.stars-payment-actions .stars-btn--crypto {
+  background-color: #ffffff;
+  color: #000000;
+  font-size: 13px;
+  border-color: #ffffff;
+}
+
+.stars-payment-actions .stars-btn--crypto:hover {
+  background-color: #ffffff00;
+  color: #ffffff;
+  border-color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+
+.stars-payment-actions .stars-btn--crypto:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Мобильная адаптация для кнопок оплаты (звёзды) */
+@media (max-width: 480px) {
+  .stars-payment-actions .stars-btn { flex: 1 1 100%; }
+}
+
+/* ==========================================================================
+   БЛОК (💎 PREMIUM): КАРТОЧКА
+   --------------------------------------------------------------------------
+   - Полная изоляция стилей: всё начинается с .page-block--premium
+   ========================================================================== */
+.page-block--premium,
+.premium-section {
+  position: relative;
+  width: 50%;
+  max-width: 1200px;
+  margin: 50px auto 0;
+  padding: 40px 20px;
+  background-color: #0b0e1b;
+  backdrop-filter: blur(5px);
+  border-radius: 30px;
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.101));
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  transition: all .3s ease;
+}
+
+/* ==========================================================================
+   (💎 PREMIUM) ПОЛЕ USERNAME
+   --------------------------------------------------------------------------
+   - Контейнер: .pm-username-container
+   - Поле: .pm-username-input
+   - Иконка: .pm-username-logo
+   ========================================================================== */
+.page-block--premium .pm-username-container {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  margin: 0px auto 0;
+  display: flex;
+  align-items: center;
+}
+.page-block--premium .pm-username-input {
+  width: 100%;
+  height: 40px;
+  padding-left: 50px;
+  padding-right: 10px;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing:1px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  text-align: left;
+  background-color: #ffffff; /* можно заменить на transparent */
+  color: #000000;
+  transition: border-color .3s ease, box-shadow .3s ease, background-color .3s ease;
+}
+.page-block--premium .pm-username-input:focus {
+  border-color: #af934c;
+  box-shadow: 0 0 8px rgba(191, 177, 55, 0.6);
+  border: 1px solid #000000;
+}
+.page-block--premium .pm-username-logo {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Подзаголовок */
+.page-block--premium .premium-subtitle {
+  margin: 30px 0 10px 0;
+  font-size: 17px;
+  color: #ddd;
+}
+
+/* ==========================================================================
+   (💎 PREMIUM) ПАКЕТЫ (контейнер)
+   ========================================================================== */
+.page-block--premium .premium-packages {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: var(--pm-gap-visible, 10px);
+}
+
+/* (💎 PREMIUM) КАРТОЧКА ПАКЕТА (Grid) */
+.page-block--premium .pm-item {
+  display: grid;
+  grid-template-columns:
+    var(--pm-col-radio, 22px)
+    var(--pm-col-icon, 24px)
+    1fr
+    auto;
+  align-items: center;
+  column-gap: var(--pm-gap, 10px);
+
+  background-color: #2f2f2f4e;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+
+  width: 100%;
+  max-width: 500px;
+  padding: 12px 14px;
+  border-radius: 30px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease, transform .2s ease;
+}
+.page-block--premium .pm-item:hover { border-color: rgba(23, 153, 235, 0.57); }
+.page-block--premium .pm-item.is-selected,
+.page-block--premium .pm-item:has(.pm-radio:checked) {
+  background-color: #ffffff;
+  border-color: #ffffff;
+  color: #000000;
+}
+
+/* Радио-кнопка */
+.page-block--premium .pm-radio {
+  grid-column: 1;
+  justify-self: center;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border: 2px solid #9aa0a6;
+  border-radius: 50%;
+  background-color: transparent;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease, box-shadow .2s ease, transform .15s ease;
+}
+.page-block--premium .pm-radio:hover { box-shadow: 0 0 0 4px rgba(0, 162, 255, 0.06); }
+.page-block--premium .pm-radio:focus-visible { box-shadow: 0 0 0 4px rgba(0, 157, 255, 0.35); }
+.page-block--premium .pm-radio:checked { border-color: #00a5fe; background-color: transparent; }
+.page-block--premium .pm-radio:checked::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: #00a5fe;
+  border-radius: 50%;
+}
+
+/* Иконка в карточке премиум */
+.page-block--premium .pm-icon {
+  grid-column: 2;
+  width: var(--pm-icon-w, 18px);
+  height: var(--pm-icon-h, 18px);
+  justify-self: center;
+  transform: translate(var(--pm-icon-dx, 0), var(--pm-icon-dy, 0));
+}
+.page-block--premium .pm-title { grid-column: 3; text-align: left; font-size: 15px; }
+.page-block--premium .pm-price { grid-column: 4; justify-self: end; font-size: 15px; font-weight: 400; }
+
+/* ==========================================================================
+   ЕДИНЫЙ КОМПОНЕНТ ИТОГОВОЙ СУММЫ: pay-total
+   --------------------------------------------------------------------------
+   - Используется и в блоке «звёзды», и в блоке «premium»
+   - Оставлены ваши старые классы для совместимости: total-line, total-container и т.п.
+   - Визуально: прозрачный фон, текст по центру, белая линия снизу
+   ========================================================================== */
+
+/* Контейнер строки "Итого" (унифицированный) */
+.pay-total,
+.total-line,
+.stars-total-line,
+.total-container,
+.premium-total-container {
+  width: 100%;
+  max-width: 500px;          /* ← одинаковая ширина для обоих блоков */
+  margin: 20px auto 0;       /* ← отступ сверху и центрирование */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0px;                  /* расстояние между подписью и полем */
+}
+
+/* Подпись "Итого к оплате" (унифицированная) */
+.pay-total__label,
+.total-label,
+.stars-total-label {
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing:1.1px;
+  color: #ffffff;
+  opacity: 0.8;              /* слегка приглушенная подпись */
+}
+
+/* Поле с суммой: прозрачный фон + белая линия снизу */
+.pay-total__input,
+.total-input,
+.stars-total-input,
+.total-amount,
+.premium-total-amount {
+  width: 100%;
+  background: transparent;          /* прозрачный фон */
+  color: #ffffff;                   /* белый текст */
+  font-size: 20px;                  /* размер шрифта */
+  text-align: center;               /* текст по центру */
+
+  border: none;                     /* без рамок */
+  border-bottom: 1px solid #ffffff; /* белая линия снизу */
+  padding: 10px 8px 8px;            /* внутренние отступы */
+
+  outline: none;                    /* убираем системный outline */
+  caret-color: transparent;         /* курсор ввода скрыт (read-only поле) */
+  user-select: none;                /* необязательно: чтобы текст не выделялся */
+}
+
+/* Адаптив: чуть уменьшим шрифт на узких экранах */
+@media (max-width: 480px) {
+  .pay-total__input,
+  .total-input,
+  .stars-total-input,
+  .total-amount,
+  .premium-total-amount {
+    font-size: 18px;
+  }
+}
+
+/* ==========================================================================
+   (💎 PREMIUM) КНОПКИ ОПЛАТЫ
+   ========================================================================== */
+.page-block--premium .pm-pay-actions {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto 0px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+.page-block--premium .pm-pay-btn {
+  position: relative;
+  flex: 1 1 200px;
+  padding: 14px 18px 14px 52px;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 1.1px;
+  border-radius: 25px;
+  border: 2px solid transparent;
+  text-align: center;
+  cursor: pointer;
+  background-color: #ffffff;
+  color: #000000;
+  transition: transform .2s ease, background-color .2s ease,
+              color .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.page-block--premium .pm-pay-btn .pm-btn-icon {
+  position: absolute;
+  left: 30px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  pointer-events: none;
+}
+/* Hover/Active */
+.page-block--premium .pm-pay-btn:hover {
+  background-color: #ffffff10;
+  color: #fff;
+  border-color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 0px 18px rgba(255, 255, 255, 0.251);
+}
+
+.page-block--premium .pm-pay-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   АДАПТИВ
+   ========================================================================== */
+@media (max-width: 768px) {
+  .navbar { width: 90%; }
+  .page-block--stars, .stars-section { width: 90%; }
+  .stars-packages, .stars-options { max-width: 90%; }
+  #togglePackages, .stars-toggle { width: 100%; }
+
+  .page-block--premium, .premium-section { width: 90%; }
+  .page-block--premium .pm-pay-actions { flex-direction: column; gap: 10px; }
+  .page-block--premium .pm-pay-btn { width: 100%; max-width: 500px; }
+}
+
+/* ======================================================================
+   FAQ: простые настройки размеров + фон ответов
+   ---------------------------------------------------------------------- */
+.sbx-faq {
+  /* Геометрия секции/карточек */
+  --faq-max: 1200px;         /* макс. ширина всего FAQ-блока */
+  --faq-card: 1200px;         /* макс. ширина одной карточки */
+  --faq-gap: 10px;           /* расстояние между карточками */
+
+  /* Оформление шапки вопроса (summary) — опционально меняйте здесь */
+  --faq-q-bg: rgba(0,0,0,.35);
+  --faq-q-border: 1px solid rgba(255,255,255,.15);
+  --faq-q-radius: 16px;
+
+  /* <<< ГЛАВНОЕ: фон карточки ОТВЕТА >>> */
+  --faq-a-bg: rgba(255,255,255,.06);                /* ФОН ответа */
+  --faq-a-border: 1px solid rgba(255,255,255,.14);  /* Обводка ответа */
+  --faq-a-radius: 14px;                             /* Скругление ответа */
+  --faq-a-shadow: 0 6px 20px rgba(0,0,0,.25);       /* Тень ответа */
+}
+
+/* Секция FAQ */
+.sbx-faq {
+  width: 100%;
+  max-width: var(--faq-max);
+  margin: 48px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+/* Заголовок */
+.sbx-faq__title {
+  margin: 0 0 30px 0;
+  font-size: 40px;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+}
+
+/* Колонка карточек */
+.sbx-faq__list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--faq-gap);
+  width: 100%;
+}
+
+/* Карточка (details) — базовая геометрия */
+.sbx-faq__item {
+  width: 100%;
+  max-width: var(--faq-card);
+  margin: 0 auto;
+  border-radius: var(--faq-q-radius);
+  background: transparent; /* фон самой оболочки не нужен */
+  overflow: hidden;
+}
+
+/* Шапка вопроса (summary) */
+.sbx-faq__q {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+
+  padding: 16px 18px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 400;
+  user-select: none;
+
+  background: var(--faq-q-bg);
+  border: var(--faq-q-border);
+  border-radius: var(--faq-q-radius);
+}
+.sbx-faq__q::-webkit-details-marker { display: none; }
+
+/* Иконка-стрелка справа */
+.sbx-faq__chev {
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0);
+  position: relative;
+}
+.sbx-faq__chev::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(-45deg);
+  transition: transform .2s ease;
+}
+.sbx-faq__item[open] .sbx-faq__chev::before { transform: rotate(135deg); }
+
+/* Область ответа (внешний отступ вокруг «картонки») */
+.sbx-faq__a { padding: 8px 6px 14px; }
+
+/* <<< КАРТОЧКА ОТВЕТА (фон/бордер/скругление/тень) >>> */
+.sbx-faq__a-inner {
+  margin: 6px auto 0;
+  width: 100%;
+  max-width: calc(var(--faq-card) - 24px);
+  box-sizing: border-box;
+
+  padding: 14px 16px;
+  background: var(--faq-a-bg);     /* фон ответа */
+  border: var(--faq-a-border);     /* обводка ответа */
+  border-radius: var(--faq-a-radius);
+  box-shadow: var(--faq-a-shadow);
+
+  /* Текст: левое выравнивание и переносы */
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+  line-height: 1.45;
+  color: #eaeaea;
+}
+
+/* Типографика внутри ответа */
+.sbx-faq__a-inner p { margin: 6px 0; }
+.sbx-faq__a-inner a { color: #8ecbff; text-decoration: underline; }
+.sbx-faq__a-inner ol,
+.sbx-faq__a-inner ul { margin: 8px 0 0 18px; padding: 0; }
+.sbx-faq__a-inner li { margin: 4px 0; }
+
+/* Ховер шапки (необязательно) */
+.sbx-faq__q:hover {
+  border-color: rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08);
+}
+
+/* Адаптив */
+@media (max-width: 640px) {
+  .sbx-faq__title { font-size: 24px; }
+  .sbx-faq__q     { font-size: 15px; padding: 14px 16px; }
+}
+
+/* =======================================================================
+   FOOTER / ПОДВАЛ (фон, сетка, типографика, ссылки)
+   -----------------------------------------------------------------------
+   Что можно менять быстро:
+   --footer-bg            ← цвет фона подвала
+   --footer-title-size    ← размер заголовков разделов
+   --footer-link-size     ← размер ссылок
+   --footer-col-gap       ← дистанция между колонками на десктопе
+   --footer-max-width     ← максимальная ширина подвала
+   --footer-logo-size     ← размер логотипа в колонке бренда
+   --footer-copy-size     ← размер текста копирайта
+   ======================================================================= */
+.sbx-footer {
+  /* === НАСТРОЙКИ === */
+  --footer-bg:          #0b0e1b;
+  --footer-title-size:  16px;
+  --footer-link-size:   14px;
+  --footer-col-gap:     50px;
+  --footer-max-width:   1200px;
+  --footer-logo-size:   50px;
+  --footer-copy-size:   13px;
+
+  /* === ВИД === */
+  background: var(--footer-bg);
+  color: #e8e8e8;
+
+  /* === ВНЕШНЯЯ ГЕОМЕТРИЯ === */
+  padding: 100px 20px;
+}
+
+/* Контейнер подвала (центровка + ширина) */
+.sbx-footer__inner {
+  max-width: var(--footer-max-width);
+  margin: 40px auto -50px;
+}
+
+/* Сетка колонок: 5 разделов на десктопе */
+.sbx-footer__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(180px, 1fr)); /* ← 5 колонок */
+  column-gap: var(--footer-col-gap);
+  row-gap: 28px;
+  align-items: start;
+}
+
+/* Базовая колонка */
+.sbx-footer__col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Заголовок раздела */
+.sbx-footer__title {
+  margin: 0 0 12px 0;
+  font-size: var(--footer-title-size);
+  font-weight: 600;
+  color: #fff;
+}
+
+/* Список ссылок */
+.sbx-footer__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  row-gap: 8px;
+}
+
+/* Ссылка */
+.sbx-footer__link {
+  font-size: var(--footer-link-size);
+  color: #cfd2d6;
+  text-decoration: none;
+  transition: color .2s ease, transform .15s ease;
+}
+.sbx-footer__link:hover {
+  color: #fff;
+  transform: translateX(2px);
+}
+
+/* Ссылка с иконкой слева */
+.sbx-footer__link--icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.sbx-footer__icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  filter: brightness(1.2);
+}
+
+/* КОЛОНКА БРЕНДА (как раздел) */
+.sbx-footer__col--brand .sbx-footer__brand {
+  display: grid;
+  grid-template-columns: var(--footer-logo-size) 1fr;
+  column-gap: 12px;
+  align-items: center;
+}
+.sbx-footer__logo {
+  width: var(--footer-logo-size);
+  height: var(--footer-logo-size);
+  object-fit: contain;
+}
+.sbx-footer__copy {
+  font-size: var(--footer-copy-size);
+  opacity: 0.85;
+  line-height: 1.3;
+}
+
+/* АДАПТИВ: на средних — 2 колонки, на маленьких — 1 */
+@media (max-width: 900px) {
+  .sbx-footer__grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+}
+@media (max-width: 520px) {
+  .sbx-footer { padding: 36px 16px; --footer-col-gap: 24px; }
+  .sbx-footer__grid { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   FOOTER: верхняя разделительная линия 1200px × 1px
+   --------------------------------------------------------------------------
+   - Линия рисуется псевдо-элементом поверх фона подвала
+   - Центруем и ограничиваем ширину max-width'ом подвала
+   - На узких экранах не шире 100% viewport'а
+   ========================================================================== */
+.sbx-footer {
+  position: relative; /* для абсолютного позиционирования линии */
+}
+
+.sbx-footer::before {
+  content: "";
+  position: absolute;
+                    /* прямо у верхней кромки подвала */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(100%, var(--footer-max-width)); /* до 1200px, но не шире экрана */
+  height: 1px;
+  background: #fff;
+  pointer-events: none;
+}
+
+/* (опционально) лёгкая прозрачность, если нужна менее резкая линия */
+/*
+.sbx-footer::before { opacity: .9; }
+*/
+
+/* ==========================================================================
+   СЕКЦИЯ ЗВЁЗД — ДВУХКОЛОНОЧНАЯ КОМПОНОВКА
+   --------------------------------------------------------------------------
+   - Рабочая область: 1200px по центру
+   - Слева: заголовок и текст
+   - Справа: ваша карточка .page-block--stars, прибитая к правому краю
+   ========================================================================== */
+
+/* Внешняя секция */
+.stars-area {
+  position: relative;
+  z-index: 1;
+}
+
+/* Рабочая область */
+.stars-wrap {
+  max-width: 1200px;               /* ← ширина рабочей области */
+  margin: 250px auto 0;
+  padding: 0 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--stars-cols-gap, 40px); /* расстояние между колонками */
+}
+
+/* Левая колонка */
+.stars-left {
+  flex: 1 1 auto;    /* тянется, занимает всё доступное слева */
+  min-width: 0;
+}
+
+/* Заголовок левой колонки */
+.stars-left-title {
+  margin: 50px 0 15px 0;
+  font-size: var(--stars-left-title-size, 60px);
+  line-height: 1.1;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Текст левой колонки */
+.stars-left-text {
+  margin: 0px;
+  font-size: var(--stars-left-text-size, 20px);
+  line-height: 1.5;
+  font-weight: 300;
+  color: rgba(255,255,255,.9);
+  opacity: .95;
+}
+
+/* ПРАВАЯ КОЛОНКА: ваша карточка прибита к правому краю области */
+/* База: по умолчанию центр */
+.stars-wrap .page-block--stars,
+.stars-wrap .stars-section,
+.stars-wrap .stars-card{
+  width: var(--stars-card-width, 500px);
+  margin: 0 auto;            /* центр */
+  float: none;                /* страховка на случай float */
+}
+
+/* Десктоп: прижать вправо */
+@media (min-width: 1025px){
+  .stars-wrap{
+    display: flex;
+    align-items: flex-start;
+    gap: var(--stars-cols-gap, 40px);
+  }
+  .stars-wrap .page-block--stars,
+  .stars-wrap .stars-section,
+  .stars-wrap .stars-card{
+    margin: 0;
+    margin-left: auto;        /* только тут прижимаем */
+  }
+}
+
+/* Адаптив: на узких — в столбик, карточка центрируется */
+@media (max-width: 1024px) {
+  .stars-wrap {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .stars-wrap .page-block--stars,
+  .stars-wrap .stars-section,
+  .stars-wrap .stars-card {
+    width: 100%;
+    max-width: var(--stars-card-width, 560px);
+    margin: 0 auto;  /* по центру */
+  }
+}
+
+/* =======================================================================
+   PREMIUM (двухколоночная версия как у звёзд, но зеркально)
+   -----------------------------------------------------------------------
+   - .pm-area     — внешняя секция Premium
+   - .pm-wrap     — контейнер 1200px, 2 колонки
+   - .pm-card     — левая колонка (карточка)
+   - .pm-right    — правая колонка (заголовок + текст)
+   ======================================================================= */
+.pm-area {
+  padding: 0px 0;                 /* вертикальные отступы секции */
+}
+
+.pm-wrap {
+  max-width: 1200px;               /* рабочая область */
+  margin: 200px auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;                        /* дистанция между колонками */
+}
+
+/* Левая колонка — карточка Premium (перенастраиваем геометрию) */
+.pm-card.page-block--premium {
+  width: 500px;
+  margin: 0;                        /* убираем auto-центрирование из базового блока */
+}
+
+/* Правая колонка — заголовок + текст (выравнивание по правой части секции) */
+.pm-right {
+  width: 50%;
+  display: flex;
+}
+
+/* ==========================================================================
+   PREMIUM: ПРАВАЯ КОЛОНКА С ТЕКСТОМ (заголовок + описание)
+   --------------------------------------------------------------------------
+  
+/* Контейнер правой колонки (текстовый блок) */
+.premium-right {
+  /* Базовая геометрия и позиционирование */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 600px;
+  margin-left: 40px;
+  margin-right: 0;
+  position: relative;
+  
+
+  /* Вертикальная позиция внутри строки */
+  justify-content: var(--pm-right-valign, flex-start);
+
+  /* Выравнивание по горизонтали и тексту */
+  align-items: flex-start;
+  text-align: var(--pm-right-ta, left);
+}
+
+/* Заголовок в правой колонке */
+.premium-right-title {
+  margin: 0;
+  font-size: var(--pm-right-title-size, 50px);
+  line-height: var(--pm-right-title-lh, 1.2);
+  font-weight: var(--pm-right-title-weight, 700);
+  letter-spacing: .2px;
+  color: #fff;
+}
+
+/* Описание в правой колонке */
+.premium-right-text {
+  margin: 0;
+  font-size: var(--pm-right-text-size, 20px);
+  line-height: var(--pm-right-text-lh, 1.5);
+  color: var(--pm-right-text-color, #dddddd);
+
+  /* Переносы на узких ширинах блока */
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Адаптив: на узких экранах — центрируем и чуть уменьшаем размеры */
+@media (max-width: 900px) {
+  .premium-right {
+    max-width: 92%;
+    margin: 16px auto 0;
+    align-items: center;
+    text-align: center;
+    --pm-right-valign: flex-start; /* начинаем от верха в мобильном */
+  }
+  .premium-right-title { font-size: 24px; }
+  .premium-right-text  { font-size: 15px; }
+}
+
+/* Вариант: держим зазор только за счёт FAQ */
+.pm-wrap { margin-bottom: 0 !important; }
+.pm-area { padding-bottom: 0 !important; }
+.sbx-faq { margin-top: 200px !important; } /* настраиваем единственную точку */
+
+/* ==========================================================================
+   OFFSET ДЛЯ ЯКОРЕЙ (чтобы фикс-хедер не перекрывал заголовки секций)
+   ========================================================================== */
+:root{
+  --anchor-offset-desktop: 75px;  /* высота шапки + небольшой зазор */
+  --anchor-offset-mobile: 72px;
+}
+
+/* целевые секции */
+#stars, #premium, #faq {
+  scroll-margin-top: var(--anchor-offset-desktop);
+}
+
+@media (max-width: 900px){
+  #stars, #premium, #faq {
+    scroll-margin-top: var(--anchor-offset-mobile);
+  }
+}
+
+/* MODAL */
+.sbx-modal{position:fixed;inset:0;z-index:2000;display:none;}
+.sbx-modal.is-open{display:block;}
+.sbx-modal__backdrop{position:absolute;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);}
+.sbx-modal__dialog{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92vw,1000px);max-height:86vh;background:#0b0e1b;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:16px;box-shadow:0 10px 40px rgba(0,0,0,.45);display:flex;flex-direction:column;}
+.sbx-modal__header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.18);}
+.sbx-modal__title{margin:0;font-size:18px;font-weight:600;}
+.sbx-modal__actions{display:inline-flex;gap:8px;}
+.sbx-modal__btn{background:#ffffff10;color:#fff;border:1px solid #ffffff30;padding:8px 10px;border-radius:10px;cursor:pointer;font-size:13px;transition:.2s;}
+.sbx-modal__btn:hover{background:#ffffff20;border-color:#ffffff60;transform:translateY(-1px);}
+.sbx-modal__body{padding:16px;overflow:auto;}
+.sbx-modal__body h1{margin:0 0 8px;font-size:22px;}
+.sbx-modal__body h2{margin:18px 0 8px;font-size:18px;}
+.sbx-modal__body p,.sbx-modal__body li{line-height:1.55;color:#e7e7e7;}
+.sbx-modal__body a{color:#8ecbff;text-decoration:underline;}
+body.sbx-modal-open{overflow:hidden;}
+@media (max-width:520px){.sbx-modal__dialog{width:94vw;max-height:88vh}.sbx-modal__header{padding:12px}.sbx-modal__body{padding:12px}}
+
+/* ==========================================================================
+   CONSENT BOX (под кнопками оплаты)
+   ========================================================================== */
+/* CONSENT BOX — фиксы адаптива и переносов */
+.sbx-consent{
+  box-sizing: border-box;          /* ширина = с учётом паддингов */
+  width: 100%;
+  max-width: 500px;                /* как у остальных элементов формы */
+  margin: 16px auto 0;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  line-height: 1.45;
+
+  color: #cfd2d6;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 12px;
+
+  /* главное: не вылазим за края из-за длинных слов */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  hyphens: auto;
+}
+.sbx-consent a{
+  color: #fff;
+  text-decoration: underline;
+}
+.sbx-consent a:hover{ color:#8ecbff; }
+
+/* На узких — подгоняем под всю ширину карточки */
+@media (max-width: 480px){
+  .sbx-consent{
+    max-width: 100%;
+    padding: 12px;
+    font-size: 12px;
+  }
+}
+
+/* Страховка: внутри карточек центр и полная ширина колонки */
+.page-block--stars .sbx-consent,
+.page-block--premium .sbx-consent{
+  align-self: stretch;
+  max-width: 100%;
+}
+
+/* ——— Глобальная плавность ——— */
+:root{
+  /* высота фиксированного меню; JS ниже выставит точное значение */
+  --nav-height: 72px; /* fallback */
+
+  /* единые кривые и длительности */
+  --ease-smooth: cubic-bezier(.22,1,.36,1);       /* плавный вылет */
+  --ease-emph:   cubic-bezier(.2,.8,.2,1);        /* подчёркнутая */
+  --dur-fast: 150ms; --dur-std: 260ms; --dur-slow: 480ms;
+
+  /* плавный скролл + компенсация фикс-меню */
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-height);
+}
+
+/* чтобы при появлении/исчезновении скроллбара не дёргался лейаут */
+html { scrollbar-gutter: stable both-edges; }
+
+/* унифицируем плавность интерактивных элементов */
+a, button, .btn,
+.package-item, .pm-item,
+.stars-btn, .pm-pay-btn,
+.nav-links a {
+  transition:
+    transform var(--dur-fast) var(--ease-smooth),
+    opacity   var(--dur-fast) var(--ease-smooth),
+    background-color var(--dur-std) var(--ease-smooth),
+    border-color     var(--dur-std) var(--ease-smooth),
+    color            var(--dur-std) var(--ease-smooth),
+    box-shadow       var(--dur-std) var(--ease-smooth);
+  will-change: transform;
+}
+
+/* чуть плавнее ховеры (без резких скачков) */
+a:hover, button:hover, .btn:hover { transform: translateY(-1px); }
+a:active, button:active, .btn:active { transform: translateY(0); }
+
+/* уважение настроек ОС: если «уменьшить анимацию», выключаем эффекты */
+@media (prefers-reduced-motion: reduce){
+  :root{ scroll-behavior: auto; }
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:0ms !important; }
+}
+
+/* === MOBILE OVERRIDES === */
+@media (max-width: 768px) {
+  .navbar__inner { padding: 10px 12px; }
+  .nav-links { display: none; } /* меню в одну строку не лезет — прячем */
+
+  .hero { padding: calc(var(--nav-height) + 16px) 16px 24px; height: auto; min-height: 92vh; }
+  .hero h1 {
+    position: static; transform: none;
+    width: 100%; max-width: 680px; margin: 0 auto 10px;
+    font-size: clamp(24px, 7vw, 36px); line-height: 1.15; text-wrap: balance;
+  }
+  .hero-subtitle {
+    position: static; transform: none;
+    max-width: 680px; margin: 0 auto 18px;
+    font-size: clamp(14px, 4.2vw, 16px);
+    text-align: center;
+  }
+  .buttons {
+    position: static; transform: none;
+    width: 100%; max-width: 420px; margin: 8px auto 0;
+    gap: 12px; flex-direction: column;
+  }
+  .buttons button { width: 100%; padding: 14px 18px; font-size: 15px; }
+
+  .stars-wrap, .pm-wrap {
+    flex-direction: column; gap: 20px;
+    margin: 80px auto 0; padding: 0 16px;
+  }
+  .stars-left, .premium-right { position: static; top: auto; } /* отключаем sticky на мобиле */
+
+  .stars-left-title, .premium-right-title { font-size: clamp(22px, 7vw, 28px); margin-top: 0; }
+  .stars-left-text, .premium-right-text { font-size: clamp(14px, 4vw, 16px); }
+
+  .stars-card, .pm-card,
+  .page-block--stars, .page-block--premium {
+    width: 100% !important; max-width: 560px; margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  .stars-packages, .stars-options, .premium-packages,
+  .pay-total, .stars-payment-actions, .pm-pay-actions { max-width: 100%; }
+
+  .stars-username-input, .pm-username-input, .stars-qty-input {
+    height: 48px; font-size: 16px;
+  }
+
+  .stars-payment-actions .stars-btn { flex: 1 1 100%; }
+
+  .sbx-faq { margin: 60px auto; padding: 0 12px; }
+  .sbx-footer { padding: 36px 16px; }
+}
+
+@media (min-width: 901px){ .premium-right{ top:50px; } }
+
+/* ============================
+   MOBILE HERO FIX (≤ 768px)
+   ============================ */
+@media (max-width: 768px) {
+  /* сам блок: учитываем высоту фикс-меню и safe-area на iOS */
+  .hero{
+    min-height: calc(100svh - var(--nav-height));
+    padding: calc(var(--nav-height) + env(safe-area-inset-top) + 12px) 16px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* контент начинается сразу под шапкой */
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+
+  /* заголовок — больше не absolute */
+  .hero h1{
+    position: static !important;
+    left: auto; top: auto; transform: none !important;
+    margin: 0;
+    width: 100%;
+    max-width: 640px;
+    font-size: clamp(30px, 6.2vw, 34px);
+    line-height: 1.22;
+    padding: 0;
+  }
+
+  /* подзаголовок — также в поток */
+  .hero-subtitle{
+    position: static !important;
+    left: auto; top: auto; transform: none !important;
+    margin: 6px auto 0;
+    padding: 0 6px;
+    max-width: 640px;
+    font-size: 18px;
+    line-height: 1.5;
+    opacity: .92;
+  }
+
+  /* блок кнопок — колонкой на всю ширину контейнера */
+  .buttons{
+    position: static !important;
+    left: auto; top: auto; transform: none !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 420px;
+    margin: 18px auto 0;
+  }
+  .buttons button{
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 15px;
+    border-radius: 18px;
+  }
+}
+
+/* ============================
+   STARS — MOBILE LAYOUT (≤ 768px)
+   ============================ */
+@media (max-width: 768px){
+
+  /* контейнер секции */
+  .stars-area{ padding-top: 0; }
+  .stars-wrap{
+    max-width: 100%;
+    margin: 0px auto 0;            /* было 250px — убираем лишний зазор */
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 18px;
+  }
+
+  /* левый столбец (заголовок + текст) — никакого sticky на мобилках */
+  .stars-left{
+    position: static !important;
+    align-self: stretch;
+  }
+  .stars-left-title{
+    margin: 0 0 8px 0;
+    font-size: clamp(22px, 6.2vw, 30px);
+    line-height: 1.22;
+  }
+  .stars-left-text{
+    margin: 0;
+    font-size: 14.5px;
+    line-height: 1.55;
+    opacity: .92;
+  }
+
+  /* карточка справа — на всю ширину контейнера */
+  .stars-wrap .page-block--stars,
+  .stars-wrap .stars-section,
+  .stars-wrap .stars-card{
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 20px 16px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+  }
+
+  /* поля ввода — тач-высота и шрифты без зума на iOS */
+  .stars-username-container,
+  .stars-qty-container{ max-width: 560px; }
+
+  .stars-username-input,
+  #telegramUsername,
+  .stars-qty-input,
+  #starsQuantity{
+    height: 48px;
+    font-size: 16px;                 /* 16px → без авто-зума на iOS */
+    border-radius: 18px;
+    padding-left: 46px;
+  }
+  .stars-username-logo,
+  .stars-field-icon{
+    left: 16px;
+    width: 18px; height: 18px;
+  }
+
+  /* подпись над пакетами */
+  .stars-qty-subtitle{
+    max-width: 560px;
+    margin: 14px auto 8px;
+    font-size: 13.5px;
+  }
+
+  /* карточки пакетов — компактнее */
+  .stars-packages{ max-width: 560px; row-gap: 8px; }
+  .stars-package-item{
+    grid-template-columns: 20px 22px 1fr auto;
+    padding: 12px 12px;
+    border-radius: 18px;
+    font-size: 14px;
+  }
+  .stars-packages-hidden.is-open{ row-gap: 8px; }
+
+  /* кнопка «Показать все пакеты» */
+  #togglePackages, .stars-toggle{
+    max-width: 560px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+  }
+
+  /* итого к оплате */
+  .stars-total-line{ max-width: 560px; }
+  .stars-total-input{
+    font-size: 18px;
+    padding: 10px 8px 6px;
+  }
+
+  /* кнопки оплаты — в колонку, на всю ширину */
+  .stars-payment-actions{
+    max-width: 560px;
+    gap: 12px;
+  }
+  .stars-payment-actions .stars-btn{
+    flex: 1 1 100%;
+    padding: 14px 16px 14px 48px;
+    border-radius: 18px;
+    font-size: 14px;
+  }
+  .stars-payment-actions .stars-btn-icon{
+    left: 18px;
+    width: 18px; height: 18px;
+  }
+
+  /* бокс согласия */
+  .sbx-consent{
+    max-width: 560px;
+    margin: 16px auto 0;
+    padding: 10px 12px;
+    font-size: 12.5px;
+    border-radius: 12px;
+  }
+
+  /* якорь, чтобы шапка не перекрывала секцию */
+  #stars{ scroll-margin-top: calc(var(--nav-height) + 8px); }
+}
+
+/* ещё чуть компактнее для узких экранов (≤ 420px) */
+@media (max-width: 420px){
+  .stars-left-title{ font-size: clamp(20px, 7vw, 26px); }
+  .stars-left-text { font-size: 13.5px; }
+  .stars-package-item{ font-size: 13.5px; }
+  .stars-payment-actions .stars-btn{ font-size: 13.5px; }
+}
+
+/* MOBILE: ореол плавно смещается вверх и тускнеет на скролле */
+@media (max-width: 768px){
+  .hero .decor--halo-overlap{
+    /* вместо жёсткого translate(-50%, 50%) — даём место для доп. сдвига */
+    transform: translate(-50%, calc(50% + var(--halo-mobile-shift, 0px)));
+    opacity: var(--halo-mobile-opacity, 1);
+    will-change: transform, opacity;           /* более гладкие кадры */
+    transition: opacity .18s var(--ease-smooth);
+  }
+}
+
+/* === Desktop-only: правая колонка прибита вправо === */
+@media (min-width: 1025px){
+  .stars-wrap .page-block--stars,
+  .stars-wrap .stars-section,
+  .stars-wrap .stars-card{
+    width: var(--stars-card-width, 500px);
+    margin: 0;              /* сброс авто-центрирования */
+    margin-left: auto;      /* прижать вправо на широких */
+  }
+}
+
+/* === Mobile/Tablet fix: карточка строго по центру === */
+@media (max-width: 1024px){
+  /* контейнер звёзд в колонку */
+  #stars .stars-wrap{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 20px;
+    padding: 0 12px;
+  }
+
+  /* сама карточка — жёстко центрируем и глушим десктопные маргины */
+  #stars .page-block--stars,
+  #stars .stars-section,
+  #stars .stars-card{
+    width: 100% !important;
+    max-width: min(520px, 94vw) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* заголовок + текст — по центру */
+  #stars .stars-left{
+    position: static !important;
+    top: auto !important;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center !important;
+    text-align: center !important;
+  }
+  #stars .stars-left-title,
+  #stars .stars-left-text{
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Мобайл/планшет: жёсткая центровка карточки */
+@media (max-width: 1024px){
+  #stars .stars-wrap{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 0 12px !important;
+    gap: 20px !important;
+  }
+
+  #stars .page-block--stars,
+  #stars .stars-section,
+  #stars .stars-card{
+    width: 100% !important;
+    max-width: min(520px, 94vw) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    align-self: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* заголовок+текст слева — по центру */
+  #stars .stars-left{
+    position: static !important;
+    top: auto !important;
+    align-self: center !important;
+    text-align: center !important;
+  }
+  #stars .stars-left-title,
+  #stars .stars-left-text{
+    text-align: center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Мобилка: убрать перенос <br> в текстах платёжных кнопок и вести в одну строку */
+@media (max-width: 520px){
+  /* звёзды */
+  .stars-btn-text br { display: none; }
+  .stars-btn-text{
+    white-space: nowrap;         /* всё в одну линию */
+    font-size: 12.5px;           /* чуть компактнее, чтобы точно влезло */
+    overflow: hidden;            /* страховка от переполнения */
+    text-overflow: ellipsis;     /* если совсем узкий экран */
+  }
+
+  /* можно немного ужать иконки, чтобы освободить место под текст */
+  .stars-btn-icon{
+    width: 18px;
+    height: 18px;
+    left: 20px;                 /* иконка чуть левее, чтобы дать тексту ширину */
+  }
+
+  /* и компенсируем текстовым паддингом */
+  .stars-payment-actions .stars-btn{
+    padding-left: 46px;         /* было 52px — стало компактнее */
+  }
+}
+
+/* ===============================
+   ЕДИНЫЕ ОТСТУПЫ: ЗАГОЛОВОК → ТЕКСТ
+   ------------------------------- */
+:root{
+  --gap-ttl-text: 12px;         /* между заголовком и текстом */
+  --gap-text-card-mob: 25px;    /* текст-блок ↔ карточка на мобилках */
+  --gap-text-card-desk: 40px;   /* то же на десктопе (если нужно) */
+}
+
+/* Заголовок → текст: одинаково для обоих блоков */
+.stars-area .stars-left-title{
+  margin: 0 0 var(--gap-ttl-text) 0 !important;
+}
+
+.stars-area .stars-left-text{
+  margin: 0 !important;
+}
+
+/* ===============================
+   ТЕКСТ-БЛОК ↔ КАРТОЧКА: МОБИЛКИ
+   ------------------------------- */
+@media (max-width: 1024px){
+  /* Оба контейнера строго в колонку + центрирование + единый gap */
+  .stars-area .stars-wrap{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: var(--gap-text-card-mob) !important;
+  }
+
+  /* Ширины карточек по центру */
+  .stars-area .stars-card,
+  .stars-area .page-block--stars{
+    width: 100% !important;
+    max-width: 560px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* ===============================
+   ТЕКСТ-БЛОК ↔ КАРТОЧКА: ДЕСКТОП
+   (если хочешь унифицировать и тут)
+   ------------------------------- */
+@media (min-width: 1025px){
+  .stars-area .stars-wrap{ gap: var(--gap-text-card-desk) !important; }
+}
+
+/* ===============================
+   FAQ — мобильная адаптация
+   =============================== */
+
+@media (max-width: 1024px){
+  /* контейнер на всю ширину, без переполнений */
+  .sbx-faq{
+    --faq-max: 100%;
+    --faq-card: 100%;
+    --faq-gap: 10px;
+    margin: 100px auto 48px !important; /* раньше было 200px — уменьшаем */
+    padding: 0 14px;
+  }
+
+  /* карточка: округление и тени помягче */
+  .sbx-faq__item{
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  /* шапка вопроса — крупнее тап-зона и текст */
+  .sbx-faq__q{
+    padding: 16px 16px;
+    font-size: 16px;
+    line-height: 1.3;
+    min-height: 48px;            /* «тап-зона» */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* стрелка побольше, легче попасть пальцем */
+  .sbx-faq__chev{ width: 28px; height: 28px; }
+  .sbx-faq__chev::before{ width: 9px; height: 9px; }
+
+  /* тело ответа — компактнее отступы */
+  .sbx-faq__a{ padding: 8px 4px 12px; }
+  .sbx-faq__a-inner{
+    max-width: calc(100% - 18px);
+    padding: 12px 14px;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.22);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* списки и параграфы — аккуратные отступы */
+  .sbx-faq__a-inner p{ margin: 6px 0; }
+  .sbx-faq__a-inner ul,
+  .sbx-faq__a-inner ol{ margin: 8px 0 0 16px; }
+}
+
+/* поворот стрелки — и для [open], и для .is-open (если JS добавляет класс) */
+.sbx-faq__item[open] .sbx-faq__chev::before,
+.sbx-faq__item.is-open .sbx-faq__chev::before{
+  transform: rotate(135deg);
+}
+
+/* безопасность: любые картинки/таблицы внутри ответа не вываливаются за край */
+.sbx-faq__a-inner img,
+.sbx-faq__a-inner table{
+  max-width: 100%;
+  height: auto;
+}
+
+/* Footer: mobile tweaks — left align + more bottom padding */
+@media (max-width: 640px){
+  .sbx-footer{
+    /* было: padding: 48px 14px; */
+    padding: 48px 14px 96px; /* ↑ увеличили нижний отступ */
+  }
+
+  /* выравнивание по левому краю */
+  .sbx-footer__grid{
+    grid-template-columns: 1fr;
+    justify-items: start;
+  }
+  .sbx-footer__col{
+    align-items: flex-start;
+    text-align: left;
+  }
+  .sbx-footer__title{
+    text-align: left;
+  }
+  .sbx-footer__list{
+    justify-items: start;
+  }
+  .sbx-footer__link{
+    text-align: left;
+  }
+
+  /* колонка бренда — тоже влево */
+  .sbx-footer__col--brand .sbx-footer__brand{
+    grid-template-columns: var(--footer-logo-size) 1fr;
+    justify-items: start;
+  }
+}
+
+/* Stars — заголовок: десктоп по умолчанию */
+#stars .stars-left-title{
+  margin: 50px 0 14px; /* как на десктопе */
+}
+
+/* ===== DESKTOP: фиксированный отступ заголовков Stars & Premium от верха колонок ===== */
+:root{
+  --section-title-offset-desktop: 50px; /* единая ручка: сколько от верха колонки */
+}
+
+@media (min-width: 1025px){
+  /* Stars: заголовок всегда на 50px от верха своей колонки */
+  #stars .stars-wrap .stars-left{
+    padding-top: var(--section-title-offset-desktop) !important;
+    margin-top: 0 !important;   /* глушим любые внешние отступы сверху */
+    top: auto !important;       /* на случай прилипаний/смещений */
+  }
+  #stars .stars-wrap .stars-left-title{
+    margin-top: 0 !important;   /* убираем внутренний сдвиг у самого заголовка */
+  }
+}
+
+/* === Mobile: показываем текст StarsBox вместо логотипа === */
+@media (max-width: 640px){
+  .navbar .brand__logo{
+    display: none !important;          /* скрыть картинку логотипа */
+  }
+  .navbar .brand__text{
+    display: inline-block !important;  /* показать текст */
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  .navbar .brand{ gap: 8px; }          /* чуть меньше зазор слева */
+}
+
+/* === Единый радиус скругления по сайту === */
+:root{ --radius: 20px; }
+
+/* кнопки */
+:is(.btn, .btn-tg, .btn-support,
+    .stars-btn, .pm-pay-btn,
+    .pay-btn, .sbx-modal__btn,
+    #togglePackages, .stars-toggle,
+    .nav-links a, button){
+  border-radius: var(--radius) !important;
+}
+
+/* инпуты и поля */
+:is(#telegramUsername, .stars-username-input,
+    #starsQuantity, .stars-qty-input,
+    #telegramUsernamePremium, .pm-username-input){
+  border-radius: var(--radius) !important;
+}
+
+/* карточки/элементы списков */
+:is(.stars-package-item, .pm-item,
+    .sbx-faq__q, .sbx-faq__a-inner,
+    .sbx-consent){
+  border-radius: var(--radius) !important;
+}
+
+/* большие блоки/панели */
+:is(.page-block--stars, .stars-section,
+    .page-block--premium, .premium-section,
+    .sbx-modal__dialog){
+  border-radius: var(--radius) !important;
+}
+
+/* не трогаем круглые аватарки/иконки с 50% */
+

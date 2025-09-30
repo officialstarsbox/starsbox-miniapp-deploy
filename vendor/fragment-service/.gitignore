@@ -1,0 +1,51 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Node / build
+node_modules/
+dist/
+
+# Databases / dumps / logs
+*.log
+*.sqlite3
+*.db
+*.dump
+*.sql
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Backups & temp
+*.bak
+*.bak.*
+*.save
+*backup*
+*fullbak*
+*.orig
+
+# Project-local secrets
+.env
+secrets/
+cookies.json
+
+# Git internal
+.git/
+vendor/
+
+# Track only this vendored lib
+vendor/
+!vendor/fragment_api/
+!vendor/fragment_api/**
+
+# Do NOT track any secrets shipped inside vendored fragment_api
+vendor/fragment_api/cookies.json
+vendor/fragment_api/created_wallets/
+secrets/service-account.json

@@ -1,0 +1,153 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Купить звёзды — StarsBox</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="../styles.css" />
+  <!-- Узкоскоповые стили формы (см. ниже блок CSS) -->
+  <link rel="stylesheet" href="./styles-buy.css" />
+</head>
+<body>
+  <!-- Шапка как на главной -->
+  <header class="app-header">
+    <div class="avatar">SB</div>
+    <div class="account">
+      <div class="title">StarsBox | Main account</div>
+      <div class="subtitle">@main_starsbox</div>
+    </div>
+    <button class="icon-btn has-icon" data-action="settings" aria-label="Настройки"></button>
+  </header>
+
+  <!-- Контент -->
+  <main class="content">
+    <section class="buy-page" aria-labelledby="buyTitle">
+      
+      <!-- Заголовок поля + действия -->
+      <div class="field-head">
+        <div class="field-title">Получатель</div>
+        <div class="field-actions">
+          <button type="button" class="text-link" id="btnFillSelf">купить себе❤️</button>
+        </div>
+      </div>
+
+      <!-- Username -->
+      <div class="stars-username-container">
+        <img class="stars-username-logo" src="../assets/icons/icon6.png" alt="">
+        <input id="telegramUsername" class="stars-username-input" type="text"
+               placeholder="Укажите username получателя" inputmode="text" autocomplete="username"
+               oninput="updateTelegramUsername()"/>
+      </div>
+      <div id="starsUsernameMsg" class="buy-msg" hidden></div>
+
+      <!-- Количество -->
+      <div class="stars-qty-container">
+        <img class="stars-field-icon" src="../assets/icons/icon7.png" alt="">
+        <input id="starsQuantity" class="stars-qty-input" type="number" min="50" max="20000" step="50" placeholder="Укажите кол-во от 50 до 20 000"/>
+      </div>
+      <div id="starsQtyMsg" class="buy-msg" hidden></div>
+      <p class="stars-qty-subtitle stars-qty-subtitle--after">Или выберите один из пакетов</p>
+
+      <!-- Пакеты (видимые) -->
+      <div class="stars-packages">
+        <!-- карточка -->
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="50">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">50 звёзд</span>
+          <span class="stars-package-price">80 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="100">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">100 звёзд</span>
+          <span class="stars-package-price">160 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="250">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">250 звёзд</span>
+          <span class="stars-package-price">400 ₽</span>
+        </label>
+      </div>
+
+      <!-- Пакеты (скрытый блок «показать всё») -->
+      <div id="additionalPackages" class="stars-packages-hidden">
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="500">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">500 звёзд</span>
+          <span class="stars-package-price">800 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="1000">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">1 000 звёзд</span>
+          <span class="stars-package-price">1 600 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="2500">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">2 500 звёзд</span>
+          <span class="stars-package-price">4 000 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="5000">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">5 000 звёзд</span>
+          <span class="stars-package-price">8 000 ₽</span>
+        </label>
+
+        <label class="stars-package-item">
+          <input type="radio" class="stars-package-radio" name="pkg" value="10000">
+          <img class="stars-package-icon" src="../assets/icons/icon7.png" alt="">
+          <span class="stars-package-title">10 000 звёзд</span>
+          <span class="stars-package-price">16 000 ₽</span>
+        </label>
+      </div>
+
+      <button id="togglePackages" class="stars-toggle" type="button" onclick="togglePackages()">Показать все пакеты</button>
+
+      <!-- Итого -->
+      <div class="stars-total-line">
+        <div class="stars-total-label">Итого</div>
+        <input id="totalAmount" class="stars-total-input" type="text" value="0,00 ₽" readonly/>
+      </div>
+
+      <!-- Кнопки оплаты -->
+      <div class="stars-payment-actions">
+        <button class="stars-btn" data-method="sbp_qr" onclick="payStars('sbp_qr')">Оплатить по СБП (QR-код)</button>
+        <button class="stars-btn" data-method="crypto" onclick="payStars('crypto')">Оплатить криптовалютой</button>
+      </div>
+
+      <div class="buy-legal-box">
+  <p class="buy-legal">
+    Нажимая кнопку оплаты, вы принимаете условия
+    <span class="buy-legal-link">Публичной оферты</span>
+    и
+    <span class="buy-legal-link">Политики обработки персональных данных</span>,
+    а также даёте согласие на обработку персональных данных.
+  </p>
+</div>
+    </section>
+  </main>
+
+  <!-- Низ: всегда активна «Главная» -->
+  <nav class="bottom-nav">
+    <button class="nav-item is-active" data-action="tab-home"><div class="nav-ic"></div><div class="nav-tx">Главная</div></button>
+    <button class="nav-item" data-action="tab-earn"><div class="nav-ic"></div><div class="nav-tx">Акции</div></button>
+    <button class="nav-item" data-action="tab-market"><div class="nav-ic"></div><div class="nav-tx">Заработать</div></button>
+    <button class="nav-item" data-action="tab-profile"><div class="nav-ic"></div><div class="nav-tx">Профиль</div></button>
+  </nav>
+
+  <!-- Логика формы: порт из сайта -->
+  <script src="./buy.js"></script>
+  <script src="../app.js"></script>
+</body>
+</html>

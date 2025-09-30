@@ -1,0 +1,535 @@
+from gsheet_client import append_new_order, finalize_order
+from fastapi import FastAPI, Query, Body, Request, HTTPException
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, conint
+
+import os, json, time, secrets, subprocess, sys
+from pathlib import Path
+from datetime import datetime
+from typing import Optional
+from decimal import Decimal, ROUND_DOWN
+
+from payments.db import init_db, get_session, Order
+from payments.providers import WataClient, HeleketClient
+
+# ---------------------------------------------------------------------------
+# Константы и утилиты
+# ---------------------------------------------------------------------------
+
+PUBLIC_BASE_URL = os.getenv("PUBLIC_BASE_URL", "https://starsbox.org")
+TERMINAL_STATUSES = {"paid", "paid_over", "fail", "canceled"}
+
+def is_terminal(st: str) -> bool:
+    return st in TERMINAL_STATUSES
+
+def gen_order_id(provider: str) -> str:
+    ts = int(time.time())
+    rnd = secrets.token_hex(3)
+    safe_provider = (provider or "pay").lower()
+    return f"ord_{safe_provider}_{ts}_{rnd}"
+
+def build_success_url(order_id: str) -> str:
+    return f"{PUBLIC_BASE_URL}/pay/success?orderId={order_id}"
+
+def build_fail_url(order_id: str) -> str:
+    return f"{PUBLIC_BASE_URL}/pay/fail?orderId={order_id}"
+
+def _amount_to_str(amount_str: str | None = None,
+                   amount_minor: int | None = None,
+                   amount: int | None = None) -> str | None:
+    """
+    Возвращает строку суммы для таблицы.
+    - если уже есть amount_str — берём её
+    - если есть amount_minor — делим на 100 и форматируем с 2 знаками
+    - если есть amount (целые) — тоже форматируем
+    """
+    if amount_str:
+        return amount_str
+    if amount_minor is not None:
+        return f"{amount_minor/100:.2f}"
+    if amount is not None:
+        return f"{amount:.2f}"
+    return None
+
+# ---------------------------------------------------------------------------
+# Инициализация приложения
+# ---------------------------------------------------------------------------
+
+app = FastAPI(title="starsbox-fragment-service")
+
+def _ensure_env_from_files():
+    """
+    Подхватывает секреты из ./secrets/* если переменные окружения не заданы.
+    Ничего не «роняет», запускается на старте.
+    """
+    root = Path(__file__).resolve().parent
+    secrets_dir = root / "secrets"
+
+    def _b64_of(path: Path) -> str:
+        if not path.exists() or path.stat().st_size == 0:
+            return ""
+        if path.suffix == ".b64":
+            return path.read_text(encoding="utf-8").strip()
+        return __import__("base64").b64encode(path.read_bytes()).decode("utf-8")
+
+    try:
+        # cookies.json -> FR_COOKIES_JSON_B64
+        if not os.getenv("FR_COOKIES_JSON_B64"):
+            cj = secrets_dir / "cookies.json"
+            if cj.exists() and cj.stat().st_size > 0:
+                os.environ["FR_COOKIES_JSON_B64"] = _b64_of(cj)
+
+        # mnemonics.txt -> FR_WALLETS_DATA_B64
+        if not os.getenv("FR_WALLETS_DATA_B64"):
+            mn = secrets_dir / "mnemonics.txt"
+            if mn.exists() and mn.stat().st_size > 0:
+                os.environ["FR_WALLETS_DATA_B64"] = _b64_of(mn)
+
+        # ton-global-config.json -> TONLIB_CONFIG_B64 (опционально, для отправки TON по ссылке)
+        if not os.getenv("TONLIB_CONFIG_B64"):
+            gc = secrets_dir / "ton-global-config.json"
+            if gc.exists() and gc.stat().st_size > 0:
+                os.environ["TONLIB_CONFIG_B64"] = _b64_of(gc)
+
+        # wallet_address_raw.txt -> FR_WALLET_ADDRESS_RAW (опционально)
+        if not os.getenv("FR_WALLET_ADDRESS_RAW"):
+            ra = secrets_dir / "wallet_address_raw.txt"
+            if ra.exists() and ra.stat().st_size > 0:
+                os.environ["FR_WALLET_ADDRESS_RAW"] = ra.read_text(encoding="utf-8").strip()
+
+        # wallet_stateinit.boc(.b64) -> FR_WALLET_STATEINIT_B64 (опционально)
+        if not os.getenv("FR_WALLET_STATEINIT_B64"):
+            si_boc  = secrets_dir / "wallet_stateinit.boc"
+            si_b64f = secrets_dir / "wallet_stateinit.b64"
+            if si_b64f.exists() and si_b64f.stat().st_size > 0:
+                os.environ["FR_WALLET_STATEINIT_B64"] = si_b64f.read_text(encoding="utf-8").strip()
+            elif si_boc.exists() and si_boc.stat().st_size > 0:
+                os.environ["FR_WALLET_STATEINIT_B64"] = _b64_of(si_boc)
+    except Exception:
+        pass  # на старте не падаем
+
+@app.on_event("startup")
+def on_startup():
+    _ensure_env_from_files()
+    init_db()
+
+# ---------------------------------------------------------------------------
+# Подпроцесс-раннер: только ЗВЁЗДЫ
+# ---------------------------------------------------------------------------
+
+def _json_from_subprocess(cmd: list[str]) -> dict:
+    """
+    Запуск внешнего раннера и извлечение JSON даже при «шумном» выводе.
+    """
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    out = (p.stdout or '')
+    err = (p.stderr or '')
+    combined = out + ('\n' + err if err else '')
+
+    # 1) пробуем чистый stdout
+    try:
+        return json.loads(out.strip())
+    except Exception:
+        pass
+
+    # 2) ищем последний валидный JSON в объединённом выводе
+    s = combined
+    for i in range(len(s) - 1, -1, -1):
+        if s[i] == '{':
+            tail = s[i:]
+            closes = [j for j, ch in enumerate(tail) if ch == '}']
+            for j in range(len(closes) - 1, -1, -1):
+                candidate = tail[:closes[j] + 1]
+                try:
+                    return json.loads(candidate)
+                except Exception:
+                    continue
+
+    # 3) фоллбек-ответ
+    raw = (out.strip() or err.strip())
+    return {'ok': False, 'error': 'runner returned non-json', 'raw': raw, 'returncode': p.returncode, 'cmd': cmd}
+
+def run_runner_stars(order_id: str, username: str, qty: int) -> dict:
+    """
+    Раннер автопокупки ЗВЁЗД на Fragment.
+
+    Ожидаемый ответ: dict с ok=True и ton_link.
+    """
+    user_norm = (username or "").lstrip("@")
+    cmd = [sys.executable, "-u", "fragment_exec/runner_fragment.py",
+           "--order", order_id, "--username", user_norm, "--qty", str(int(qty))]
+    return _json_from_subprocess(cmd)
+
+# ---------------------------------------------------------------------------
+# Схемы запросов
+# ---------------------------------------------------------------------------
+
+class RunReq(BaseModel):
+    orderId: str
+    username: str
+    qty: int
+
+class InitiateReq(BaseModel):
+    orderId: Optional[str] = None
+    provider: str                  # 'wata' | 'heleket'
+    username: str
+    qty: conint(ge=1)
+    currency: str
+    # точные суммы:
+    amount_str: Optional[str] = None    # '81.60'
+    amount_minor: Optional[int] = None  # 8160
+    # легаси:
+    amount: Optional[int] = None        # 81
+    # доп.:
+    returnUrl: Optional[str] = None
+    successUrl: Optional[str] = None
+    description: Optional[str] = None
+
+# ---------------------------------------------------------------------------
+# Хелперы сумм
+# ---------------------------------------------------------------------------
+
+def parse_amounts(body: InitiateReq) -> tuple[int, str]:
+    """
+    Возвращает: (amount_minor:int, amount_str:'xx.xx')
+    """
+    if body.amount_str:
+        amt = Decimal(str(body.amount_str).replace(",", ".")).quantize(Decimal("0.01"), rounding=ROUND_DOWN)
+        minor = int((amt * 100).to_integral_value(rounding=ROUND_DOWN))
+        if minor <= 0:
+            raise HTTPException(422, "bad amount_str")
+        return minor, f"{amt:.2f}"
+
+    if body.amount_minor is not None:
+        minor = int(body.amount_minor)
+        if minor <= 0:
+            raise HTTPException(422, "bad amount_minor")
+        s = (Decimal(minor) / Decimal(100)).quantize(Decimal("0.00"), rounding=ROUND_DOWN)
+        return minor, f"{s:.2f}"
+
+    if body.amount is not None:
+        rub = Decimal(int(body.amount)).quantize(Decimal("0"), rounding=ROUND_DOWN)
+        minor = int((rub * 100).to_integral_value(rounding=ROUND_DOWN))
+        return minor, f"{rub:.2f}"
+
+    raise HTTPException(422, "amount_str or amount_minor or amount is required")
+
+# ---------------------------------------------------------------------------
+# API: сервисные и раннер
+# ---------------------------------------------------------------------------
+
+@app.get("/healthz")
+def healthz():
+    return {"ok": True}
+
+@app.get("/run")
+def run_get(orderId: str = Query(...), username: str = Query(...), qty: int = Query(...)):
+    """
+    Исторический эндпоинт запуска автопокупки ЗВЁЗД (GET).
+    """
+    return run_runner_stars(orderId, username, qty)
+
+@app.post("/run")
+def run_post(body: RunReq = Body(...)):
+    """
+    Современный эндпоинт запуска автопокупки ЗВЁЗД (POST).
+    """
+    return run_runner_stars(body.orderId, body.username, body.qty)
+
+# ---------------------------------------------------------------------------
+# API: инициация платежа
+# ---------------------------------------------------------------------------
+
+def pay_initiate(body: InitiateReq):
+    """
+    Создаёт заказ ТОЛЬКО под продукт 'stars' и возвращает платёжную ссылку.
+    """
+    provider = (body.provider or "").lower().strip()
+    if provider not in ("wata", "heleket"):
+        raise HTTPException(400, "provider must be 'wata' or 'heleket'")
+
+    amount_minor, amount_str = parse_amounts(body)
+
+    order_id = body.orderId or gen_order_id(provider)
+    # URL'ы можно переопределить из тела запроса
+    success_url = body.successUrl or build_success_url(order_id)
+    fail_url    = body.returnUrl  or build_fail_url(order_id)
+
+    sess = get_session()
+    try:
+        existing = sess.get(Order, order_id)
+        if existing:
+            return {
+                "ok": True,
+                "orderId": order_id,
+                "payment_url": getattr(existing, "payment_url", None),
+                "status": existing.status,
+            }
+
+        amount_rub_int = int(Decimal(amount_str).quantize(Decimal("0"), rounding=ROUND_DOWN))
+        order = Order(
+            order_id=order_id,
+            provider=provider,
+            username=body.username,
+            qty=body.qty,
+            amount=amount_rub_int,
+            currency="RUB",
+            status="created",
+            product="stars",
+        )
+        sess.add(order)
+        sess.commit()
+
+        order.payment_url = pay_url
+        order.external_id = ext_id
+        order.status = "pending"
+        sess.add(order)
+        sess.commit()
+
+        return {"ok": True, "orderId": order_id, "payment_url": pay_url, "status": "pending"}
+
+    try:
+        amount_for_sheet = _amount_to_str(
+            amount_str=payload.get("amount_str"),
+            amount_minor=payload.get("amount_minor"),
+            amount=payload.get("amount"),
+        )
+        append_new_order(
+            order_id=order_id,
+            provider=provider,                    # 'wata' | 'heleket'
+            amount=amount_for_sheet,              # строка или None
+            product="stars",                      # у тебя продукт один
+            qty=int(payload["qty"]),
+            username=str(payload["username"]),
+            payment_url=payment_url,              # None или строка
+        )
+    except Exception as e:
+        # не ломаем оплату, если гугл-таблица недоступна
+        print(f"[GSHEET] append_new_order error: {e}")
+
+    except HTTPException:
+        sess.rollback()
+        raise
+    except Exception as e:
+        sess.rollback()
+        return JSONResponse(
+            status_code=200,
+            content={
+                "ok": False,
+                "orderId": order_id,
+                "status": "created",
+                "error": f"{provider.capitalize()} initiate error: {type(e).__name__}: {e}",
+            },
+        )
+    finally:
+        sess.close()
+
+# ---------------------------------------------------------------------------
+# API: заказ (чтение)
+# ---------------------------------------------------------------------------
+
+@app.get("/orders/{order_id}")
+def get_order(order_id: str):
+    sess = get_session()
+    try:
+        order = sess.get(Order, order_id)
+        if not order:
+            raise HTTPException(404, "order not found")
+        return {
+            "ok": True,
+            "orderId": order.order_id,
+            "status": order.status,
+            "provider": order.provider,
+            "username": order.username,
+            "qty": order.qty,
+            "payment_url": order.payment_url,
+            "external_id": order.external_id,
+        }
+    finally:
+        sess.close()
+
+# ---------------------------------------------------------------------------
+# Внутренняя функция: обновление статуса + автопокупка ЗВЁЗД
+# ---------------------------------------------------------------------------
+
+def _mark_and_maybe_run(order: Order, new_status: str) -> bool:
+    """
+    Меняем статус и при 'paid' — ОДИН РАЗ запускаем автопокупку ЗВЁЗД.
+    Если раннер/отправка TON не удалась — переводим заказ в 'processing' и возвращаем False.
+    """
+    if order.status == "paid":
+        return False
+
+    order.status = new_status
+    order.updated_at = datetime.utcnow()
+
+    if new_status != "paid":
+        return True
+
+    try:
+        print(f"AUTOPURCHASE stars: id={order.order_id} user={order.username} qty={order.qty}")
+        resp = run_runner_stars(order.order_id, order.username, order.qty)
+        print(f"AUTOPURCHASE stars result: id={order.order_id} resp={str(resp)[:800]}")
+
+        if not isinstance(resp, dict) or not resp.get("ok"):
+            order.status = "processing"
+            return False
+
+        ton_link = resp.get("ton_link")
+        if not ton_link:
+            order.status = "processing"
+            return False
+
+        from fragment_exec.ton_link_sender import send_ton_by_link
+        try:
+            tx_result = send_ton_by_link(ton_link)
+            print(f"AUTOPURCHASE stars tx ok: id={order.order_id} via={tx_result.get('via')}")
+            resp["tx_result"] = tx_result
+        except Exception as e:
+            print(f"AUTOPURCHASE stars tx error: id={order.order_id} err={e}")
+            order.status = "processing"
+            return False
+
+    except Exception as e:
+        print(f"AUTOPURCHASE ERROR for {order.order_id}: {type(e).__name__}: {e}")
+
+    return True
+
+# ---------------------------------------------------------------------------
+# Вебхуки провайдеров: Wata и Heleket
+# ---------------------------------------------------------------------------
+
+@app.post("/webhook/wata")
+async def webhook_wata(request: Request):
+    """
+    Вебхук от Wata (HMAC SHA256 в заголовке X-Wata-Signature).
+    Идемпотентный апдейт статуса заказа + ОДНОКРАТНЫЙ запуск автопокупки ЗВЁЗД при успехе.
+    """
+    body    = await request.body()
+    headers = dict(request.headers)
+
+    client = WataClient()
+    ok, order_id, provider_status, why = client.verify_webhook(headers, body)
+    if not ok or not order_id:
+        raise HTTPException(status_code=400, detail=f"signature invalid or order_id missing ({why})")
+
+    sess  = get_session()
+    try:
+        order = sess.get(Order, order_id)
+        if not order or order.provider != "wata":
+            raise HTTPException(status_code=404, detail=f"order not found")
+
+        p = (provider_status or "").lower().strip()
+        if p == "paid_over":
+            new_status = "paid_over"
+        elif p == "paid":
+            new_status = "paid"
+        elif p in ("fail", "failed", "cancelled", "canceled"):
+            new_status = "fail"
+        elif p in ("pending", "processing", "created"):
+            new_status = "pending"
+        else:
+            new_status = "pending"
+
+        if order.status in TERMINAL_STATUSES:
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": "already terminal"}
+
+        if order.status == new_status:
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": "same status"}
+
+        allowed = {
+            "created": {"pending", "paid", "paid_over", "fail"},
+            "pending": {"pending", "paid", "paid_over", "fail"},
+        }
+
+        if order.status in allowed and new_status in allowed[order.status]:
+            changed = _mark_and_maybe_run(order, new_status)
+            sess.add(order)
+            sess.commit()
+
+            # === лог в Google Sheet, только если статус действительно изменился на терминальный ===
+            try:
+                if changed and order.status in TERMINAL_STATUSES:
+                    finalize_order(
+                        order_id=order.order_id,
+                        status=order.status,
+                        ton_spent=(str(order.ton_spent) if getattr(order, "ton_spent", None) else None),
+                    )
+            except Exception as e:
+                print(f"[GSHEET] finalize_order (wata) error: {e}")
+            # === /лог в Google Sheet ===
+
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": changed}
+
+        return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": f"transition {order.status}->{new_status} not allowed"}
+    finally:
+        sess.close()
+
+@app.post("/webhook/heleket")
+async def webhook_heleket(request: Request):
+    """
+    Вебхук от Heleket (подпись проверяется в HeleketClient.verify_webhook).
+    Идемпотентный апдейт статуса заказа + ОДНОКРАТНЫЙ запуск автопокупки ЗВЁЗД при успехе.
+    """
+    headers = dict(request.headers)
+    body    = await request.body()
+
+    client = HeleketClient()
+    try:
+        ok, order_id, provider_status = client.verify_webhook(headers, body)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"verify error: {e}")
+
+    if not ok or not order_id:
+        raise HTTPException(status_code=400, detail="signature invalid or order_id missing")
+
+    sess = get_session()
+    try:
+        order = sess.get(Order, order_id)
+        if not order or order.provider != "heleket":
+            raise HTTPException(status_code=404, detail="order not found")
+
+        p = (provider_status or "").lower().strip()
+        if p == "paid_over":
+            new_status = "paid_over"
+        elif p == "paid":
+            new_status = "paid"
+        elif p in ("fail", "failed", "cancelled", "canceled"):
+            new_status = "fail"
+        elif p in ("pending", "processing", "created"):
+            new_status = "pending"
+        else:
+            new_status = "pending"
+
+        if order.status in TERMINAL_STATUSES:
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": "already terminal"}
+
+        if order.status == new_status:
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": "same status"}
+
+        allowed = {
+            "created": {"pending", "paid", "paid_over", "fail"},
+            "pending": {"pending", "paid", "paid_over", "fail"},
+        }
+
+        if order.status in allowed and new_status in allowed[order.status]:
+            changed = _mark_and_maybe_run(order, new_status)
+            sess.add(order)
+            sess.commit()
+            # === лог в Google Sheet, только если статус действительно изменился на терминальный ===
+            try:
+                if changed and order.status in TERMINAL_STATUSES:
+                    finalize_order(
+                        order_id=order.order_id,
+                        status=order.status,
+                        ton_spent=(str(order.ton_spent) if getattr(order, "ton_spent", None) else None),
+                    )
+            except Exception as e:
+                print(f"[GSHEET] finalize_order (wata) error: {e}")
+            # === /лог в Google Sheet ===
+
+            return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": changed}
+
+        return {"ok": True, "orderId": order.order_id, "status": order.status, "changed": False, "reason": f"transition {order.status}->{new_status} not allowed"}
+    finally:
+        sess.close()

@@ -41,7 +41,7 @@
   --column-w: clamp(360px, 92vw, 520px); /* ширина колонки */
   --page-xpad: 5px;                      /* боковые поля для шапки/контента */
   --header-top: calc(env(safe-area-inset-top,0px) + 10px);
-  --content-gap: 15px;
+  --content-gap: 25px;
 
   /* Фон */
   --bg-grad: radial-gradient(120% 160% at 50% -10%, #1a2037 0%, var(--bg) 55%, #0b0e1b 100%);

@@ -1,0 +1,6 @@
+[submodule "vendor/starsbox-site"]
+	path = vendor/starsbox-site
+	url = https://github.com/officialstarsbox/starsbox-site
+[submodule "vendor/fragment-service"]
+	path = vendor/fragment-service
+	url = https://github.com/officialstarsbox/starsbox-fragment-service

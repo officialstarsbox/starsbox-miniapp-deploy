@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="StarsBox - покупайте Telegram звёзды по лучшей цене" />
+  <title>StarsBox - покупайте Telegram звёзды по лучшей цене</title>
+
+  <!-- =======================================================================
+       ОСНОВНЫЕ СТИЛИ САЙТА
+       -----------------------------------------------------------------------
+       Подключение вашего файла со стилями.
+       ======================================================================= -->
+  <link rel="stylesheet" href="styles.css" />
+
+<!-- Favicon базовый -->
+<link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon32x32.ico">
+<link rel="shortcut icon" href="./icons/favicon32x32.ico">
+
+<link rel="icon" type="image/png" href="./icons/favicon-96x96.png" sizes="96x96" />
+
+<!-- Apple Touch Icon (iOS ярлык) -->
+<link rel="apple-touch-icon" href="./icons/web-app-manifest-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="./icons/web-app-manifest-512x512.png" sizes="512x512">
+
+<!-- PWA / Android -->
+<link rel="manifest" href="./icons/site.webmanifest">
+<meta name="theme-color" content="#0b0e1b">
+
+<!-- Safari pinned tab (монохромная маска) -->
+<link rel="mask-icon" href="./icons/favicon.svg" color="#ffffff">
+
+<!-- Цвет плитки (старый Edge/IE, можно оставить для совместимости) -->
+<meta name="msapplication-TileColor" content="#0b0e1b">
+  
+  <meta name="yandex-verification" content="2c05c484380a10b2" />
+  <meta name="heleket" content="1115e777" />
+</head>
+
+<body>
+  <body>
+  <div id="top"></div>
+  <!-- дальше твой nav ... -->
+
+<!-- =======================================================================
+     МЕНЮ (фиксированная верхняя плашка)
+     -----------------------------------------------------------------------
+     - .navbar__shell — ФОНОВАЯ ПЛАШКА (её ширину можно менять отдельно)
+     - .navbar__inner — рабочая область фиксированной ширины (по умолчанию 1200px)
+     - Слева: логотип + название
+     - Центр: ссылки (заменили «Поддержка» → «FAQ»)
+     - Справа: две кнопки — «Telegram бот» и «Поддержка»
+     ======================================================================= -->
+<nav class="navbar">
+  <!-- Фоновая плашка (ширина настраивается отдельно, не влияет на контент) -->
+  <div class="navbar__shell">
+    <!-- Рабочая область (1200px по центру) -->
+    <div class="navbar__inner">
+      <!-- ЛЕВАЯ ЧАСТЬ: логотип + текст -->
+      <a href="#top" class="brand" aria-label="На главную">
+        <img src="images/logo21.png" alt="StarsBox" class="brand__logo" loading="lazy">
+        <span class="brand__text">StarsBox</span>
+      </a>
+
+      <!-- ЦЕНТР: ссылки -->
+      <div class="nav-links">
+        <a href="#stars">Купить звёзды</a>
+        <a href="#faq">FAQ</a> 
+        <a href="https://t.me/StarsBox_news">Официальный канал</a>
+        <a href="https://t.me/StarsBox_support">Поддержка</a>
+      </div>
+
+      <!-- ПРАВАЯ ЧАСТЬ: две кнопки -->
+      <div class="navbar__actions">
+        <a
+          class="btn btn-tg"
+          href="https://t.me/StarssBox_bot"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Открыть Telegram-бота"
+        >
+          Telegram бот
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <!-- =======================================================================
+       HERO (главный экран с логотипом, заголовком и кнопками)
+       ======================================================================= -->
+  <div class="hero">
+    <h1>Покупайте Telegram звёзды в пару кликов<br>по самому выгодному курсу</h1>
+    <!-- Подзаголовок под h1 -->
+<p class="hero-subtitle">
+  Telegram Stars — это внутренняя виртуальная валюта в Telegram<br>Платить ею можно прямо внутри чатов, ботов и мини-приложений
+</p>
+
+    <div class="buttons">
+      <button class="buy-stars">Купить Telegram звёзды</button>
+    </div>
+
+    <!-- ВНУТРИ .hero — в самом конце блока -->
+<div class="decor decor--halo-overlap" aria-hidden="true">
+  <div
+    class="halo-floating is-animated"
+    style="
+      --halo-diameter: 200px;  /* диаметр центрального круга */
+      --ring-color: #ffffff;   /* цвет круга и колец */
+      --ring-gap: 200px;        /* дистанция между кольцами */
+      --ring-thickness: 1px;   /* толщина линий колец */
+      --halo-glow: 0 0 40px 10px rgba(255,255,255,.55), 0 0 120px 40px rgba(255,255,255,.25);
+      --halo-area-height: 260px;   /* высота области (сколько торчит вверх/вниз) */
+      --halo-max-width: 1200px;    /* ширина области отрисовки */
+    "
+  >
+    <span class="halo-core"></span>   <!-- центральный круг -->
+    <span class="halo-rings"></span>  <!-- концентрические кольца -->
+    <!-- ДВИЖУЩИЕСЯ СВЕТЯЩИЕСЯ ТОЧКИ ПО КОЛЬЦАМ (по часовой стрелке) -->
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 1.48);
+         --orbit-size: 6px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.6);
+         --orbit-duration: 25s;
+         --orbit-delay: -1s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 1.47);
+         --orbit-size: 10px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.6);
+         --orbit-duration: 25s;
+         --orbit-delay: -12s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 2.48);
+         --orbit-size: 7px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 12px rgba(255,255,255,.65);
+         --orbit-duration: 35s;
+         --orbit-delay: -3s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 2.47);
+         --orbit-size: 10px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.6);
+         --orbit-duration: 35s;
+         --orbit-delay: -16s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 3.48);
+         --orbit-size: 6px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.55);
+         --orbit-duration: 45s;
+         --orbit-delay: -5s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+  
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 3.47);
+         --orbit-size: 10px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.6);
+         --orbit-duration: 45s;
+         --orbit-delay: -20s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 4.48);
+         --orbit-size: 5px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 8px rgba(255,255,255,.5);
+         --orbit-duration: 55s;
+         --orbit-delay: -7s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+
+  <div class="halo-orbit" 
+       style="
+         --orbit-radius: calc(var(--halo-diameter) / 2 + var(--ring-gap) * 4.47);
+         --orbit-size: 10px;
+         --orbit-color: #ffffff;
+         --orbit-glow: 0 0 10px rgba(255,255,255,.6);
+         --orbit-duration: 55s;
+         --orbit-delay: -25s;
+       ">
+    <span class="halo-dot"></span>
+  </div>
+  </div>
+</div>
+  </div>
+
+<!-- =======================================================================
+     БЛОК #2: ВЫБОР ЗВЁЗД (⭐ STARS) — ДВУХКОЛОНОЧНАЯ КОМПОНОВКА
+     -----------------------------------------------------------------------
+     ВАЖНО:
+     - id="stars" теперь на внешнем wrapper'е .stars-area (чтобы не было дублей ID)
+     - Слева добавлен .stars-left (заголовок + текст)
+     - Ваша карточка помещена в .stars-card и прибита к правому краю
+     ======================================================================= -->
+<section id="stars" class="stars-area">
+  <div class="stars-wrap">
+
+   <div class="stars-left">
+  <div class="sticky-col">
+    <h3 class="stars-left-title">
+      Покупайте звёзды<br>и поддержите<br>любимых авторов
+    </h3>
+    <p class="stars-left-text">
+      Покупайте Telegram Stars по выгодному курсу без переплат. <br>
+      Любой объём, оплата по СБП или криптовалютой<br><br>Подарок себе и друзьям в один клик
+    </p>
+  </div>
+</div>
+
+
+    <!-- ПРАВАЯ КОЛОНКА: ВАША КАРТОЧКА (код внутри — без изменений) -->
+    <section class="page-block page-block--stars stars-section stars-card">
+    
+      <!-- Поле ввода username Telegram (иконка внутри) -->
+      <div class="username-container stars-username-container">
+        <img src="images/logo3.png" alt="Telegram avatar" class="username-logo stars-username-logo" id="telegramLogo" / loading="lazy">
+        <input
+  type="text"
+  id="telegramUsername"
+  class="stars-username-input"
+  placeholder="Укажите Telegram username (Латиницей)"
+  oninput="updateTelegramUsername()"
+  autocomplete="off"
+  inputmode="text"
+  autocapitalize="off"
+  spellcheck="false"
+  maxlength="33"                    
+  pattern="^@?[A-Za-z][A-Za-z0-9_]{0,31}$"
+  title="Только латиница, цифры и подчёркивание. Начинаться должен с буквы."
+  aria-label="Ваш Telegram username"
+/>
+      </div>
+
+      <!-- Поле ввода количества звёзд (иконка внутри) -->
+      <div class="stars-container stars-qty-container">
+        <!-- ВАЖНО: оставляем .stars-logo для совместимости, но добавляем уникальный модификатор -->
+        <img src="images/logo4.png" alt="Star icon" class="stars-logo stars-field-icon" / loading="lazy">
+        <input
+          type="number"
+          id="starsQuantity"
+          class="stars-qty-input"
+          min="50"
+          max="20000"
+          placeholder="Укажите количество от 50 до 20 000"
+          oninput="handleManualQuantityInput()"
+          inputmode="numeric"
+          aria-label="Количество звёзд"
+        />
+      </div>
+
+      <!-- Подзаголовок после поля количества -->
+      <p class="stars-qty-subtitle stars-qty-subtitle--after">
+        Или выберите один из пакетов
+      </p>
+
+      <!-- ПАКЕТЫ -->
+      <div class="stars-options stars-packages">
+
+        <!-- 3 видимых пакета -->
+        <label class="package-item stars-package-item">
+          <input class="package-radio stars-package-radio" type="radio" name="stars" value="50" onclick="selectPackage(50)">
+          <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+          <span class="package-title stars-package-title">50 звёзд</span>
+          <span class="package-price stars-package-price">80 ₽</span>
+        </label>
+
+        <label class="package-item stars-package-item">
+          <input class="package-radio stars-package-radio" type="radio" name="stars" value="100" onclick="selectPackage(100)">
+          <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+          <span class="package-title stars-package-title">100 звёзд</span>
+          <span class="package-price stars-package-price">160 ₽</span>
+        </label>
+
+        <label class="package-item stars-package-item">
+          <input class="package-radio stars-package-radio" type="radio" name="stars" value="200" onclick="selectPackage(200)">
+          <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+          <span class="package-title stars-package-title">200 звёзд</span>
+          <span class="package-price stars-package-price">320 ₽</span>
+        </label>
+
+        <!-- 5 скрытых пакетов -->
+        <div id="additionalPackages" class="packages-hidden stars-packages-hidden">
+          <label class="package-item stars-package-item">
+            <input class="package-radio stars-package-radio" type="radio" name="stars" value="500" onclick="selectPackage(500)">
+            <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+            <span class="package-title stars-package-title">500 звёзд</span>
+            <span class="package-price stars-package-price">800 ₽</span>
+          </label>
+
+          <label class="package-item stars-package-item">
+            <input class="package-radio stars-package-radio" type="radio" name="stars" value="1000" onclick="selectPackage(1000)">
+            <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+            <span class="package-title stars-package-title">1 000 звёзд</span>
+            <span class="package-price stars-package-price">1 600 ₽</span>
+          </label>
+
+          <label class="package-item stars-package-item">
+            <input class="package-radio stars-package-radio" type="radio" name="stars" value="2500" onclick="selectPackage(2500)">
+            <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+            <span class="package-title stars-package-title">2 500 звёзд</span>
+            <span class="package-price stars-package-price">4 000 ₽</span>
+          </label>
+
+          <label class="package-item stars-package-item">
+            <input class="package-radio stars-package-radio" type="radio" name="stars" value="5000" onclick="selectPackage(5000)">
+            <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+            <span class="package-title stars-package-title">5 000 звёзд</span>
+            <span class="package-price stars-package-price">8 000 ₽</span>
+          </label>
+
+          <label class="package-item stars-package-item">
+            <input class="package-radio stars-package-radio" type="radio" name="stars" value="10000" onclick="selectPackage(10000)">
+            <img src="images/logo4.png" alt="star" class="package-icon stars-package-icon" loading="lazy">
+            <span class="package-title stars-package-title">10 000 звёзд</span>
+            <span class="package-price stars-package-price">16 000 ₽</span>
+          </label>
+        </div>
+
+        <!-- Кнопка «Показать все пакеты» -->
+        <button id="togglePackages" class="stars-toggle" type="button" onclick="togglePackages()">Показать все пакеты</button>
+
+        <!-- ИТОГОВАЯ СУММА -->
+        <div class="pay-total total-line stars-total-line" aria-live="polite">
+          <span class="pay-total__label total-label stars-total-label">Итого к оплате</span>
+          <input
+            id="totalAmount"
+            class="pay-total__input total-input stars-total-input"
+            type="text"
+            value="0 ₽"
+            readonly
+            aria-label="Итоговая сумма к оплате"
+          />
+        </div>
+
+        <!-- КНОПКИ ОПЛАТЫ -->
+        <div class="stars-payment-actions">
+          <!-- Кнопка СБП -->
+          <button type="button" class="stars-btn stars-btn--sbp" onclick="payBySBP()">
+            <img class="stars-btn-icon" src="images/logo5.png" alt="" aria-hidden="true" loading="lazy">
+            <span class="stars-btn-text">Оплатить по СБП <br> (QR-код)</span>
+          </button>
+
+          <!-- Кнопка Крипто -->
+          <button type="button" class="stars-btn stars-btn--crypto" onclick="payByCrypto()">
+            <img class="stars-btn-icon" src="images/logo7.png" alt="" aria-hidden="true" loading="lazy">
+            <span class="stars-btn-text">Оплатить <br> криптовалютой</span>
+          </button>
+        </div>
+        <div class="sbx-consent">
+  Нажимая кнопку оплаты, вы принимаете условия
+  <a href="#offer" data-modal-doc="offer"><strong>Публичной оферты</strong></a>
+  и
+  <a href="#personal-data" data-modal-doc="personal-data"><strong>Политики обработки персональных данных</strong></a>,
+  а также даёте согласие на обработку персональных данных.
+</div>
+
+      </div> <!-- /.stars-options -->
+    </section>
+
+  </div>
+</section>
+
+  <!-- ======================================================================
+     FAQ (аккордеон без JS)
+     ----------------------------------------------------------------------
+     РЕДАКТИРУЕМОЕ:
+     - Контент вопросов/ответов.
+     - id="faq" можно менять, если нужно.
+     ====================================================================== -->
+<section id="faq" class="sbx-faq">
+  <!-- Заголовок секции -->
+  <h2 class="sbx-faq__title">Часто задаваемые вопросы:</h2>
+
+  <!-- Колонка с вопросами -->
+  <div class="sbx-faq__list">
+    <!-- Карточка 1 -->
+    <details class="sbx-faq__item">
+      <summary class="sbx-faq__q">
+        Как купить Telegram звёзды?
+        <span class="sbx-faq__chev" aria-hidden="true"></span>
+      </summary>
+      <div class="sbx-faq__a">
+        <div class="sbx-faq__a-inner">
+          <p>Telegram звёзды можно купить на нашем сайте или в нашем Telegram-боте:
+            <a href="https://t.me/StarssBox_bot" target="_blank" rel="noopener noreferrer">t.me/StarssBox_bot</a>
+          </p>
+          <p><strong>Порядок действий для покупки:</strong></p>
+          <ol>
+            <li>Укажите ваш Telegram Username.</li>
+            <li>Введите количество звёзд (можно указать вручную или выбрать из готовых пакетов).</li>
+            <li>Оплатите заказ — в течение нескольких минут на ваш Telegram-аккаунт поступит указанное количество звёзд.</li>
+          </ol>
+        </div>
+      </div>
+    </details>
+
+    <!-- Карточка 2 -->
+    <details class="sbx-faq__item">
+      <summary class="sbx-faq__q">
+        Как купить Telegram звёзды для другого человека?
+        <span class="sbx-faq__chev" aria-hidden="true"></span>
+      </summary>
+      <div class="sbx-faq__a">
+        <div class="sbx-faq__a-inner">
+          <p>В нашем сервисе вы можете купить звёзды или подписку Premium в подарок другому пользователю.</p>
+          <p><strong>Порядок действий:</strong></p>
+          <ol>
+            <li>Укажите Telegram Username человека, которому хотите отправить подарок.</li>
+            <li>Введите количество звёзд (вручную или из пакетов) или выберите срок подписки Premium.</li>
+            <li>Оплатите заказ — в течение нескольких минут на указанный Telegram-аккаунт поступит подарок с оплаченным товаром.</li>
+          </ol>
+        </div>
+      </div>
+    </details>
+
+    <!-- Карточка 3 -->
+    <details class="sbx-faq__item">
+      <summary class="sbx-faq__q">
+        Как проверить мой баланс звёзд?
+        <span class="sbx-faq__chev" aria-hidden="true"></span>
+      </summary>
+      <div class="sbx-faq__a">
+        <div class="sbx-faq__a-inner">
+          <p>Чтобы проверить баланс звёзд на своём аккаунте:</p>
+          <ol>
+            <li>Откройте приложение Telegram.</li>
+            <li>Перейдите в «Настройки» (значок профиля или меню с тремя линиями).</li>
+            <li>Откройте раздел «Мои звёзды» (если он доступен).</li>
+          </ol>
+          <p>Если раздел «Мои звёзды» не отображается — у вас пока нет звёзд. Вы можете приобрести их в нашем сервисе.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Карточка 4 -->
+    <details class="sbx-faq__item">
+      <summary class="sbx-faq__q">
+        Что делать, если звёзды не пришли на аккаунт?
+        <span class="sbx-faq__chev" aria-hidden="true"></span>
+      </summary>
+      <div class="sbx-faq__a">
+        <div class="sbx-faq__a-inner">
+          <p>Свяжитесь с нашей поддержкой в Telegram. <br> Опишите проблему, укажите Username, который вводили при покупке. <br> Приложите чек об оплате.</p>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- =======================================================================
+     FOOTER / ПОДВАЛ
+     -----------------------------------------------------------------------
+     Что здесь есть:
+     - 5 колонок: Продукты, Документация, Сервис, Контакты, Бренд (справа)
+     - Каждая колонка — «раздел» с заголовком и пунктами
+     - Колонка бренда оформлена как раздел: логотип + копирайт
+
+     Что можно менять:
+     - Ссылки (href) у пунктов
+     - Порядок колонок — просто переставьте блоки .sbx-footer__col
+     ======================================================================= -->
+<footer class="sbx-footer" role="contentinfo" aria-label="Подвал сайта">
+  <div class="sbx-footer__inner">
+
+    <!-- Сетка колонок подвала -->
+    <nav class="sbx-footer__grid" aria-label="Навигация по сайту">
+      <!-- КОЛОНКА 1: Продукты -->
+      <div class="sbx-footer__col">
+        <h3 class="sbx-footer__title">Продукты</h3>
+        <ul class="sbx-footer__list">
+          <li><a href="#stars" class="sbx-footer__link">Купить звёзды</a></li>
+        </ul>
+      </div>
+
+      <!-- КОЛОНКА 2: Документация -->
+      <div class="sbx-footer__col">
+        <h3 class="sbx-footer__title">Документация</h3>
+        <ul class="sbx-footer__list">
+           <li><a href="#offer" class="sbx-footer__link" data-modal-doc="offer">Публичная оферта</a></li>
+    <li><a href="#privacy" class="sbx-footer__link" data-modal-doc="privacy">Политика конфиденциальности</a></li>
+    <li><a href="#personal-data" class="sbx-footer__link" data-modal-doc="personal-data">Обработка персональных данных</a></li>
+        </ul>
+      </div>
+
+      <!-- КОЛОНКА 3: Сервис -->
+      <div class="sbx-footer__col">
+        <h3 class="sbx-footer__title">Сервис</h3>
+        <ul class="sbx-footer__list">
+          <li><a href="#faq" class="sbx-footer__link">FAQ</a></li>
+          <li><a href="https://t.me/StarsBox_Support" class="sbx-footer__link">Поддержка</a></li>
+          <li><a href="https://t.me/StarsBox_news" class="sbx-footer__link">Официальный канал</a></li>
+          <li><a href="https://t.me/StarssBox_bot" target="_blank" rel="noopener noreferrer" class="sbx-footer__link">Официальный бот</a></li>
+        </ul>
+      </div>
+
+      <!-- КОЛОНКА 4: Контакты -->
+      <div class="sbx-footer__col">
+        <h3 class="sbx-footer__title">Контакты</h3>
+        <ul class="sbx-footer__list">
+          <li>
+            <a href="mailto:official.starsbox@gmail.com" class="sbx-footer__link sbx-footer__link--icon">
+              <img class="sbx-footer__icon" src="images/logo15.png" alt="" aria-hidden="true" loading="lazy">
+              official.starsbox@gmail.com
+            </a>
+          </li>
+          <li>
+            <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer" class="sbx-footer__link sbx-footer__link--icon">
+              <img class="sbx-footer__icon" src="images/logo16.png" alt="" aria-hidden="true" loading="lazy">
+              Telegram
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- КОЛОНКА 5: Бренд (логотип + копирайт) — ПРАВАЯ колонка -->
+      <div class="sbx-footer__col sbx-footer__col--brand">
+        <h3 class="sbx-footer__title">StarsBox</h3>
+        <div class="sbx-footer__brand">
+          <img src="images/logo21.png" alt="StarsBox" class="sbx-footer__logo" loading="lazy">
+          <div class="sbx-footer__copy">© 2025, StarsBox. <br> Все права защищены.</div>
+        </div>
+      </div>
+    </nav>
+
+  </div>
+</footer>
+
+<!-- MODAL: общий контейнер -->
+<div class="sbx-modal" id="legalModal" aria-hidden="true">
+  <div class="sbx-modal__backdrop" data-close-modal></div>
+  <div class="sbx-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="legalModalTitle">
+    <header class="sbx-modal__header">
+      <h3 class="sbx-modal__title" id="legalModalTitle">Документ</h3>
+      <div class="sbx-modal__actions">
+        <button class="sbx-modal__btn sbx-modal__btn--print" type="button" data-print-modal>Печать</button>
+        <button class="sbx-modal__btn sbx-modal__btn--close" type="button" data-close-modal>✕</button>
+      </div>
+    </header>
+    <div class="sbx-modal__body" id="legalModalBody" tabindex="0"></div>
+  </div>
+</div>
+
+<!-- ШАБЛОНЫ: вставь внутрь готовые тексты -->
+<template id="doc-offer">
+  <article class="legal legal-offer">
+  <h1>Публичная оферта на приобретение цифровых товаров Telegram через сервис «StarsBox»</h1>
+  <p><strong>Редакция от:</strong> 16.09.2025</p>
+
+  <section>
+    <h2>1. Оферент</h2>
+    <p>
+      Самозанятый Маландий Даниил Вадимович (налог на профессиональный доход, далее — «Оферент»), ИНН 182810373713,
+      адрес для корреспонденции/фактический: 427441, Удмуртская Респ, г. Воткинск, ул. Азина, д. 95, кв. 7.
+      Контакты для пользователей: e-mail <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a>,
+      Telegram поддержка: <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a>.
+      Домен сервиса: starsbox.com. Оферент не аффилирован с Telegram FZ-LLC.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Термины</h2>
+    <ul>
+      <li><strong>Сервис</strong> — сайт starsbox.com и/или Telegram-бот <a href="https://t.me/StarssBox_bot" target="_blank" rel="noopener noreferrer">@StarssBox_bot</a>.</li>
+      <li><strong>Пользователь</strong> — дееспособное лицо 18+, принимающее Оферту.</li>
+      <li><strong>Цифровой товар</strong> — Telegram Stars (звёзды) и/или подписка Telegram Premium, передаваемые как подарок/начисление на указанный username в Telegram.</li>
+      <li><strong>Заказ</strong> — оформленный через Сервис запрос на покупку Цифрового товара.</li>
+      <li><strong>Оплата</strong> — перевод денежных средств через доступные в Сервисе платёжные способы.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Предмет оферты</h2>
+    <p>
+      Оферент обязуется передать Пользователю оплаченный Цифровой товар на указанный @username, а Пользователь — оплатить его стоимость.
+    </p>
+  </section>
+
+  <section>
+    <h2>4. Принятие оферты</h2>
+    <ol>
+      <li>Текст Оферты размещён в Сервисе.</li>
+      <li>Акцепт — последовательность действий: указание @username, выбор товара/объёма/срока, выбор способа оплаты, успешная оплата.</li>
+      <li>С момента акцепта договор считается заключённым (ст. 438 ГК РФ).</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>5. Оформление заказа</h2>
+    <ol>
+      <li>Пользователь указывает корректный Telegram @username (адресата/получателя подарка). Ответственность за правильность реквизитов несёт Пользователь.</li>
+      <li>Оферент вправе запросить подтверждение данных либо отказать в исполнении при признаках мошенничества/нарушения ограничений платформ и провайдеров.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>6. Цена и оплата</h2>
+    <ol>
+      <li>Актуальные цены указываются в интерфейсе Сервиса на момент оформления Заказа; цены конечные, НДС не облагаются (самозанятый).</li>
+      <li>Способы оплаты — доступные в момент оплаты (в том числе СБП (QR) и/или криптовалюта через сторонних провайдеров). Конкретный набор может отличаться.</li>
+      <li>Курс при оплате через провайдера (в т.ч. криптовалютой) — курс провайдера в момент оплаты.</li>
+      <li>Чек по 54-ФЗ выдаётся платёжным провайдером/агрегатором (merchant of record). Возможна комиссия провайдера — отображается при оплате и/или включается в итог.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>7. Поставка цифрового товара</h2>
+    <ol>
+      <li>Среднее время поставки — 3–10 минут после подтверждения оплаты. Максимальный срок при технических задержках — до 24 часов.</li>
+      <li>Передача осуществляется как подарок/начисление на указанный @username. Подарок другому пользователю допускается.</li>
+      <li>Сервис недоступен пользователям из США.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>8. Возвраты и отмены</h2>
+    <ol>
+      <li>Основания для возврата: техническая ошибка при отправке подарка; двойное списание; непоставка в течение 24 часов с момента оплаты.</li>
+      <li>Если @username указан Пользователем с ошибкой и товар уже отправлен по этим реквизитам — возврат/обмен не производится.</li>
+      <li>Заявки направляются в поддержку (email/Telegram) с указанием номера заказа, чека и @username. Срок рассмотрения — до 14 рабочих дней.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>9. Права и обязанности</h2>
+    <ul>
+      <li>Пользователь: предоставляет достоверные данные; соблюдает правила Telegram и платёжных провайдеров; не использует Сервис в незаконных целях; 18+.</li>
+      <li>Оферент: предоставляет актуальную информацию о товаре/цене; исполняет оплаченные Заказы либо возвращает средства при невозможности исполнения по вине Оферента.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>10. Ограничение ответственности</h2>
+    <p>
+      Оферент не отвечает за действия/сбои платформ Telegram и платёжных провайдеров, а также за некорректные данные, указанные Пользователем. Совокупная ответственность ограничена суммой последнего оплаченного, но не исполненного Заказа.
+    </p>
+  </section>
+
+  <section>
+    <h2>11. Интеллектуальная собственность</h2>
+    <p>
+      Telegram® и иные обозначения — собственность их правообладателей. Оферент не аффилирован с Telegram FZ-LLC.
+    </p>
+  </section>
+
+  <section>
+    <h2>12. Персональные данные</h2>
+    <p>
+      Обработка ПДн осуществляется согласно Политике обработки ПДн и Политике конфиденциальности, размещённым в Сервисе.
+    </p>
+  </section>
+
+  <section>
+    <h2>13. Форс-мажор</h2>
+    <p>
+      Стороны освобождаются от ответственности за частичное/полное неисполнение обязательств вследствие обстоятельств непреодолимой силы.
+    </p>
+  </section>
+
+  <section>
+    <h2>14. Урегулирование споров</h2>
+    <p>
+      Претензионный порядок обязателен; срок ответа — 14 рабочих дней. Подсудность — суд по месту регистрации Оферента. Применимое право — РФ.
+    </p>
+  </section>
+
+  <section>
+    <h2>15. Изменение оферты</h2>
+    <p>
+      Оферта может быть изменена Оферентом с публикацией новой редакции. Заказы, оформленные до изменений, исполняются на прежних условиях.
+    </p>
+  </section>
+
+  <section>
+    <h2>16. Контакты и реквизиты</h2>
+    <p>
+      Оферент: Самозанятый Маландий Даниил Вадимович · ИНН 182810373713<br>
+      Адрес: 427441, Удмуртская Респ, г. Воткинск, ул. Азина, д. 95, кв. 7<br>
+      Поддержка: <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a> ·
+      <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a><br>
+      Банковские реквизиты: р/с 40817810900003338280, ООО «Вайлдберриз Банк», к/с 30101810245250000450, БИК 044525450<br>
+      Контактный e-mail исполнителя: <a href="mailto:daniil.malandii@gmail.com">daniil.malandii@gmail.com</a>
+    </p>
+  </section>
+</article>
+</template>
+
+<template id="doc-privacy">
+  <article class="legal legal-privacy">
+  <h1>Политика конфиденциальности</h1>
+  <p><strong>Редакция от:</strong> 16.09.2025</p>
+
+  <section>
+    <h2>1. Область действия</h2>
+    <p>Политика описывает, какие данные мы получаем при использовании сайта starsbox.com и Telegram-бота @StarssBox_bot, как и зачем их обрабатываем, и как защищаем.</p>
+  </section>
+
+  <section>
+    <h2>2. Какие данные получаем</h2>
+    <ul>
+      <li>Telegram @username адресата/покупателя, а также ID/ссылку Telegram при обращении в поддержку.</li>
+      <li>Данные заказа: номер, товар (звёзды/премиум и объём/срок), сумма, время, статус.</li>
+      <li>Контактные данные при обращении: e-mail/ссылка на Telegram (если предоставлены).</li>
+      <li>Платёжные метаданные и статусы от платёжных провайдеров (полные платёжные реквизиты у нас не хранятся).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. Зачем обрабатываем</h2>
+    <ul>
+      <li>Чтобы заключить и исполнить договор (оферту): принять оплату и поставить цифровой товар.</li>
+      <li>Чтобы оказывать поддержку и рассматривать претензии.</li>
+      <li>Чтобы соблюдать требования закона (учёт/отчётность).</li>
+      <li>Чтобы обеспечивать безопасность и предотвращать злоупотребления.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Cookies и аналитика</h2>
+    <p>Мы не используем cookies и сторонние средства аналитики/трекеры.</p>
+  </section>
+
+  <section>
+    <h2>5. Правовые основания</h2>
+    <p>Исполнение договора, соблюдение требований закона, законные интересы (без ущерба правам пользователей). Отдельного маркетингового согласия не запрашиваем и рассылки не ведём.</p>
+  </section>
+
+  <section>
+    <h2>6. Кому передаём</h2>
+    <ul>
+      <li>Платёжным провайдерам — для проведения оплаты/возвратов и выдачи кассовых чеков.</li>
+      <li>Платформе Telegram — для доставки подарков/уведомлений (трансграничная передача, ОАЭ).</li>
+      <li>Компетентным органам — по законным запросам.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Хранение и защита</h2>
+    <p>Данные хранятся столько, сколько необходимо для целей обработки и в сроки, установленные законодательством РФ (как правило, до 5 лет для финансовых документов). Применяются организационные и технические меры защиты.</p>
+  </section>
+
+  <section>
+    <h2>8. Ваши права</h2>
+    <p>Вы можете запросить доступ/копию/исправление/удаление в пределах закона, а также направить претензию. Контакты: <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a> или <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a>.</p>
+  </section>
+
+  <section>
+    <h2>9. Возраст и территория</h2>
+    <p>Сервис для пользователей 18+. Сервис недоступен для пользователей, находящихся в США.</p>
+  </section>
+
+  <section>
+    <h2>10. Изменения Политики</h2>
+    <p>Актуальная редакция публикуется в Сервисе. Существенные изменения можем дополнительно анонсировать в интерфейсах.</p>
+  </section>
+
+  <section>
+    <h2>11. Контакты</h2>
+    <p>
+      Оператор данных: Самозанятый Маландий Даниил Вадимович · ИНН 182810373713<br>
+      E-mail: <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a> · Telegram:
+      <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a>
+    </p>
+  </section>
+</article>
+</template>
+
+<template id="doc-personal-data">
+  <article class="legal legal-pd">
+  <h1>Политика обработки персональных данных</h1>
+  <p><strong>Редакция от:</strong> 16.09.2025</p>
+
+  <section>
+    <h2>1. Общие положения</h2>
+    <p>
+      Настоящая Политика разработана в соответствии с Федеральным законом № 152-ФЗ «О персональных данных» и определяет порядок обработки ПДн в сервисе «StarsBox».
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Оператор ПДн</h2>
+    <p>
+      Самозанятый Маландий Даниил Вадимович, ИНН 182810373713, адрес: 427441, Удмуртская Респ, г. Воткинск, ул. Азина, д. 95, кв. 7.
+      Контакты: <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a>, Telegram:
+      <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a>.
+    </p>
+  </section>
+
+  <section>
+    <h2>3. Состав ПДн</h2>
+    <ul>
+      <li>Telegram username адресата/покупателя; ID/ссылка Telegram при обращении в поддержку.</li>
+      <li>Данные заказа: номер, товар (звёзды/премиум и объём/срок), сумма, время, статус.</li>
+      <li>Контактные данные при обращении: e-mail/ссылка на Telegram (если предоставлены).</li>
+      <li>Платёжные метаданные от провайдеров (без хранения полных платёжных реквизитов у Оператора).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Цели обработки</h2>
+    <ul>
+      <li>Заключение и исполнение договора (оферты), обработка оплаты и поставка цифрового товара.</li>
+      <li>Поддержка пользователей, рассмотрение обращений/претензий.</li>
+      <li>Исполнение требований законодательства РФ (учёт, отчётность, хранение документов).</li>
+      <li>Обеспечение безопасности сервиса и предотвращение мошенничества.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Правовые основания</h2>
+    <ul>
+      <li>Ст. 6, 18, 22 152-ФЗ; ст. 435–438 ГК РФ.</li>
+      <li>Заключение и исполнение договора; соблюдение требований закона; законные интересы Оператора при соблюдении прав субъектов ПДн.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>6. Сроки и способы обработки</h2>
+    <p>
+      Обработка осуществляется с применением информационных систем Оператора и/или уполномоченных лиц (платёжные провайдеры, коммуникационные сервисы).
+      Срок хранения — в пределах целей обработки и установленных законом сроков бухгалтерского и налогового учёта (как правило, до 5 лет по финансовым документам).
+    </p>
+  </section>
+
+  <section>
+    <h2>7. Передача третьим лицам и трансграничная передача</h2>
+    <p>
+      ПДн передаются в объёме, необходимом для выполнения функций: платёжным провайдерам (для приёма оплаты и возвратов), сервисам коммуникации (электронная почта), платформе Telegram (ОАЭ) для доставки подарков/уведомлений. Возможна трансграничная передача при использовании инфраструктуры указанных провайдеров.
+    </p>
+  </section>
+
+  <section>
+    <h2>8. Меры защиты</h2>
+    <p>
+      Оператор применяет организационные и технические меры защиты ПДн от неправомерного доступа, уничтожения, изменения, блокирования, копирования и распространения.
+    </p>
+  </section>
+
+  <section>
+    <h2>9. Права субъектов ПДн</h2>
+    <p>
+      Субъект ПДн вправе получать сведения об обработке своих ПДн, требовать уточнения, блокирования или уничтожения в предусмотренных законом случаях, а также отозвать согласие (если применимо) и обжаловать действия Оператора.
+      Запросы направляйте на: <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a> или в Telegram-поддержку.
+    </p>
+  </section>
+
+  <section>
+    <h2>10. Cookies и аналитика</h2>
+    <p>
+      Сервис не использует cookies и аналитические трекеры. При изменении практики Политика будет обновлена.
+    </p>
+  </section>
+
+  <section>
+    <h2>11. Изменение Политики</h2>
+    <p>
+      Политика может быть изменена Оператором; актуальная редакция публикуется в Сервисе.
+    </p>
+  </section>
+
+  <section>
+    <h2>12. Контакты</h2>
+    <p>
+      Оператор ПДн: Самозанятый Маландий Даниил Вадимович, ИНН 182810373713 · e-mail:
+      <a href="mailto:official.starsbox@gmail.com">official.starsbox@gmail.com</a> · Telegram:
+      <a href="https://t.me/StarsBox_Support" target="_blank" rel="noopener noreferrer">@StarsBox_Support</a>
+    </p>
+  </section>
+</article>
+</template>
+
+  <!-- =======================================================================
+       СКРИПТЫ
+       ======================================================================= -->
+  <script src="scripts.js" defer></script>
+</body>
+</html>
