@@ -1,7 +1,8 @@
 ﻿@charset "UTF-8";
 
-/* ========== FONTS ========== */
-/* Положите ваши .woff2 в /assets/fonts и поправьте имена ниже. */
+/* =========================
+   0) ШРИФТЫ
+========================= */
 @font-face{
   font-family: "Tilda";
   src: url("./assets/fonts/TildaSans-Semibold.woff2") format("woff2");
@@ -9,7 +10,6 @@
   font-style: normal;
   font-display: swap;
 }
-/* Доп. семейство для заголовков (если нужно) */
 @font-face{
   font-family: "TildaSans";
   src: url("./assets/fonts/TildaSans-Regular.woff2") format("woff2");
@@ -17,94 +17,137 @@
   font-style: normal;
   font-display: swap;
 }
-/* =======================================================================
-   STARSBOX MINI APP — СТИЛИ (фикс-высоты, настраиваются в блоках панелей)
-   Блоки:
-   0) База/тема/утилиты
-   1) Шапка/контейнеры
-   2) Общий каркас панели (фон+градиент+иконка+кнопка) + переменные текста
-   3) ПАНЕЛЬ BUY     — свои настройки (высота, фон, иконка, ТЕКСТ)
-   4) ПАНЕЛЬ SELL    — свои настройки
-   5) ПАНЕЛЬ GIFTS   — свои настройки (карусель абсолютом, кнопка снизу)
-   6) ПАНЕЛЬ STEAM   — свои настройки (баннер)
-   7) Нижняя навигация
-   8) Адаптив
-======================================================================= */
 
 /* =========================
-   0) БАЗА / ТЕМА / УТИЛИТЫ
+   1) БАЗА / ПЕРЕМЕННЫЕ
 ========================= */
 :root{
+  /* Тема */
   --bg: var(--tg-theme-bg-color, #0b0e1b);
   --text: var(--tg-theme-text-color, #ffffff);
   --muted: var(--tg-theme-hint-color, #a7b0c0);
+
+  /* UI */
   --card: rgba(255,255,255,0.06);
   --card-brd: rgba(255,255,255,0.10);
   --shadow: 0 8px 24px rgba(0,0,0,.35);
   --radius: 16px;
+
+  /* Шрифты */
   --font-ui: "TildaSans", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-accent: "Tilda", "Tilda", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+
+  /* Макет */
+  --column-w: clamp(360px, 92vw, 520px); /* ширина колонки */
+  --page-xpad: 5px;                      /* боковые поля для шапки/контента */
+  --header-top: calc(env(safe-area-inset-top,0px) + 10px);
+  --content-gap: 5px;
+
+  /* Фон */
+  --bg-grad: radial-gradient(120% 160% at 50% -10%, #1a2037 0%, var(--bg) 55%, #0b0e1b 100%);
+
+  /* Нижняя навигация */
+  --nav-bottom: 25px;
+  --nav-height: 72px;
+  --nav-radius: var(--radius);
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
+/* планшет/десктоп — шире колонка */
+@media (min-width:768px){ :root{ --column-w: 640px; } }
+@media (min-width:1024px){ :root{ --column-w: 760px; } }
+
+/* =========================
+   2) БАЗОВЫЕ СТИЛИ СТРАНИЦЫ
+========================= */
+*{ box-sizing:border-box }
+html,body{ height:100% }
+html, body{ background: transparent; }
+
 body{
   margin:0;
   color:var(--text);
-  background: radial-gradient(120% 120% at 50% -10%, #1a2037 0%, var(--bg) 50%, #0b0e1b 100%);
-  font-weight:500; font-size:16px; line-height:1.4; font-family: var(--font-ui);
+  font: 500 16px/1.4 var(--font-ui);
   -webkit-font-smoothing:antialiased;
+}
+/* фиксированный фоновый градиент, контент скроллится поверх */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:-1;
+  background: var(--bg-grad);
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 /* =========================
-   1) ШАПКА / КОНТЕЙНЕРЫ
+   3) ШАПКА
 ========================= */
 .app-header{
-  max-width: 520px;
-  margin: 130px auto 8px;
-  padding: 8px 12px;
+  max-width: var(--column-w);
+  margin: var(--header-top) auto var(--content-gap);
+  padding: 8px var(--page-xpad);
   display:flex; align-items:center; gap:12px;
 }
 .avatar{
-  width:45px; height:45px; border-radius:50%;
+  width:48px; height:48px; flex:0 0 48px;
+  border-radius:50%; overflow:hidden;
   display:grid; place-items:center;
   background: linear-gradient(135deg,#151a2b,#2b3558);
-  border:0px solid var(--card-brd);
-  box-shadow: var(--shadow);
+  border:0; box-shadow: var(--shadow);
   font-weight:800; letter-spacing:.5px;
 }
-.account .title{font-size:22px; font-weight:700}
-.account .subtitle{font-size:15px; color:var(--muted)}
+.avatar img{
+  width:100%; height:100%;
+  object-fit:cover; border-radius:50%;
+  display:block; -webkit-user-drag:none; user-select:none;
+}
+.account .title{
+  font-size:22px; font-weight:700;
+  font-family: var(--font-accent, var(--font-ui));
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.account .subtitle{ font-size:15px; color:var(--muted) }
+
 .icon-btn{
-  margin-left:auto;
-  width:45px; height:45px; border-radius:12px;
+  margin-left:auto; width:45px; height:45px; border-radius:12px;
   display:grid; place-items:center;
   background: rgba(255,255,255,.06);
-  border:1px solid var(--card-brd);
-  cursor:pointer;
+  border:1px solid var(--card-brd); cursor:pointer;
+  position:relative;
+}
+.icon-btn.has-icon{ color:transparent; font-size:0; }
+.icon-btn::before{
+  content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width: var(--icon-btn-size, 22px); height: var(--icon-btn-size, 22px);
+  background-image: var(--icon-btn-image, url("./assets/icons/settings2.png"));
+  background-repeat:no-repeat; background-position:center; background-size:contain;
+  opacity: var(--icon-btn-opacity, 1); pointer-events:none;
 }
 
-.content{ max-width: 520px; padding:  25px 25px 88px; margin: 0 auto; }
+/* =========================
+   4) КОНТЕНТ + СЕТКА
+========================= */
+.content{
+  max-width: var(--column-w);
+  margin: 0 auto;
+  padding: 0px var(--page-xpad)
+           calc(env(safe-area-inset-bottom,0px) + var(--nav-bottom) + var(--nav-height) + 24px);
+}
 .grid{ display:grid; grid-template-columns:1fr 1fr; gap:5px; }
 
-/* =================================
-   2) ОБЩИЙ КАРКАС ПАНЕЛИ (атомы)
-   + универсальные переменные для ТЕКСТА
-================================= */
+/* =========================
+   5) ПАНЕЛИ (общий каркас)
+========================= */
 .panel{
   position:relative;
   border-radius: var(--radius);
   background: var(--card);
-  border:0px solid var(--card-brd);
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  color:#fff;
+  border:0; box-shadow: var(--shadow);
+  overflow:hidden; color:#fff;
 
-  /* === ТЕКСТ: ОБЩИЕ ПЕРЕМЕННЫЕ (их можно переопределять в .panel--xxx) === */
-  --content-pad: 14px;          /* внутренние отступы текста */
-  --text-align: left;           /* выравнивание: left/center/right */
+  /* текстовые переменные по умолчанию */
+  --content-pad: 14px;
+  --text-align: left;
 
-  /* Заголовок */
   --title-size: 17px;
   --title-weight: 800;
   --title-color: #ffffff;
@@ -112,560 +155,194 @@ body{
   --title-letter: 0;
   --title-shadow: none;
 
-  /* Позиция заголовка */
-  --title-position: relative;   /* relative | absolute */
-  --title-top: auto;
-  --title-right: auto;
-  --title-bottom: auto;
-  --title-left: auto;
-  --title-translate-x: 0;       /* например: 4px */
-  --title-translate-y: 0;
+  --title-position: relative;
+  --title-top: auto; --title-right: auto; --title-bottom: auto; --title-left: auto;
+  --title-translate-x: 0; --title-translate-y: 0;
 
-  /* Подзаголовок */
-  --sub-size: 13px;
-  --sub-weight: 500;
+  --sub-size: 13px; --sub-weight: 500;
   --sub-color: rgba(255,255,255,.9);
-  --sub-line: 1.3;
-  --sub-letter: 0;
-  --sub-shadow: none;
-  --sub-mt: 2px;
+  --sub-line: 1.3; --sub-letter: 0; --sub-shadow: none; --sub-mt: 2px;
 
-  /* Позиция подзаголовка */
-  --sub-position: relative;     /* relative | absolute */
-  --sub-top: auto;
-  --sub-right: auto;
-  --sub-bottom: auto;
-  --sub-left: auto;
-  --sub-translate-x: 0;
-  --sub-translate-y: 0;
+  --sub-position: relative;
+  --sub-top: auto; --sub-right: auto; --sub-bottom: auto; --sub-left: auto;
+  --sub-translate-x: 0; --sub-translate-y: 0;
 }
 
-/* Фон (настраивается в блоке панели) */
 .panel__bg{
   position:absolute; inset:0; z-index:0;
   background-repeat:no-repeat; background-position:center; background-size:cover;
 }
-
-/* Градиент поверх фона (всегда читаемость текста) */
 .panel::after{
   content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
-  background: linear-gradient(135deg, rgb(12, 20, 72) 0%, rgba(0, 0, 0, 0.5) 90%);
+  background: linear-gradient(135deg, rgb(12,20,72) 0%, rgba(0,0,0,.5) 90%);
 }
-
-/* Контент + применение общих переменных текста */
 .panel__content{
   position:relative; z-index:3;
   padding: var(--content-pad);
   text-align: var(--text-align);
 }
 .tile-title{
-  margin:0;
-  font-size: var(--title-size);
-  font-weight: var(--title-weight);
-  color: var(--title-color);
-  line-height: var(--title-line);
-  letter-spacing: var(--title-letter);
-  text-shadow: var(--title-shadow);
+  margin:0; font-size: var(--title-size); font-weight: var(--title-weight);
+  color: var(--title-color); line-height: var(--title-line);
+  letter-spacing: var(--title-letter); text-shadow: var(--title-shadow);
   position: var(--title-position);
   top: var(--title-top); right: var(--title-right);
   bottom: var(--title-bottom); left: var(--title-left);
   transform: translate(var(--title-translate-x), var(--title-translate-y));
- font-family: var(--font-accent, var(--font-ui)); }
+  font-family: var(--font-accent, var(--font-ui));
+}
 .tile-sub{
   margin-top: var(--sub-mt);
-  font-size: var(--sub-size);
-  font-weight: var(--sub-weight);
-  color: var(--sub-color);
-  line-height: var(--sub-line);
-  letter-spacing: var(--sub-letter);
-  text-shadow: var(--sub-shadow);
+  font-size: var(--sub-size); font-weight: var(--sub-weight);
+  color: var(--sub-color); line-height: var(--sub-line);
+  letter-spacing: var(--sub-letter); text-shadow: var(--sub-shadow);
   position: var(--sub-position);
   top: var(--sub-top); right: var(--sub-right);
   bottom: var(--sub-bottom); left: var(--sub-left);
   transform: translate(var(--sub-translate-x), var(--sub-translate-y));
 }
-
-/* Иконка (настраивается в блоке панели) */
 .panel__icon{
   position:absolute; z-index:3; pointer-events:none;
-  width:28px; height:28px;
-  right:12px; bottom:12px;
+  width:28px; height:28px; right:12px; bottom:12px;
   background-repeat:no-repeat; background-position:center; background-size:contain;
 }
-
-/* Базовая кнопка (вид белой кнопки). Позиции задаём в блоках панелей. */
 .panel__btn{
   display:block; font-weight:700; text-align:center; border:none; outline:none;
   background: rgba(255,255,255,.9); color:#0b0e1b;
   padding:12px 14px; border-radius:12px; z-index:4;
 }
 
-/* ==========================================
-   3) ПАНЕЛЬ BUY — СВОИ НАСТРОЙКИ
-========================================== */
+/* =========================
+   6) ПАНЕЛИ: BUY / SELL / GIFTS / STEAM
+========================= */
+/* BUY */
 .panel--buy{
-  --h: 100px;            /* <<< ВЫСОТА ЭТОЙ ПАНЕЛИ */
-  height: var(--h);
-
-  /* ===== ТЕКСТ ТОЛЬКО ДЛЯ BUY ===== */
-  --content-pad: 14px;
-  --text-align: left;
-
-  /* Заголовок */
-  --title-size: 20px;
-  --title-weight: 800;
-  --title-color: #fff;
-  --title-shadow: none;
-  --title-letter: 1px;
-  /* позиция заголовка — в левом верхнем (relative) */
-
-  /* Подзаголовок */
-  --sub-size: 14px;
-  --sub-color: rgba(255,255,255,.9);
-  --sub-mt: 4px;
-  --sub-letter: 1px;
+  --h: 100px; height: var(--h);
+  --content-pad: 14px; --text-align: left;
+  --title-size: 20px; --title-weight: 800; --title-color:#fff; --title-letter: 1px;
+  --sub-size: 14px; --sub-color: rgba(255,255,255,.9); --sub-mt: 4px; --sub-letter:1px;
 }
-.panel--buy .panel__bg{
-  background-image: url("./assets/backgrounds/stars4.png");
-}
+.panel--buy .panel__bg{ background-image: url("./assets/backgrounds/stars4.png"); }
 .panel--buy .panel__icon{
   width:20px; height:20px; right:18px; bottom:12px;
-  background-image: url("./assets/icons/icon3.png");
+  background-image:url("./assets/icons/icon3.png");
 }
 
-/* ==========================================
-   4) ПАНЕЛЬ SELL — СВОИ НАСТРОЙКИ
-========================================== */
+/* SELL */
 .panel--sell{
-  --h: 100px;            /* <<< ВЫСОТА ЭТОЙ ПАНЕЛИ */
-  height: var(--h);
-
-  /* ===== ТЕКСТ ТОЛЬКО ДЛЯ SELL ===== */
-  --content-pad: 14px;
-  --text-align: left;
-
-  --title-size: 20px;
-  --title-weight: 800;
-  --title-color: #fff;
-  --title-letter: 1px;
-
-  --sub-size: 14px;
-  --sub-color: rgba(255,255,255,.9);
-  --sub-mt: 4px;
-  --sub-letter: 1px;
+  --h: 100px; height: var(--h);
+  --content-pad: 14px; --text-align: left;
+  --title-size: 20px; --title-weight: 800; --title-color:#fff; --title-letter: 1px;
+  --sub-size: 14px; --sub-color: rgba(255,255,255,.9); --sub-mt: 4px; --sub-letter:1px;
 }
-.panel--sell .panel__bg{
-  background-image: url("./assets/backgrounds/stars4.png");
-}
+.panel--sell .panel__bg{ background-image: url("./assets/backgrounds/stars4.png"); }
 .panel--sell .panel__icon{
   width:20px; height:20px; right:18px; bottom:12px;
-  background-image: url("./assets/icons/icon2.png");
+  background-image:url("./assets/icons/icon2.png");
 }
 
-/* ==========================================
-   5) ПАНЕЛЬ GIFTS — СВОИ НАСТРОЙКИ
-   Карусель абсолютом, кнопка снизу целиком шириной.
-========================================== */
+/* GIFTS */
 .panel--gifts{
-  --h: 300px;            /* <<< ВЫСОТА ЭТОЙ ПАНЕЛИ */
-  --carousel-h: 120px;    /* высота карусели */
-  --btn-space: 90px;     /* отступ над кнопкой (расстояние от низа до карусели) */
-  height: var(--h);
+  --h: 300px; height: var(--h);
+  --carousel-h: 120px; --btn-space: 90px;
   border-radius:24px;
-
-  /* ===== ТЕКСТ ТОЛЬКО ДЛЯ GIFTS ===== */
-  --content-pad: 18px;
-  --text-align: left;
-
-  --title-size: 20px;
-  --title-weight: 900;
-  --title-letter: 1px;
-
-  --sub-size: 14px;
-  --sub-mt: 6px;
-  --sub-letter: 1px;
+  --content-pad: 18px; --text-align:left;
+  --title-size:20px; --title-weight:900; --title-letter:1px;
+  --sub-size:14px; --sub-mt:6px; --sub-letter:1px;
+  margin-top:5px;
 }
-.panel--gifts .panel__bg{
-  background-image: url("./assets/backgrounds/gifts.jpg");
-}
+.panel--gifts .panel__bg{ background-image:url("./assets/backgrounds/gifts.jpg"); }
 .panel--gifts .panel__icon{
-  width:30px; height:30px; right: 18px; bottom: 245px;
-  background-image: url("./assets/icons/подарок.png");
+  width:30px; height:30px; right:18px; bottom:245px;
+  background-image:url("./assets/icons/подарок.png");
 }
-/* Карусель — над градиентом, под текстом */
+/* карусель — контейнер и трек */
 .panel--gifts .carousel{
-  position:absolute; left:0; right:0;
-  bottom: var(--btn-space);
-  height: var(--carousel-h);
-  z-index:2; overflow:hidden; padding:0 8px 8px;
+  position:absolute; left:14px; right:14px;
+  bottom: var(--btn-space); height: var(--carousel-h);
+  z-index:2; overflow:hidden; padding:0 8px 8px; border-radius: inherit;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
 }
-.panel--gifts .carousel-track{
-  display:flex; align-items:center; gap:12px;
-  animation: gifts-scroll 60s linear infinite; will-change:transform;
-}
+.panel--gifts .carousel-track{ display:flex; align-items:center; gap:12px; will-change: transform; }
 .panel--gifts .carousel img{
   height: calc(var(--carousel-h) - 8px);
-  width:auto; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,); user-select:none;
+  width:auto; border-radius:12px; box-shadow:0 6px 16px rgba(0,0,0,0); user-select:none;
 }
-
-/* Кнопка «Подарки» — ABS снизу на всю ширину */
+/* кнопка */
 .panel--gifts .panel__btn{
-  position:absolute; left:18px; right:18px; bottom:auto; width:auto; top: 230px;
+  position:absolute; left:18px; right:18px; top:230px; width:auto;
   background: rgba(255,255,255,.9); color:#0b0e1b; border-radius:12px; padding:12px 14px;
 }
 
-/* ==========================================
-   6) ПАНЕЛЬ STEAM — СВОИ НАСТРОЙКИ
-========================================== */
+/* STEAM */
 .panel--steam{
-  --h: 180px;            /* <<< ВЫСОТА ЭТОЙ ПАНЕЛИ */
-  height: var(--h);
-  border-radius:24px; margin-top: 12px;
-
-  /* ===== ТЕКСТ ТОЛЬКО ДЛЯ STEAM ===== */
-  --content-pad: 18px;
-  --text-align: left;
-
-  --title-size: 25px;
-  --title-weight: 800;
-  --title-color: #fff;
-
-  --sub-size: 16px;
-  --sub-color: rgba(255,255,255,.9);
-  --sub-mt: 4px;
+  --h: 180px; height: var(--h);
+  border-radius:24px; margin-top:5px;
+  --content-pad: 18px; --text-align:left;
+  --title-size:25px; --title-weight:800; --title-color:#fff;
+  --sub-size:16px; --sub-color:rgba(255,255,255,.9); --sub-mt:4px;
 }
-.panel--steam .panel__bg{
-  background-image: url("./assets/backgrounds/steam2.jpg");
-}
+.panel--steam .panel__bg{ background-image:url("./assets/backgrounds/steam2.jpg"); }
 .panel--steam .panel__icon{
-  width:30px; height:30px; right: 18px; bottom:130px;
-  background-image: url("./assets/icons/icon4.png");
+  width:30px; height:30px; right:18px; bottom:130px;
+  background-image:url("./assets/icons/icon4.png");
 }
-.panel--steam .panel__content{ /* паддинги уже заданы переменной */ }
-.panel--steam .banner-title{ /* оставлено для совместимости, можно не трогать */ }
-.panel--steam .banner-sub{ color:rgba(255,255,255,.9); }
-
-/* Кнопка Steam — по центру снизу, фикс-ширина */
 .panel--steam .panel__btn{
-  position:absolute; left: 18px; right: 18px; bottom:auto; width:auto; top:120px;
-  background: rgba(255,255,255,.95); color:#000000; border-radius:12px; padding:12px 14px;
+  position:absolute; left:18px; right:18px; top:120px; width:auto;
+  background: rgba(255,255,255,.95); color:#000; border-radius:12px; padding:12px 14px;
 }
 
-/* ==========================================
-   7) НИЖНЯЯ НАВИГАЦИЯ
-========================================== */
+/* =========================
+   7) НИЖНЯЯ НАВИГАЦИЯ (плавающая)
+========================= */
 .bottom-nav{
-  position:fixed; left:0; right:0; bottom:0;
-  backdrop-filter: blur(10px);
+  position:fixed;
+  left:50%; transform:translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom,0px) + var(--nav-bottom));
+  z-index:1000;
+
+  width: min(100% - 2*var(--page-xpad), calc(var(--column-w) + 2*var(--page-xpad)));
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+
+  padding:10px; border-radius: var(--nav-radius);
   background: rgba(11,14,27,0.85);
-  border-top:1px solid var(--card-brd);
-  display:grid; grid-template-columns: repeat(4,1fr);
-  padding:8px 8px 10px; gap:8px;
+  border:1px solid var(--card-brd);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(10px);
 }
 .nav-item{
   appearance:none; border:none; background:transparent; color:#cfd6e6;
   display:flex; flex-direction:column; align-items:center; gap:4px;
   padding:8px 6px; border-radius:12px; cursor:pointer;
 }
-.nav-item.is-active{ color:#fff; background: rgba(3, 0, 169, 0.06); border:1px solid var(--card-brd) }
-.nav-ic{font-size:18px} .nav-tx{font-size:12px}
+.nav-item.is-active{ color:#fff; background: rgba(3,0,169,.06); border:1px solid var(--card-brd); }
+.nav-ic{ font-size:18px } .nav-tx{ font-size:12px }
+
+/* Кастомные иконки пунктов меню */
+.nav-item .nav-ic{ position:relative; width:24px; height:24px; line-height:0; font-size:0; }
+.nav-item .nav-ic::before{
+  content:""; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width: var(--nav-ic-size, 22px); height: var(--nav-ic-size, 22px);
+  background-repeat:no-repeat; background-position:center; background-size:contain;
+  opacity: var(--nav-ic-opacity, .95); pointer-events:none;
+}
+.nav-item[data-action="tab-home"]    .nav-ic::before{ background-image:url("./assets/icons/главная.png"); }
+.nav-item[data-action="tab-earn"]    .nav-ic::before{ background-image:url("./assets/icons/акции.png"); }
+.nav-item[data-action="tab-market"]  .nav-ic::before{ background-image:url("./assets/icons/заработать.png"); }
+.nav-item[data-action="tab-profile"] .nav-ic::before{ background-image:url("./assets/icons/профиль.png"); }
+.nav-item .nav-ic::before{ opacity:.85; }
+.nav-item.is-active .nav-ic::before{ opacity:1; }
 
 /* =========================
-   8) АДАПТИВ
+   8) АДАПТИВНЫЕ МЕЛОЧИ
 ========================= */
 @media (max-width:380px){
   .panel--buy{  --h: 116px; }
   .panel--sell{ --h: 116px; }
 }
 
-/* spacing fixes */
-.content .grid{ margin-top: 8px; }     /* от шапки до первого ряда */
-.panel--gifts{ margin-top: 12px; }     /* от первого ряда до "Подарки" */
-
-
-/* === Font family overrides (добавлено снизу, чтобы точно перебить) === */
-.tile-title{ font-family: var(--font-accent, var(--font-ui)); }
-.banner-title{ font-family: var(--font-accent, var(--font-ui)); }
-.app-header .account .title{ font-family: var(--font-accent, var(--font-ui)); }/* === GIFTS carousel: speed & edge protection overrides === */
-
-/* 1) Скорость карусели.
-   МЕНЬШЕ ВРЕМЯ — БЫСТРЕЕ СКРОЛЛ. Гифы не затрагиваются. */
-.panel--gifts{
-  --carousel-speed: 6s; /* ← подберите: 30s, 24s, 18s, 12s и т.д. */
-}
-
-/* 2) Края: держим карусель внутри панели и аккуратно прячем боковины */
-.panel--gifts .carousel{
-  /* внутренняя «рамка» слева/справа, чтобы элементы не упирались в радиус панели */
-  left: 14px;
-  right: 14px;
-
-  /* унаследовать скругление панели и физически обрезать содержимое по радиусу */
-  border-radius: inherit;
-  overflow: hidden;
-
-  /* мягкое затухание по краям (маска работает в Chrome/Edge/Safari) */
-  -webkit-mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
-          mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
-}
-
-/* 3) Собственно скорость анимации (перебиваем старое значение 60s) */
-.panel--gifts .carousel-track{
-  animation: gifts-scroll var(--carousel-speed, 60s) linear infinite;
-}
-/* === Infinite carousel (JS-driven): CSS overrides === */
-/* Скорость скролла в пикселях/сек. Меняйте только это число. */
-.panel--gifts{ --scroll-speed: 30; } /* например: 60 / 90 / 120 / 180 */
-
-/* Отключаем прежнюю CSS-анимацию трека, чтобы не было «сбросов». */
-.panel--gifts .carousel-track{
-  animation: none !important;
-  will-change: transform;
-}
-
-/* === Header title truncation & layout guard === */
-.app-header .account{ flex:1; min-width:0; } /* позволяет заголовку сжиматься между аватаром и кнопкой */
-.app-header .account .title{
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis; /* визуальная страховка по ширине */
-}
-/* =========================
-   HEADER: SETTINGS ICON
-   Как использовать:
-   - Положите картинку в assets/icons/, например settings.svg / settings.png
-   - Укажите путь в --icon-btn-image (url("..."))
-   - При необходимости подстройте --icon-btn-size и --icon-btn-opacity
-========================= */
-.icon-btn{ position:relative; }                 /* оставляем существующие стили */
-.icon-btn.has-icon{ color:transparent; font-size:0; } /* скрыть эмодзи-⚙️, если ставите свою иконку */
-
-.icon-btn::before{
-  content:"";
-  position:absolute; left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  width: var(--icon-btn-size, 22px);
-  height: var(--icon-btn-size, 22px);
-  background-image: var(--icon-btn-image, none); /* url("./assets/icons/settings.svg") */
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:contain;
-  opacity: var(--icon-btn-opacity, 1);
-  pointer-events:none;
-}
-
-/* Здесь задайте СВОИ значения (пути, размер, прозрачность).
-   Этот блок можно править когда угодно. */
-.icon-btn{
-  --icon-btn-image: url("./assets/icons/settings2.png"); /* <— ваш путь к иконке */
-  --icon-btn-size: 22px;                                 /* размер иконки */
-  --icon-btn-opacity: 1;                                  /* 0..1 */
-}
-/* =========================
-   BOTTOM NAV: CUSTOM ICONS
-   Как пользоваться:
-   1) Положи свои SVG/PNG в assets/icons/nav/
-   2) Укажи пути в правилах ниже (url("..."))
-   3) При желании подстрой размеры/прозрачность через переменные
-========================= */
-
-/* Базовый слой для иконок */
-.nav-item .nav-ic{
-  position: relative;
-  width: 24px; height: 24px;
-  line-height: 0;              /* чтобы текст-эмодзи не влиял на высоту */
-}
-.nav-item .nav-ic::before{
-  content:"";
-  position:absolute; left:50%; top:50%;
-  transform:translate(-50%,-50%);
-  width: var(--nav-ic-size, 22px);      /* настраиваемый размер */
-  height: var(--nav-ic-size, 22px);
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size:contain;
-  opacity: var(--nav-ic-opacity, .95);  /* настраиваемая прозрачность */
-  pointer-events:none;
-}
-
-/* --- Иконки по пунктам меню (поменяй url(...) на свои файлы) --- */
-.nav-item[data-action="tab-home"]    .nav-ic{ font-size:0; } /* скрываем эмодзи */
-.nav-item[data-action="tab-home"]    .nav-ic::before{ background-image:url("./assets/icons/главная.png"); }
-
-.nav-item[data-action="tab-earn"]    .nav-ic{ font-size:0; }
-.nav-item[data-action="tab-earn"]    .nav-ic::before{ background-image:url("./assets/icons/акции.png"); }
-
-.nav-item[data-action="tab-market"]  .nav-ic{ font-size:0; }
-.nav-item[data-action="tab-market"]  .nav-ic::before{ background-image:url("./assets/icons/заработать.png"); }
-
-.nav-item[data-action="tab-profile"] .nav-ic{ font-size:0; }
-.nav-item[data-action="tab-profile"] .nav-ic::before{ background-image:url("./assets/icons/профиль.png"); }
-
-/* Активный пункт — чуть ярче (по желанию) */
-.nav-item .nav-ic::before{ opacity:.85; }
-.nav-item.is-active .nav-ic::before{ opacity:1; }
-
-/* Хочешь управлять размером сразу для всех? — просто задай переменную на контейнер: 
-   .bottom-nav{ --nav-ic-size:24px; --nav-ic-opacity:.9; } 
-   Или точечно для одного пункта:
-   .nav-item[data-action="tab-market"]{ --nav-ic-size:26px; } 
-*/
-/* === Layout overrides (настройки отступов) === */
-:root{
-  --page-xpad: 22px;   /* Боковые поля страницы и шапки */
-  --header-top: 20px;  /* Отступ шапки от верхнего края */
-  --content-gap: 5px;  /* Зазор между шапкой и основным контентом */
-}
-
-/* Шапка: сверху --header-top, снизу зазор до контента --content-gap */
-.app-header{
-  margin: var(--header-top) auto var(--content-gap);
-  padding-left:  var(--page-xpad);
-  padding-right: var(--page-xpad);
-}
-
-/* Контент: синхроним горизонтальные поля и уменьшаем верхний паддинг */
-.content{
-  max-width: 520px;
-  margin: 0 auto;
-  padding: 8px var(--page-xpad) 88px; /* top=8px (раньше было 25px) */
-}
-/* === Avatar hard clip & geometry (iOS safe) === */
-.app-header .avatar{
-  position: relative;
-  width: 48px;           /* при желании поменяй */
-  height: 48px;
-  flex: 0 0 48px;        /* фиксированный круг во flex-рядке */
-  border-radius: 50%;
-  overflow: hidden;      /* ГЛАВНОЕ: обрезает фото строго по кругу */
-  background: linear-gradient(135deg,#151a2b,#2b3558); /* запасной фон */
-}
-.app-header .avatar img{
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;     /* заполняем без искажений */
-  border-radius: 50%;    /* страховка для некоторых WebView */
-  -webkit-user-drag: none;
-  user-select: none;
-}
-/* === Fixed background layer (scrolls content only) === */
-:root{
-  --bg-grad: radial-gradient(120% 160% at 50% -10%, #1a2037 0%, var(--bg) 55%, #0b0e1b 100%);
-}
-
-html, body{ background: transparent; }
-body::before{
-  content:"";
-  position: fixed;
-  inset: 0;
-  z-index: -1;                 /* всегда за всем контентом */
-  background: var(--bg-grad);  /* единый фон */
-  will-change: transform;
-  transform: translateZ(0);    /* iOS WebView стабильность */
-}
-
-/* Подстрахуем низ, чтобы контент «заходил» под нижнюю навигацию */
-.content{ padding-bottom: 88px; }
-/* === Floating bottom nav (fixed, rounded, elevated) === */
-:root{
-  --nav-bottom: 25px;                 /* на сколько поднять меню от низа */
-  --nav-sidepad: var(--page-xpad);    /* отступы слева/справа (как у контента) */
-  --nav-radius: var(--radius);        /* скругление как у остальных элементов */
-  --content-bottom-pad: 140px;        /* запас снизу, чтобы контент не прятался под меню */
-}
-
-.bottom-nav{
-  position: fixed;
-  left:  var(--nav-sidepad);
-  right: var(--nav-sidepad);
-  bottom: var(--nav-bottom);
-  z-index: 1000;                      /* поверх контента */
-
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-
-  padding: 10px;                      /* внутренний отступ самой плашки */
-  border-radius: var(--nav-radius);
-  background: rgba(11,14,27,0.85);    /* полупрозрачная плашка */
-  border: 1px solid var(--card-brd);  /* тонкая рамка по периметру */
-  box-shadow: var(--shadow);          /* «парящая» тень */
-  backdrop-filter: blur(10px);
-}
-
-/* контенту даём запас снизу, чтобы не перекрывался меню */
-.content{
-  padding-bottom: var(--content-bottom-pad) !important;
-}
-/* =========================================================
-   RESPONSIVE OVERRIDES — адаптивная колонка + safe-area
-   (вставить в КОНЕЦ файла, чтобы перебить предыдущее)
-========================================================= */
-
-/* 1) Адаптивная колонка и базовые отступы */
-:root{
-  /* ширина контентной колонки */
-  --column-w: clamp(360px, 92vw, 520px);
-
-  /* «плавающие» боковые поля и вертикальные зазоры */
-  --page-xpad-fluid: clamp(12px, 4vw, 24px);
-  --header-top-fluid: calc(env(safe-area-inset-top,0px) + clamp(12px, 3.5vh, 28px));
-  --content-gap-fluid: clamp(6px, 1.5vh, 14px);
-
-  /* высота нижнего меню (для расчёта паддинга контента) */
-  --nav-height: 72px;
-}
-
-/* немного шире колонка на планшете/десктопе */
-@media (min-width:768px){ :root{ --column-w: 640px; } }
-@media (min-width:1024px){ :root{ --column-w: 760px; } }
-
-/* 2) Шапка и контент — всегда по центру одной колонкой */
-.app-header{
-  max-width: var(--column-w) !important;
-  margin: var(--header-top-fluid) auto var(--content-gap-fluid) !important;
-  padding-left:  var(--page-xpad-fluid) !important;
-  padding-right: var(--page-xpad-fluid) !important;
-}
-.content{
-  max-width: var(--column-w) !important;
-  margin: 0 auto !important;
-  padding-left:  var(--page-xpad-fluid) !important;
-  padding-right: var(--page-xpad-fluid) !important;
-
-  /* большой нижний паддинг, чтобы контент не прятался под меню */
-  padding-bottom: calc(
-    env(safe-area-inset-bottom,0px) +
-    var(--nav-bottom, 25px) + var(--nav-height) + 24px
-  ) !important;
-}
-
-/* 3) Плавающее нижнее меню — по центру, с разумной шириной */
-.bottom-nav{
-  left: 50% !important;
-  right: auto !important;
-  transform: translateX(-50%);
-  bottom: calc(env(safe-area-inset-bottom,0px) + var(--nav-bottom, 25px)) !important;
-
-  /* ширина — не шире экрана, не шире колонки + её поля */
-  width: min(
-    100% - 2*var(--nav-sidepad, 12px),
-    calc(var(--column-w) + 2*var(--page-xpad-fluid))
-  ) !important;
-}
-/* === Hard fix: side paddings = 24px everywhere === */
-:root{
-  --page-xpad: 5px !important;        /* если где-то ещё используется */
-  --page-xpad-fluid: 5px !important;   /* наши последние оверрайды */
-  --nav-sidepad: 5px !important;       /* отступы плавающего меню */
-}
-
-/* на всякий случай синхронизируем ширину плавающего меню */
-.bottom-nav{
-  width: min(
-    100% - 2*var(--nav-sidepad),
-    calc(var(--column-w) + 2*var(--page-xpad-fluid))
-  ) !important;
-}
+/* Отступы между секциями */
+.content .grid{ margin-top: 8px; }
+.panel--gifts{  margin-top: 10px; }
+.panel--steam{  margin-top: 10px; }

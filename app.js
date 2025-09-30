@@ -139,7 +139,7 @@ async function initInfiniteCarousel(){
 
   for (let i=0;i<2;i++) originals.forEach(n=>track.appendChild(n.cloneNode(true)));
 
-  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 120;
+  const cssSpeed = parseFloat(getComputedStyle(panel).getPropertyValue("--scroll-speed")) || 30;
   let speed = cssSpeed;
 
   let offset = 0;
