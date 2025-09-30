@@ -85,7 +85,7 @@ body{
 }
 
 .content{ max-width: 520px; padding:  25px 25px 88px; margin: 0 auto; }
-.grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.grid{ display:grid; grid-template-columns:1fr 1fr; gap:5px; }
 
 /* =================================
    2) ОБЩИЙ КАРКАС ПАНЕЛИ (атомы)
@@ -216,12 +216,14 @@ body{
   --title-weight: 800;
   --title-color: #fff;
   --title-shadow: none;
+  --title-letter: 1px;
   /* позиция заголовка — в левом верхнем (relative) */
 
   /* Подзаголовок */
   --sub-size: 14px;
   --sub-color: rgba(255,255,255,.9);
   --sub-mt: 4px;
+  --sub-letter: 1px;
 }
 .panel--buy .panel__bg{
   background-image: url("./assets/backgrounds/stars4.png");
@@ -245,10 +247,12 @@ body{
   --title-size: 20px;
   --title-weight: 800;
   --title-color: #fff;
+  --title-letter: 1px;
 
   --sub-size: 14px;
   --sub-color: rgba(255,255,255,.9);
   --sub-mt: 4px;
+  --sub-letter: 1px;
 }
 .panel--sell .panel__bg{
   background-image: url("./assets/backgrounds/stars4.png");
@@ -275,10 +279,11 @@ body{
 
   --title-size: 20px;
   --title-weight: 900;
-  --title-letter: .3px;
+  --title-letter: 1px;
 
   --sub-size: 14px;
   --sub-mt: 6px;
+  --sub-letter: 1px;
 }
 .panel--gifts .panel__bg{
   background-image: url("./assets/backgrounds/gifts.jpg");
@@ -594,4 +599,73 @@ body::before{
 .content{
   padding-bottom: var(--content-bottom-pad) !important;
 }
+/* =========================================================
+   RESPONSIVE OVERRIDES — адаптивная колонка + safe-area
+   (вставить в КОНЕЦ файла, чтобы перебить предыдущее)
+========================================================= */
 
+/* 1) Адаптивная колонка и базовые отступы */
+:root{
+  /* ширина контентной колонки */
+  --column-w: clamp(360px, 92vw, 520px);
+
+  /* «плавающие» боковые поля и вертикальные зазоры */
+  --page-xpad-fluid: clamp(12px, 4vw, 24px);
+  --header-top-fluid: calc(env(safe-area-inset-top,0px) + clamp(12px, 3.5vh, 28px));
+  --content-gap-fluid: clamp(6px, 1.5vh, 14px);
+
+  /* высота нижнего меню (для расчёта паддинга контента) */
+  --nav-height: 72px;
+}
+
+/* немного шире колонка на планшете/десктопе */
+@media (min-width:768px){ :root{ --column-w: 640px; } }
+@media (min-width:1024px){ :root{ --column-w: 760px; } }
+
+/* 2) Шапка и контент — всегда по центру одной колонкой */
+.app-header{
+  max-width: var(--column-w) !important;
+  margin: var(--header-top-fluid) auto var(--content-gap-fluid) !important;
+  padding-left:  var(--page-xpad-fluid) !important;
+  padding-right: var(--page-xpad-fluid) !important;
+}
+.content{
+  max-width: var(--column-w) !important;
+  margin: 0 auto !important;
+  padding-left:  var(--page-xpad-fluid) !important;
+  padding-right: var(--page-xpad-fluid) !important;
+
+  /* большой нижний паддинг, чтобы контент не прятался под меню */
+  padding-bottom: calc(
+    env(safe-area-inset-bottom,0px) +
+    var(--nav-bottom, 25px) + var(--nav-height) + 24px
+  ) !important;
+}
+
+/* 3) Плавающее нижнее меню — по центру, с разумной шириной */
+.bottom-nav{
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%);
+  bottom: calc(env(safe-area-inset-bottom,0px) + var(--nav-bottom, 25px)) !important;
+
+  /* ширина — не шире экрана, не шире колонки + её поля */
+  width: min(
+    100% - 2*var(--nav-sidepad, 12px),
+    calc(var(--column-w) + 2*var(--page-xpad-fluid))
+  ) !important;
+}
+/* === Hard fix: side paddings = 24px everywhere === */
+:root{
+  --page-xpad: 5px !important;        /* если где-то ещё используется */
+  --page-xpad-fluid: 5px !important;   /* наши последние оверрайды */
+  --nav-sidepad: 5px !important;       /* отступы плавающего меню */
+}
+
+/* на всякий случай синхронизируем ширину плавающего меню */
+.bottom-nav{
+  width: min(
+    100% - 2*var(--nav-sidepad),
+    calc(var(--column-w) + 2*var(--page-xpad-fluid))
+  ) !important;
+}
