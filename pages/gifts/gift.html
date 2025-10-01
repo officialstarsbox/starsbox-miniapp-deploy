@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Подарок — StarsBox</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <!-- общий стиль мини-аппа -->
+  <link rel="stylesheet" href="../../styles.css" />
+  <!-- стиль этой страницы -->
+  <link rel="stylesheet" href="./gift.css" />
+</head>
+<body>
+  <!-- Шапка как в остальных страницах -->
+  <header class="app-header">
+    <div class="avatar">SB</div>
+    <div class="account">
+      <div class="title">StarsBox | Main account</div>
+      <div class="subtitle">@main_starsbox</div>
+    </div>
+    <button class="icon-btn has-icon" data-action="settings" aria-label="Настройки"></button>
+  </header>
+
+  <main class="content">
+    <section class="gift-page">
+      <!-- ВЕРХНЯЯ ПАНЕЛЬ: стрелка «назад» + заголовок -->
+      <div class="page-topbar">
+        <button id="giftBackBtn" class="back-hat" aria-label="Назад"></button>
+        <div class="page-title">Telegram-подарок</div>
+        <div class="page-spacer"></div>
+      </div>
+
+      <!-- HERO-превью подарка -->
+     <!-- Можно править: --hero-max (ширина карточки), --hero-img-max (масштаб гифки),
+     --hero-radius (скругление), --hero-pad (внутр. отступы) -->
+<div class="gift-hero"
+     style="--hero-max: 200px; --hero-img-max: 50%; --hero-radius: 20px; --hero-pad: 16px;">
+  <div class="gift-hero-card">
+    <div class="gift-hero-img-wrap">
+      <img id="giftImg" class="gift-hero-img" alt="Подарок" decoding="async" draggable="false">
+    </div>
+
+    <div class="gift-hero-caption">
+      <span class="muted">Подарок от StarsBox | Gift</span>
+    </div>
+
+    <div id="giftPreviewText" class="gift-hero-text muted">Текст из пунктов «Отправитель» и «Сообщение»</div>
+
+    <button class="ghost-btn" id="giftPreviewBtn" type="button">Просмотр</button>
+  </div>
+</div>
+
+      <!-- ФОРМА -->
+      <!-- Получатель -->
+      <div class="field-head">
+        <div class="field-title">Получатель</div>
+        <button type="button" class="text-link" id="btnFillSelf">купить себе❤️</button>
+      </div>
+      <div class="stars-username-container">
+        <img class="stars-username-logo" src="../../assets/icons/icon6.png" alt="">
+        <input id="telegramUsername" class="stars-username-input" type="text"
+               placeholder="Укажите username получателя" inputmode="text" autocomplete="username" />
+      </div>
+
+      <!-- Отправитель (по кнопке) -->
+      <div class="toggle-line">
+        <button type="button" class="toggle-btn" id="btnToggleSender">Указать отправителя</button>
+      </div>
+      <div id="senderBlock" class="optional-block" hidden>
+        <div class="field-head">
+          <div class="field-title">Подпись</div>
+          <button type="button" class="text-link" id="btnUseMyNick">Указать мой никнейм</button>
+        </div>
+
+        <div class="input-with-counter">
+          <img class="stars-username-logo" src="../../assets/icons/icon6.png" alt="">
+          <input id="senderInput" class="stars-username-input" type="text"
+                 placeholder="Укажите отправителя"
+                 maxlength="24" />
+          <div id="senderCnt" class="char-counter">0/24</div>
+        </div>
+
+        <div class="hint-box">
+          Вы можете указать юзернейм отправителя или написать в свободной форме.
+          Например: «От лучшего друга!»
+        </div>
+      </div>
+
+      <!-- Сообщение (по кнопке) -->
+      <div class="toggle-line">
+        <button type="button" class="toggle-btn" id="btnToggleMsg">Указать сообщение для получателя</button>
+      </div>
+      <div id="messageBlock" class="optional-block" hidden>
+        <div class="field-head">
+          <div class="field-title">Сообщение</div>
+        </div>
+        <div class="textarea-with-counter">
+          <textarea id="messageInput" class="stars-textarea" rows="3"
+                    placeholder="Напишите короткое сообщение получателю"
+                    maxlength="91"></textarea>
+          <div id="messageCnt" class="char-counter">0/91</div>
+        </div>
+      </div>
+
+      <!-- Важные блоки -->
+      <div class="warn-box">
+        <div class="warn-title">Предупреждение</div>
+        Если у получателя включена функция «Сообщения за звёзды» — он не получит текст из полей
+        «Подпись» и «Сообщение».
+      </div>
+
+      <div class="info-box">
+        <div class="info-title">Важная информация при отправке</div>
+        Все подарки отправляются от имени нашего сервиса <b>StarsBox | Gift</b>.
+      </div>
+
+      <!-- Итого + Оплата -->
+      <div class="stars-total-line">
+        <div class="stars-total-label">Итого</div>
+        <input id="totalAmount" class="stars-total-input" type="text" value="0.00 ₽" readonly />
+      </div>
+
+      <div class="stars-payment-actions gift-pay">
+        <button class="stars-btn" data-method="sbp_qr" id="paySbp">
+          <span class="btn-txt">Оплатить по СБП (QR-код)</span>
+          <span class="btn-ic"><img src="../../assets/icons/icon10.png" alt=""></span>
+        </button>
+        <button class="stars-btn" data-method="crypto" id="payCrypto">
+          <span class="btn-txt">Оплатить криптовалютой</span>
+          <span class="btn-ic"><img src="../../assets/icons/icon9.png" alt=""></span>
+        </button>
+      </div>
+
+      <!-- оферта/политика как на странице покупки -->
+      <div class="buy-legal-box">
+        <p class="buy-legal">
+          Нажимая кнопку оплаты, вы принимаете условия
+          <a id="offerLink" class="buy-legal-link" href="../../offer/index.html">Публичной оферты</a>
+          и
+          <a id="privacyLink" class="buy-legal-link" href="../../policy/index.html">Политики обработки персональных данных</a>
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- нижнее меню (активна «Главная») -->
+  <nav class="bottom-nav">
+    <button class="nav-item is-active" data-action="tab-home" data-home="../../index.html">
+      <div class="nav-ic"></div><div class="nav-tx">Главная</div>
+    </button>
+    <button class="nav-item" data-action="tab-earn"><div class="nav-ic"></div><div class="nav-tx">Акции</div></button>
+    <button class="nav-item" data-action="tab-market"><div class="nav-ic"></div><div class="nav-tx">Заработать</div></button>
+    <button class="nav-item" data-action="tab-profile"><div class="nav-ic"></div><div class="nav-tx">Профиль</div></button>
+  </nav>
+
+  <script>
+  (function(){
+    const back = encodeURIComponent(location.pathname + location.search);
+    document.getElementById('offerLink').href   = `../offer/index.html?back=${back}`;
+    document.getElementById('privacyLink').href = `../policy/index.html?back=${back}`;
+  })();
+</script>
+
+  <!-- логика страницы -->
+  <script src="./gift.js"></script>
+  <script src="../../app.js"></script>
+</body>
+</html>

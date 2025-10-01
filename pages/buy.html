@@ -22,6 +22,11 @@
 
   <!-- Контент -->
   <main class="content">
+    <!-- Локальная панель страницы: назад + заголовок -->
+  <div class="page-bar">
+    <button id="backBtn" class="back-btn" type="button" aria-label="Назад"></button>
+    <h1 class="page-title">Купить звёзды</h1>
+  </div>
     <section class="buy-page" aria-labelledby="buyTitle">
       
       <!-- Заголовок поля + действия -->
@@ -129,22 +134,49 @@
       <div class="buy-legal-box">
   <p class="buy-legal">
     Нажимая кнопку оплаты, вы принимаете условия
-    <span class="buy-legal-link">Публичной оферты</span>
+    <a id="offerLink" class="buy-legal-link" href="./offer/index.html">Публичной оферты</a>
     и
-    <span class="buy-legal-link">Политики обработки персональных данных</span>,
+    <a id="privacyLink" class="buy-legal-link" href="./policy/index.html">Политики обработки персональных данных</a>,
     а также даёте согласие на обработку персональных данных.
   </p>
 </div>
+<script>
+  (function(){
+    const back = encodeURIComponent(location.pathname + location.search);
+    document.getElementById('offerLink').href   = `./offer/index.html?back=${back}`;
+    document.getElementById('privacyLink').href = `./policy/index.html?back=${back}`;
+  })();
+</script>
     </section>
   </main>
 
+  <script>
+  // Нормализуем переходы по ссылкам в блоке оферты/политики
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.buy-legal .buy-legal-link').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        // Собираем абсолютный URL относительно текущей страницы
+        const url = new URL(a.getAttribute('href'), window.location.href);
+        // Гарантируем маркер возврата
+        url.searchParams.set('from', 'buy');
+        // Внутренний переход в том же WebView
+        window.location.href = url.pathname + (url.search ? url.search : '');
+      });
+    });
+  });
+</script>
+
   <!-- Низ: всегда активна «Главная» -->
   <nav class="bottom-nav">
-    <button class="nav-item is-active" data-action="tab-home"><div class="nav-ic"></div><div class="nav-tx">Главная</div></button>
-    <button class="nav-item" data-action="tab-earn"><div class="nav-ic"></div><div class="nav-tx">Акции</div></button>
-    <button class="nav-item" data-action="tab-market"><div class="nav-ic"></div><div class="nav-tx">Заработать</div></button>
-    <button class="nav-item" data-action="tab-profile"><div class="nav-ic"></div><div class="nav-tx">Профиль</div></button>
-  </nav>
+  <button class="nav-item is-active" data-action="tab-home" data-home="../index.html">
+    <div class="nav-ic"></div><div class="nav-tx">Главная</div>
+  </button>
+  <button class="nav-item" data-action="tab-earn"><div class="nav-ic"></div><div class="nav-tx">Акции</div></button>
+  <button class="nav-item" data-action="tab-market"><div class="nav-ic"></div><div class="nav-tx">Заработать</div></button>
+  <button class="nav-item" data-action="tab-profile"><div class="nav-ic"></div><div class="nav-tx">Профиль</div></button>
+</nav>
+
 
   <!-- Логика формы: порт из сайта -->
   <script src="./buy.js"></script>

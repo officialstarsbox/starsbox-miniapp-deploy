@@ -325,6 +325,44 @@
   .buy-page .stars-total-input{ font-size:22px; }
 }
 
+/* ===== Локальная панель страницы (назад + заголовок) ===== */
+.page-bar{
+  max-width: var(--column-w, clamp(360px, 92vw, 520px));
+  margin: 0 auto 20px;
+  padding: 0 var(--page-xpad, 5px);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* минималистичная «шляпка» стрелки без ножки */
+.back-btn{
+  appearance: none;
+  border: 1px solid var(--card-brd);
+  background: rgba(255,255,255,.06);
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-btn::before{
+  content: "";
+  width: 12px; height: 12px;
+  border-left: 2px solid var(--text);
+  border-top: 2px solid var(--text);
+  transform: translateX(2px) rotate(-45deg); /* только «шляпка», без ножки */
+}
+.back-btn:active{ transform: translateY(1px); }
+
+.page-title{
+  margin: 0;
+  font: 800 35px/1.1 var(--font-accent, var(--font-ui));
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 
 

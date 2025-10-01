@@ -18,24 +18,44 @@ function showStub(title, message){
 }
 function bindStubs(){
   document.querySelectorAll("[data-action]").forEach(el=>{
-    el.addEventListener("click", (ev)=>{
+    el.addEventListener("click", (e)=>{
       const act = el.getAttribute("data-action");
 
-      // вкладки — просто подсветка
+      // Кнопка "Главная": если задан data-home — переходим
+      if (act === "tab-home"){
+        const target = el.dataset.home || el.getAttribute("data-home");
+        if (target) window.location.href = target;
+        return;
+      }
+
+      // Если на элементе задан явный адрес — навигируем туда
+      const explicitHref = el.dataset.href || el.getAttribute("data-href");
+      if (explicitHref) {
+        window.location.href = explicitHref;
+        return;
+      }
+
+      // Переключатели вкладок (пока заглушки визуала)
       if (act?.startsWith("tab-")) {
         document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("is-active"));
         el.classList.add("is-active");
         return;
       }
 
-      // <<< ДОБАВЛЕНО: переход на страницу покупки
+      // Явный роутинг по action (минимум нужного)
       if (act === "buy-stars") {
-        location.href = "pages/buy.html";
+        window.location.href = "./pages/buy.html";
         return;
       }
 
-      // остальные пока заглушкой
-      const nice = { "buy-stars":"Купить звёзды", "sell-stars":"Продать звёзды", "gifts":"Подарки", "steam":"STEAM", "settings":"Настройки" }[act] || act;
+      // Остальные действия — заглушка
+      const nice = {
+        "sell-stars":"Продать звёзды",
+        "gifts":"Подарки",
+        "steam":"STEAM",
+        "settings":"Настройки",
+        "buy-stars":"Купить звёзды"
+      }[act] || act;
       showStub(nice, "Раздел в разработке.");
     });
   });
@@ -176,21 +196,54 @@ async function initInfiniteCarousel(){
   });
 }
 
-/* ---------- Init ---------- */
-bindStubs();
-window.addEventListener("DOMContentLoaded", () => {
-  populateHeaderFromTelegram();
-  applyTitleLimit(23);
-  initInfiniteCarousel();
-  debugOverlay();
+/* ---------- Routing / actions (делегирование) ---------- */
+(function enableRouting(){
+  const ROUTE = {
+    "buy-stars": "./pages/buy.html",          // путь к странице покупки звёзд
+    "gifts":     "./pages/gifts/index.html"   // страница каталога подарков
+  };
 
-  // держим активной «Главная» на внутренних страницах
-  const homeBtn = document.querySelector('.bottom-nav [data-action="tab-home"]');
-  if (homeBtn) {
-    document.querySelectorAll('.bottom-nav .nav-item').forEach(n => n.classList.remove('is-active'));
-    homeBtn.classList.add('is-active');
-  }
-});
+  // Один обработчик на весь документ
+  document.addEventListener("click", (e)=>{
+    const el = e.target.closest("[data-action]");
+    if (!el) return;
+
+    const act = el.getAttribute("data-action");
+
+    // Нижняя кнопка «Главная» — вернуть на главную, если есть data-home
+    if (act === "tab-home"){
+      const target = el.dataset.home || el.getAttribute("data-home");
+      if (target) window.location.href = target;   // на главной data-home можно не задавать
+      e.preventDefault();
+      return;
+    }
+
+    // Если для действия задан маршрут — переходим
+    if (ROUTE[act]){
+      window.location.href = ROUTE[act];
+      e.preventDefault();
+      return;
+    }
+
+    // Остальные пункты нижнего меню пока просто подсвечиваем
+    if (act && act.startsWith("tab-")) {
+      document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("is-active"));
+      el.classList.add("is-active");
+      e.preventDefault();
+      return;
+    }
+
+    // Прочие действия — заглушка
+    const nice = {
+      "sell-stars":"Продать звёзды",
+      "steam":"STEAM",
+      "settings":"Настройки"
+    }[act] || act;
+    showStub(nice, "Раздел в разработке.");
+  }, { passive: true });
+
+  // Если где-то ещё остался старый bindStubs(), его можно удалить/не вызывать.
+})();
 
 // уже есть: initInfiniteCarousel() в DOMContentLoaded
 // добавим переинициализацию при возврате на вкладку/при ресайзе
@@ -201,5 +254,30 @@ document.addEventListener('visibilitychange', () => {
 });
 window.addEventListener('resize', () => {
   try { initInfiniteCarousel(); } catch (e) {}
+});
+
+// --- Глобальная кнопка "назад" ---
+// Сработает для любого элемента с атрибутом [data-back]
+document.addEventListener('click', (e) => {
+  const backBtn = e.target.closest('[data-back]');
+  if (!backBtn) return;
+
+  e.preventDefault();
+
+  // 1) если есть история внутри мини-аппа — вернёмся
+  if (history.length > 1) {
+    history.back();
+    return;
+  }
+
+  // 2) fallback по ?from=... (buy|gifts), иначе — на список подарков
+  const qs = new URLSearchParams(location.search);
+  const from = qs.get('from');
+  const fallback =
+    from === 'buy'   ? '../buy.html' :
+    from === 'gifts' ? './index.html' :
+                       './index.html';
+
+  location.href = fallback;
 });
 

@@ -1,0 +1,171 @@
+/* =========================
+   Gifts page — тема
+========================= */
+.gifts-page{
+  --grid-gap: 5px;
+  --card-radius: 12px;
+  --card-bg: var(--card);
+  --card-brd: var(--card-brd);
+  --card-pad: 10px;
+  --media-ratio: 1;               /* квадрат */
+  --name-size: 14px;
+}
+
+/* Верхняя панель: стрелка + заголовок */
+.pagebar{
+  max-width: var(--column-w);
+  margin: 0 auto 8px;
+  padding: 0 var(--page-xpad);
+  display:flex; align-items:center; gap:10px;
+}
+/* минималистичная «шляпка» стрелки без ножки */
+.back-btn{
+  appearance: none;
+  border: 1px solid var(--card-brd);
+  background: rgba(255,255,255,.06);
+  width: 36px; height: 36px;
+  border-radius: 12px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-btn::before{
+  content: "";
+  width: 12px; height: 12px;
+  border-left: 2px solid var(--text);
+  border-top: 2px solid var(--text);
+  transform: translateX(2px) rotate(-45deg); /* только «шляпка», без ножки */
+}
+.back-btn:active{ transform: translateY(1px); }
+
+.page-title{
+  margin: 0;
+  font: 800 35px/1.1 var(--font-accent, var(--font-ui));
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ===== Gifts page spacing ===== */
+.gifts-page{
+  /* общий контрол отступа между заголовком и карточками */
+  --gifts-gap: 25px;           /* поменяй на любое значение */
+}
+
+/* если у тебя над карточками топбар с заголовком */
+.gifts-page .page-topbar{ 
+  margin-bottom: var(--gifts-gap);
+}
+
+/* или вместо этого можно задать отступ самому гриду карточек */
+.gifts-page .gifts-grid{
+  margin-top: var(--gifts-gap);
+}
+
+/* при желании — побольше отступ на планшетах/десктопе */
+@media (min-width: 768px){
+  .gifts-page{ --gifts-gap: 24px; }
+}
+
+/* Сетка карточек */
+.gifts-grid{
+  max-width: var(--column-w);
+  margin: 8px auto 0;
+  padding: 0 var(--page-xpad);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+/* Две колонки на очень узких экранах */
+@media (max-width: 380px){
+  .gifts-grid{ grid-template-columns: repeat(2, 1fr); }
+}
+/* Четыре колонки на планшете */
+@media (min-width: 768px){
+  .gifts-grid{ grid-template-columns: repeat(4, 1fr); }
+}
+
+.gift-card{
+  display:block;
+  background: var(--card-bg);
+  border:1px solid var(--card-brd);
+  border-radius: var(--card-radius);
+  box-shadow: var(--shadow);
+  overflow:hidden;
+  text-decoration:none; color:inherit;
+  transition: transform .12s ease, border-color .2s ease, background .2s ease;
+}
+.gift-card:active{ transform: scale(.98); }
+
+/* Медиа-блок с нужным аспектом */
+.gift-media{
+  position:relative;
+  width:100%;
+  padding-top: calc(var(--media-ratio) * 100%);
+  display:block;
+}
+.gift-media img{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit: contain;            /* меняй на cover, если нужно заполнение */
+  display:block;
+}
+
+/* Подвал карточки */
+.gift-meta{
+  display:flex; align-items:center; justify-content:center;
+  padding: 8px var(--card-pad) 10px;
+}
+.gift-name{
+  font: 700 var(--name-size)/1.1 var(--font-ui);
+  color: #fff;
+  text-align:center;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ====== PRICE BADGE (₽) ====== */
+.gift-card{
+  position: relative;
+  padding-bottom: 54px;              /* место под плашку, чтобы не наезжала */
+}
+
+.gift-price{
+  position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+  display:inline-flex; align-items:center; gap:6px;
+
+  padding:8px 14px;
+  border-radius:14px;
+
+  background: rgba(35, 41, 58, .85);             /* тёмная «таблетка» */
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,.25),
+    0 8px 18px rgba(0,0,0,.30);
+
+  color:#ffbd4a;                                  /* «золотой» текст */
+  font: 800 14px/1 var(--font-ui);
+  letter-spacing:.2px;
+}
+
+/* символ ₽ слева от числа */
+.gift-price .rub{
+  display:inline-block;
+  font-weight:900;
+  transform: translateY(-.5px);
+}
+.gift-price .rub::after{ content:"₽"; }
+
+/* лёгкие «искры» как на скрине */
+.gift-price::before,
+.gift-price::after{
+  content:"";
+  position:absolute; inset:-3px;
+  background:
+    radial-gradient(2px 2px at 8px 12px, rgba(255,196,0,.55) 49%, transparent 51%),
+    radial-gradient(1.7px 1.7px at 26px 8px, rgba(255,196,0,.35) 49%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 42px 16px, rgba(255,196,0,.28) 49%, transparent 51%);
+  pointer-events:none;
+}
+.gift-price::after{ transform:scaleX(-1); opacity:.5; }
