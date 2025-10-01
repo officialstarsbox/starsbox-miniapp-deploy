@@ -26,7 +26,7 @@
 /* ===== Верхняя планка (стрелка + заголовок) ===== */
 .page-topbar{
   display:flex; align-items:center; gap:10px;
-  margin: 0 4px 12px;
+  margin: 30px 4px 20px;
 }
 .back-hat{
   width:36px; height:36px; border-radius:10px; border:1px solid var(--card-brd);

@@ -38,7 +38,7 @@
 /* ===== Локальная панель страницы (назад + заголовок) ===== */
 .page-bar{
   max-width: var(--column-w, clamp(360px, 92vw, 520px));
-  margin: 0 auto 20px;
+  margin: 30px auto 20px;
   padding: 0 var(--page-xpad, 5px);
   display: flex;
   align-items: center;
