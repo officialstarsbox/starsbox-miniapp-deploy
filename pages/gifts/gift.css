@@ -4,19 +4,19 @@
 
   /* поля (совместимо с buy-страницей) */
   --fields-gap: 12px;
-  --field-bg: #fff;
-  --field-text: #000;
-  --field-ph: #9aa0a6;
+  --field-bg:  rgba(255,255,255,.08);
+  --field-text: #ffffff;
+  --field-ph: #ffffff;
   --field-brd: #d9dbe0;
-  --field-radius: 30px;
-  --field-focus-brd: #030056;
+  --field-radius: 14px;
+  --field-focus-brd: #ffffff;
   --field-focus-glow: rgba(255,255,255,.2);
 
   /* вспомогательные блоки */
   --hint-bg: rgba(255,255,255,.06);
   --warn-bg: rgba(255,80,80,.12);
   --warn-brd: rgba(255,80,80,.35);
-  --info-bg: rgba(255,255,255,.06);
+  --info-bg: rgba(236, 161, 48, 0.23);
 
   margin: 0 auto;
   max-width: var(--w);
@@ -26,7 +26,7 @@
 /* ===== Верхняя планка (стрелка + заголовок) ===== */
 .page-topbar{
   display:flex; align-items:center; gap:10px;
-  margin: 30px 4px 20px;
+  margin: 20px 4px 20px;
 }
 .back-hat{
   width:36px; height:36px; border-radius:10px; border:1px solid var(--card-brd);
@@ -43,13 +43,13 @@
 /* ===== HERO подарка ===== */
 .gift-hero{ display:flex; flex-direction:column; align-items:center; gap:10px; }
 .gift-pill{
-  display:inline-block; padding:6px 12px; border-radius:18px;
+  display:inline-block; padding:6px 12px; border-radius:14px;
   background: rgba(255,255,255,.08);
   border:1px solid var(--card-brd); color:#fff; font-weight:700; letter-spacing:.2px;
 }
 .gift-hero-card{
   width:80%; background: rgba(255,255,255,.06); border:1px solid var(--card-brd);
-  border-radius:24px; padding:20px 16px; text-align:center; box-shadow: var(--shadow);
+  border-radius:14px; padding:20px 16px; text-align:center; box-shadow: var(--shadow);
 }
 .gift-hero-img-wrap{
   width:100%; min-height:120px;
@@ -76,22 +76,21 @@
 }
 .field-title{ font: 700 18px/1 var(--font-ui); color:#fff; opacity:.9; }
 .text-link{
-  appearance:none; border:0; background:transparent; padding:4px 6px;
-  font: 600 14px/1 var(--font-ui); color:#cfe0ff; cursor:pointer; border-radius:8px;
+  appearance:none; border:0; background:transparent; padding:4px 0px;
+  font: 600 14px/1 var(--font-ui); color:#cfe0ff; cursor:pointer; border-radius:14px;
 }
 .text-link:active{ transform:translateY(1px) }
 
 .stars-username-container{ position:relative; max-width:500px; margin:0 auto var(--fields-gap); }
 .stars-username-input{
   width:100%; height:42px; padding-left:50px; padding-right:14px;
-  font-size:13px; letter-spacing:1.05px; color: var(--field-text);
-  background: var(--field-bg); border:1px solid var(--field-brd); border-radius: var(--field-radius);
-  transition: border-color .2s, box-shadow .2s;
+  font-size:13px; letter-spacing:1.05px; color: #e3e3e3;
+  background: var(--field-bg); border:0px solid var(--field-brd); border-radius: var(--field-radius);
 }
-.stars-username-logo{ position:absolute; left:20px; top:50%; transform:translateY(-50%); width:20px; height:20px; }
+.stars-username-logo{ position:absolute; left:20px; top:50%; transform:translateY(-50%); width:17px; height:17px; }
 .stars-username-input:focus,
 .stars-username-input:focus-visible{
-  outline:none; border-color: var(--field-focus-brd); box-shadow: 0 0 8px var(--field-focus-glow);
+  outline:none; border-color: var(--field-focus-brd);
 }
 
 /* ввод с счётчиком */
@@ -102,18 +101,18 @@
   font: 600 12px/1 var(--font-ui); color: var(--muted); pointer-events:none;
 }
 .textarea-with-counter .char-counter{
-  top:auto; bottom:8px; transform:none;
+  top:auto; bottom:15px; transform:none;
 }
 .stars-textarea{
   width:100%; padding:10px 40px 26px 12px; font: 500 16px/1.35 var(--font-ui);
   color: var(--field-text); background: var(--field-bg);
-  border:1px solid var(--field-brd); border-radius:16px; resize:vertical; min-height:90px;
+  border:0px; border-radius:14px; resize:vertical; min-height:90px;
 }
-.stars-textarea:focus{ outline:none; border-color: var(--field-focus-brd); box-shadow: 0 0 8px var(--field-focus-glow); }
+.stars-textarea:focus{ outline:none; border-color: var(--field-focus-brd); }
 
 .toggle-line{ max-width:100%; margin: 16px auto; }
 .toggle-btn{
-  width:100%; padding:10px 14px; border-radius:22px; background:transparent;
+  width:100%; padding:10px 14px; border-radius:14px; background:transparent;
   border:1px solid #fff; color:#fff; cursor:pointer;
 }
 .optional-block{ margin-top:8px; }
@@ -121,16 +120,16 @@
 /* инфо-блоки */
 .hint-box{
   max-width:520px; margin: 8px auto 0; padding:10px 12px;
-  background: var(--hint-bg); border:1px solid var(--card-brd); border-radius:12px; color: var(--muted); font-size:14px;
+  background: var(--hint-bg); border:1px solid var(--card-brd); border-radius:14px; color: var(--muted); font-size:14px;
 }
 .warn-box{
   max-width:520px; margin: 10px auto 0; padding:12px 12px;
-  background: var(--warn-bg); border:1px solid var(--warn-brd); border-radius:12px; color:#ffdede; font-size:15px;
+  background: var(--warn-bg); border:1px solid var(--warn-brd); border-radius:14px; color:#ffffff; font-size:15px;
 }
 .warn-title{ font-weight:800; margin-bottom:2px; }
 .info-box{
   max-width:520px; margin: 8px auto 0; padding:10px 12px;
-  background: var(--info-bg); border:1px solid var(--card-brd); border-radius:12px; color: var(--muted); font-size:15px;
+  background: var(--info-bg); border:1px solid var(--card-brd); border-radius:14px; color:#fff; font-size:15px;
 }
 
 /* Итого и оплата (иконки справа от текста) */
@@ -143,7 +142,7 @@
 
 .gift-pay{ max-width:500px; margin:18px auto 0; display:grid; grid-template-columns:1fr; gap:10px; }
 .gift-pay .stars-btn{
-  width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--card-brd);
+  width:100%; padding:12px 14px; border-radius:14px; border:1px solid var(--card-brd);
   background:rgba(255,255,255,.9); color:#0b0e1b; font-weight:400; cursor:pointer;
   display:flex; align-items:center; justify-content:center; gap:20px;
 }
@@ -153,7 +152,7 @@
 /* Легал как на buy */
 .buy-legal-box{
   margin: 10px auto 0; padding:10px 12px; max-width:520px;
-  background: rgba(255,255,255,.06); border:1px solid var(--card-brd); border-radius:12px;
+  background: rgba(255,255,255,.06); border:1px solid var(--card-brd); border-radius:14px;
 }
 .buy-legal{ margin:0; color: var(--muted); font-size:12px; text-align:center; }
 .buy-legal a{ color: inherit; text-decoration: underline; text-underline-offset:2px; }

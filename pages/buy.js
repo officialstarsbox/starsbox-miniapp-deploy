@@ -157,7 +157,7 @@ function toggleStarsPay(disabled){
 function refreshStarsSelectionUI(){
   const cards = document.querySelectorAll('.stars-package-item');
   cards.forEach(c => c.classList.remove('is-selected'));
-  const checked = document.querySelector('.stars-package-radio:checked');
+  const checked = document.querySelector('.stars-package-radio:focus');
   if (checked) checked.closest('.stars-package-item')?.classList.add('is-selected');
 }
 
