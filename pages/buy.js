@@ -1,8 +1,13 @@
-/* StarsBox Mini App — BUY page logic */
+/* StarsBox Mini App — BUY page logic (fixed) */
 
 const PRICE_PER_STAR = 1.6; // ₽ за 1 звезду
 
+// Телеграм WebApp объект (безопасно)
+const tg = window.Telegram?.WebApp || null;
+
 document.addEventListener('DOMContentLoaded', () => {
+  tg?.ready?.(); // корректная инициализация WebApp
+
   // поля
   const usernameEl = document.getElementById('telegramUsername');
   const qtyEl      = document.getElementById('starsQuantity');
@@ -10,12 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
   attachUsernameInputGuards();
   bindUsernameHelpers();
 
-  // (если используешь формы) — отключим нативную браузерную валидацию,
-  // чтобы не появлялась «красная» обводка
+  // отключаем нативную браузерную валидацию у форм (без красной обводки)
   document.querySelectorAll('form').forEach(f => f.setAttribute('novalidate','novalidate'));
 
-
-  // ввод кол-ва вручную — снимаем выбор пакета
+  // ввод количества вручную — снимаем выбор пакета и пересчитываем итого
   if (qtyEl) {
     qtyEl.addEventListener('input', () => {
       clearPackageSelection();
@@ -42,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleBtn.addEventListener('click', () => {
       const opened = hiddenBox.classList.toggle('is-open');
       toggleBtn.textContent = opened ? 'Свернуть список пакетов' : 'Показать все пакеты';
-      toggleBtn.blur(); // снимаем фокус, чтобы не было залипания стилей
+      toggleBtn.blur(); // снимаем фокус, чтобы не «залипала»
     });
   }
 
@@ -50,13 +53,16 @@ document.addEventListener('DOMContentLoaded', () => {
   updateStarsTotalAmount();
   refreshStarsSelectionUI();
 
-  // автодобавление @ в username по уходу фокуса
+  // автодобавление @ в username при потере фокуса
   if (usernameEl) usernameEl.addEventListener('blur', updateTelegramUsername);
+
+  // кнопка «Назад» в верхнем баре
+  document.getElementById("backBtn")?.addEventListener("click", goBack);
 });
 
 /* --- utils --- */
 
-/** снять отметку у всех пакетов (и визуальный класс) */
+// снять отметку у всех пакетов (и визуальный класс)
 function clearPackageSelection(){
   document.querySelectorAll('.stars-package-radio:checked')
     .forEach(r => { r.checked = false; });
@@ -64,7 +70,7 @@ function clearPackageSelection(){
     .forEach(el => el.classList.remove('is-selected'));
 }
 
-/** пересчёт «Итого» + блок/разблок кнопок оплаты */
+// пересчёт «Итого» + блок/разблок кнопок оплаты
 function updateStarsTotalAmount(){
   const qtyEl   = document.getElementById('starsQuantity');
   const totalEl = document.getElementById('totalAmount');
@@ -80,13 +86,16 @@ function updateStarsTotalAmount(){
   toggleStarsPay(!(okU && okQ));
 }
 
-/** автодобавить @ */
+// автодобавить @ (по твоей логике)
 function updateTelegramUsername(){
   const input = document.getElementById('telegramUsername');
   if (!input) return;
   let v = (input.value || '').trim();
   if (v && !v.startsWith('@')) input.value = '@' + v;
 }
+
+// Валидация username
+const TG_RE = /^@?[a-zA-Z0-9_]{5,32}$/;
 
 function validateUsername(inputEl){
   if (!inputEl) return false;
@@ -100,10 +109,8 @@ function validateUsername(inputEl){
 // Разрешаем только @ в начале + a-z A-Z 0-9 _
 function sanitizeUsernameValue(raw){
   if (!raw) return "";
-  let v = raw.replace(/\s+/g, "");                   // без пробелов
-  // оставляем только допустимые символы
+  let v = raw.replace(/\s+/g, "");
   v = v.replace(/[^@a-zA-Z0-9_]/g, "");
-  // @ допустим только первым символом
   if (v.startsWith("@")) v = "@" + v.slice(1).replace(/@/g, "");
   else v = v.replace(/@/g, "");
   return v;
@@ -122,23 +129,17 @@ function attachUsernameInputGuards(){
       input.value = cleaned;
       try { input.setSelectionRange(pos, pos); } catch {}
     }
-    // актуализируем валидацию и состояние оплаты
-    const okU = validateUsername(input, document.getElementById('starsUsernameMsg'));
-    const okQ = validateStarsQty(document.getElementById('starsQuantity'), document.getElementById('starsQtyMsg'));
+    const okU = validateUsername(input);
+    const okQ = validateStarsQty(document.getElementById('starsQuantity'));
     toggleStarsPay(!(okU && okQ));
   });
 
-  // при потере фокуса гарантируем @ в начале (по твоей логике)
   input.addEventListener("blur", () => {
     if (!input.value) return;
     if (!input.value.startsWith("@")) input.value = "@" + input.value;
-    validateUsername(input, document.getElementById('starsUsernameMsg'));
+    validateUsername(input);
   });
 }
-
-// переопределяем regex на «строгое» правило Telegram
-const TG_RE = /^@?[a-zA-Z0-9_]{5,32}$/;
-
 
 function validateStarsQty(inputEl){
   if (!inputEl) return false;
@@ -153,15 +154,36 @@ function toggleStarsPay(disabled){
     .forEach(btn => btn.toggleAttribute('disabled', !!disabled));
 }
 
-/** обновить визуальную подсветку выбранного пакета */
+// визуальная подсветка выбранного пакета — по CHECKED, не по фокусу
 function refreshStarsSelectionUI(){
   const cards = document.querySelectorAll('.stars-package-item');
   cards.forEach(c => c.classList.remove('is-selected'));
-  const checked = document.querySelector('.stars-package-radio:focus');
+  const checked = document.querySelector('.stars-package-radio:checked');
   if (checked) checked.closest('.stars-package-item')?.classList.add('is-selected');
 }
 
-/* Заглушка оплаты; сюда потом подключишь мерчанта и fragment-service */
+// «Купить себе» — берём username из Telegram WebApp
+function fillUsernameForSelf(){
+  const el = document.getElementById("telegramUsername");
+  if (!el) return;
+  const user = tg?.initDataUnsafe?.user || null;
+  const uname = user?.username; // публичный @username у аккаунта
+  if (!uname) {
+    alert("В вашем аккаунте Telegram не задан публичный @username. Введите его вручную.");
+    return;
+  }
+  el.value = "@" + sanitizeUsernameValue(uname);
+  el.dispatchEvent(new Event("input", {bubbles:true}));
+}
+
+function bindUsernameHelpers(){
+  document.getElementById("btnFillSelf")?.addEventListener("click", fillUsernameForSelf);
+  document.getElementById("btnPickContact")?.addEventListener("click", () => {
+    alert("Выбор из контактов будет добавлен позже.");
+  });
+}
+
+/* Оплата: заглушка — подключишь мерчанта здесь */
 async function payStars(method){
   const username = document.getElementById('telegramUsername')?.value?.trim();
   const qty = parseInt(document.getElementById('starsQuantity')?.value || '0', 10);
@@ -169,44 +191,13 @@ async function payStars(method){
       !validateStarsQty(document.getElementById('starsQuantity'))) return;
   alert(`Оплата (${method}): ${username}, ${qty} звёзд`);
 }
-
-/* экспорт, если вызываешь из HTML */
 window.payStars = payStars;
 
-document.addEventListener('DOMContentLoaded', () => {
-  // ...
-  document.querySelectorAll('form').forEach(f => f.setAttribute('novalidate','novalidate'));
-  // ...
-});
-
-function fillUsernameForSelf(){
-  const el = document.getElementById("telegramUsername");
-  if (!el) return;
-  const u = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-  const uname = u?.username;
-  if (!uname) {
-    showStub("Нет username", "В вашем аккаунте Telegram не задан публичный @username. Введите его вручную.");
-    return;
-    }
-  el.value = "@" + sanitizeUsernameValue(uname);
-  el.dispatchEvent(new Event("input", {bubbles:true}));
-}
-
-function bindUsernameHelpers(){
-  document.getElementById("btnFillSelf")?.addEventListener("click", fillUsernameForSelf);
-  document.getElementById("btnPickContact")?.addEventListener("click", pickUsernameFromContacts);
-}
-
-// ===== Back: history.back() с резервом на главную =====
+// Назад (если истории нет — на главную)
 function goBack(){
-  // в мини-аппах бывает пустая история — делаем запасной переход
   if (document.referrer && document.referrer !== location.href && history.length > 1){
     history.back();
   } else {
     window.location.href = "../index.html";
   }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("backBtn")?.addEventListener("click", goBack);
-});
