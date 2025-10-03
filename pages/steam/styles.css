@@ -1,0 +1,427 @@
+/* =========================
+   ТЕМА СТРАНИЦЫ (локальные переменные)
+   ========================= */
+.steam-page{
+  /* Узкая колонка интерфейса */
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета и тени */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Баннер СНГ — можно переопределить */
+  --cis-banner-bg: rgba(255,255,255,.06);
+
+  /* Цвет панели уведомления (настраиваемый) */
+  --notice-bg: #1a2340;
+
+  /* Цвет панели «Где найти логин?» (настраиваемый) */
+  --help-bg: #121a33;
+}
+
+/* БАЗОВАЯ РАЗМЕТКА */
+html, body{
+  height: 100%;
+}
+body.steam-page{
+  margin: 0;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+}
+
+/* =========================
+   ОВЕРЛЕЙ С БЛЮРОМ + МОДАЛ (стартовое уведомление)
+   ========================= */
+.notice-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  background: rgba(9,13,24,.55);     /* затемнение */
+  backdrop-filter: blur(10px);        /* блюр подложки */
+}
+.notice-overlay[hidden]{ display: none; }
+.notice-modal{
+  width: min(520px, 92vw);
+  background: var(--notice-bg);
+  color: var(--text);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.notice-title{
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 16px;
+}
+.notice-text{
+  margin: 0 0 14px 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.notice-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-active);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s ease-in-out;
+  margin: 12px auto 0;
+}
+.notice-btn:hover{
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+.notice-btn:active{ transform: translateY(1px); }
+.notice-btn:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========================
+   ОВЕРЛЕЙ С БЛЮРОМ + МОДАЛ (подсказка «Где найти логин?»)
+   ========================= */
+.help-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: rgba(9,13,24,.55);
+  backdrop-filter: blur(10px);
+}
+.help-overlay[hidden]{ display: none; }
+.help-modal{
+  width: min(320px, 94vw);
+  background: var(--help-bg);
+  color: var(--text);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.help-title{
+  margin: 0 0 8px 0;
+  font-weight: 700;
+  font-size: 16px;
+  text-align: left;
+}
+.help-text{
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  text-align: left;
+}
+.help-image{
+  margin: 8px 0 14px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--card-brd);
+}
+.help-image img{
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.help-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-active);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s ease-in-out;
+  margin: 0 auto;
+}
+.help-btn:hover{
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+.help-btn:active{ transform: translateY(1px); }
+.help-btn:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========================
+   ВЕРХНИЙ БАР
+   ========================= */
+.topbar{
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: 44px 1fr 44px; /* слева кнопка, по центру заголовок */
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px;
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Кнопка «назад» — стрелка CSS */
+.back-btn{
+  justify-self: start;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 10px;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s ease-in-out;
+}
+.back-btn::before{
+  content: "";
+  width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========================
+   КОНТЕЙНЕР КОНТЕНТА
+   ========================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+
+/* Заголовок секции */
+.section-title{
+  font-size: 16px;
+  font-weight: 600;
+  margin: 18px 0 12px;
+  color: var(--text);
+}
+
+/* =========================
+   КНОПКИ РЕГИОНОВ
+   ========================= */
+.region-buttons{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+@media (max-width: 420px){
+  .region-buttons{ grid-template-columns: repeat(2, 1fr); }
+}
+.region-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: .1px;
+  user-select: none;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .06s ease-in-out;
+}
+.region-btn:hover{ background: var(--btn-hover); }
+.region-btn:active{ transform: translateY(1px); }
+.region-btn.is-active{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.region-btn:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========================
+   БАННЕР СНГ
+   ========================= */
+.cis-banner{
+  margin-top: 10px;
+  padding: 14px 14px;
+  border-radius: 14px;
+  background: var(--cis-banner-bg);
+  border: 1px solid var(--card-brd);
+}
+.cis-banner__title{
+  margin: 0 0 6px 0;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+.cis-banner__text{
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* =========================
+   ФОРМА: поле «Логин Steam»
+   ========================= */
+.form-section{
+  margin-top: 18px;
+}
+.field{
+  display: grid;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  overflow: hidden;
+}
+.field__row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 8px;
+}
+.field__label{
+  font-weight: 600;
+  font-size: 14px;
+}
+.text-btn{
+  background: transparent;
+  border: none;
+  color: #9fb2ff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  transition: background .2s ease, transform .06s ease-in-out;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.field__input{
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box; /* учитываем padding и border в ширину */
+  max-width: 100%;
+  display: block;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.field__input::placeholder{ color: var(--muted); }
+.field__input:focus{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+.field__help{
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* === SB: Блок суммы пополнения и зачисления === */
+.pay-section{ margin-top: 18px; display: grid; gap: 12px; }
+
+/* карточки используем те же стили .field */
+.amount-field .field__label{ font-weight: 700; }
+.amount-field .field__input{
+  /* подстрахуемся ещё раз от переполнения */
+  box-sizing: border-box;
+}
+
+/* Поле "Сумма к зачислению" — как псевдо-инпут */
+.credit-field .credit__box{
+  display: flex; align-items: center; gap: 10px;
+  min-height: 15px; padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+}
+.credit__icon{
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--btn-brd);
+  display: inline-grid; place-items: center;
+  font-weight: 800; font-size: 14px;
+  user-select: none;
+}
+.credit__value{ font-size: 16px; font-weight: 700; }
+.credit__unit{ font-size: 17px; color: var(--muted); font-weight: 700; }
+
+/* Кнопка оплаты */
+.pay-btn{
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-active);
+  color: var(--text);
+  font-weight: 800;
+  letter-spacing: .1px;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s ease-in-out;
+}
+.pay-btn:hover{ background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%); }
+.pay-btn:active{ transform: translateY(1px); }
+.pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{
+  opacity: .6; cursor: not-allowed;
+  filter: grayscale(.2);
+}
+
+/* === SB: иконка-изображение для поля зачисления === */
+.credit__icon.is-img{
+  border: none; background: transparent; padding: 0;
+}
+.credit__icon.is-img img{
+  display: block; width: 20px; height: 20px;
+}

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <!-- =========================
+       МЕТА и ЗАГОЛОВОК
+       ========================= -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarsBox — Пополнение Steam</title>
+
+  <!-- Локальные стили ТОЛЬКО для этой страницы -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="steam-page">
+  <!-- =========================================================
+       ОВЕРЛЕЙ-УВЕДОМЛЕНИЕ (стартовая панель + заблюренный фон)
+       Цвет панели настраивается переменной --notice-bg (см. CSS)
+       ========================================================= -->
+  <div class="notice-overlay" id="steamNotice" role="dialog" aria-modal="true" aria-labelledby="noticeTitle">
+    <div class="notice-modal">
+      <h2 id="noticeTitle" class="notice-title">Важная информация</h2>
+      <p class="notice-text">
+        Мы не производим пополнение для новых аккаунтов Steam и аккаунтов из следующих регионов: ДНР, ЛНР, Крым
+      </p>
+      <button type="button" class="notice-btn" id="noticeOkBtn">Понятно</button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       ОВЕРЛЕЙ-ПОДСКАЗКА «Где найти логин?» (с блюром и картинкой)
+       Цвет панели настраивается переменной --help-bg (см. CSS)
+       ========================================================= -->
+  <div class="help-overlay" id="loginHelp" role="dialog" aria-modal="true" aria-labelledby="loginHelpTitle" hidden>
+    <div class="help-modal">
+      <h2 id="loginHelpTitle" class="help-title">Как найти свой логин в Steam?</h2>
+      <div class="help-text">
+        <p>1. Откройте клиент Steam</p> 
+        <p>2. Нажмите на имя пользователя в правом верхнем углу главной страницы.</p>
+        <p>3. В выпадающем меню выберите пункт «Об аккаунте».</p>
+      </div>
+      <!-- Замените src на ваш файл изображения -->
+      <div class="help-image">
+        <img src="../../assets/backgrounds/steam3.jpg" alt="Где найти логин в Steam" />
+      </div>
+      <button type="button" class="help-btn" id="closeLoginHelp">Я нашел свой логин</button>
+    </div>
+  </div>
+
+  <!-- =========================
+       ВЕРХНИЙ БАР: кнопка «назад» + заголовок
+       ========================= -->
+  <header class="topbar">
+    <button type="button" class="back-btn" id="backBtn" aria-label="Назад"></button>
+    <h1 class="title">Пополнение Steam</h1>
+  </header>
+
+  <!-- =========================
+       КОНТЕНТ (узкая колонка)
+       ========================= -->
+  <main class="wrap">
+    <!-- Заголовок выбора региона -->
+    <h2 class="section-title">Выберите регион аккаунта</h2>
+
+    <!-- Группа кнопок регионов -->
+    <div class="region-buttons" role="group" aria-label="Выбор региона Steam">
+      <button type="button" class="region-btn is-active" data-region="ru" aria-pressed="true">Россия</button>
+      <button type="button" class="region-btn" data-region="kz" aria-pressed="false">Казахстан</button>
+      <button type="button" class="region-btn" data-region="cis" aria-pressed="false">Страны СНГ</button>
+    </div>
+
+    <!-- Баннер с настраиваемым цветом фона (через --cis-banner-bg) -->
+    <section class="cis-banner" aria-live="polite">
+      <p class="cis-banner__title">Какие страны входят в регион СНГ:</p>
+      <p class="cis-banner__text">
+        Азербайджан, Армения, Киргизия, Молдова, Беларусь, Таджикистан, Туркменистан, Узбекистан
+      </p>
+    </section>
+
+    <!-- =========================
+         ФОРМА: Логин Steam + подсказка
+         ========================= -->
+    <section class="form-section">
+      <div class="field">
+        <div class="field__row">
+          <label for="steamLogin" class="field__label">Логин Steam</label>
+          <button type="button" class="text-btn" id="openLoginHelp">где найти логин?</button>
+        </div>
+        <input
+          id="steamLogin"
+          class="field__input"
+          type="text"
+          inputmode="latin"
+          autocomplete="off"
+          placeholder="Введите логин"
+          maxlength="64"
+          aria-describedby="steamLoginHelp"
+        />
+      </div>
+    </section>
+  </main>
+
+  <!-- =========================
+       СКРИПТЫ страницы
+       ========================= -->
+  <script>
+    // Кнопка «Назад»: ?back=/index.html или history.back()
+    (function () {
+      const backBtn = document.getElementById('backBtn');
+      const url = new URL(window.location.href);
+      const back = url.searchParams.get('back');
+
+      backBtn.addEventListener('click', () => {
+        if (back) {
+          window.location.href = back;
+        } else {
+          window.history.back();
+        }
+      });
+    })();
+
+    // Переключение активной кнопки региона (визуально)
+    (function () {
+      const group = document.querySelector('.region-buttons');
+      if (!group) return;
+
+      group.addEventListener('click', (e) => {
+        const btn = e.target.closest('.region-btn');
+        if (!btn) return;
+
+        // Сброс .is-active и aria-pressed
+        group.querySelectorAll('.region-btn').forEach(b => {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+
+        // Включаем активное состояние
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-pressed', 'true');
+      });
+    })();
+
+    // Окно-уведомление «Важная информация» + блюр фона
+    (function () {
+      const overlay = document.getElementById('steamNotice');
+      const okBtn   = document.getElementById('noticeOkBtn');
+      if (!overlay || !okBtn) return;
+
+      // Фокус на кнопке (для доступности)
+      window.addEventListener('load', () => {
+        try { okBtn.focus(); } catch (e) {}
+      });
+
+      okBtn.addEventListener('click', () => {
+        overlay.setAttribute('hidden', 'hidden'); // скрыть панель и блюр
+      });
+    })();
+
+    // Подсказка «Где найти логин?» (с блюром)
+    (function () {
+      const openBtn = document.getElementById('openLoginHelp');
+      const closeBtn = document.getElementById('closeLoginHelp');
+      const help = document.getElementById('loginHelp');
+
+      if (!openBtn || !closeBtn || !help) return;
+
+      openBtn.addEventListener('click', () => {
+        help.removeAttribute('hidden');
+        try { closeBtn.focus(); } catch (e) {}
+      });
+
+      closeBtn.addEventListener('click', () => {
+        help.setAttribute('hidden', 'hidden');
+        try { openBtn.focus(); } catch (e) {}
+      });
+    })();
+
+    // Фильтрация ввода логина: только печатные ASCII (0x20-0x7E)
+    // Удаляет кириллицу, эмодзи и любые non-ASCII символы.
+    (function () {
+      const input = document.getElementById('steamLogin');
+      if (!input) return;
+
+      const notAsciiPrintable = /[^\x20-\x7E]/g; // всё, что не печатный ASCII
+
+      input.addEventListener('input', () => {
+        const v = input.value;
+        const cleaned = v.replace(notAsciiPrintable, '');
+        if (v !== cleaned) input.value = cleaned;
+      });
+    })();
+  </script>
+
+  <!-- =========================================================
+     SB: APPEND HOOKS — добавляется ОДИН РАЗ в КОНЕЦ файла
+     ---------------------------------------------------------
+     - Создаёт универсальные якоря для будущих секций/оверлеев
+     - Даёт маленький JS-API (SB) с onReady/mount/overlay
+     ========================================================= -->
+
+<!-- Якоря (можно не трогать): -->
+<div id="sb-append"></div>
+<div id="sb-overlay-root" aria-live="polite"></div>
+
+<script>
+  (function(){
+    // Безопасно: если SB уже есть — ничего не ломаем
+    if (!window.SB) {
+      window.SB = {
+        ready: function(fn){
+          if (document.readyState !== 'loading') fn();
+          else document.addEventListener('DOMContentLoaded', fn, { once: true });
+        },
+        // Простые помощники
+        qs: function(s, r){ return (r||document).querySelector(s); },
+        qsa: function(s, r){ return Array.from((r||document).querySelectorAll(s)); },
+        // Монтаж HTML в конец основной колонки .wrap
+        mount: function(html, intoId){
+          var root = document.getElementById(intoId || 'sb-append');
+          if (!root) return null;
+          var t = document.createElement('template');
+          t.innerHTML = html.trim();
+          var first = t.content.firstElementChild;
+          root.appendChild(t.content);
+          return first;
+        },
+        // Универсальный оверлей
+        overlay: {
+          show: function(html){
+            var root = document.getElementById('sb-overlay-root');
+            if (!root){ root = document.createElement('div'); root.id = 'sb-overlay-root'; document.body.appendChild(root); }
+            root.innerHTML = html;
+            return root.firstElementChild || null;
+          },
+          clear: function(){
+            var root = document.getElementById('sb-overlay-root');
+            if (root) root.innerHTML = '';
+          }
+        }
+      };
+    }
+
+    // Гарантируем, что #sb-append окажется ВНУТРИ .wrap (узкая колонка)
+    window.SB.ready(function(){
+      var wrap = document.querySelector('.wrap');
+      var append = document.getElementById('sb-append');
+      if (wrap && append && append.parentElement !== wrap) {
+        wrap.appendChild(append);
+      }
+    });
+  })();
+</script>
+
+<!-- === Маркеры для будущих добавлений JS/HTML === -->
+<!-- [SB-APPEND:SCRIPTS] -->
+
+<script>
+SB.ready(function () {
+  /* === Настройки, которые можно менять отдельно === */
+  window.SB_FEE_PERCENT = (typeof window.SB_FEE_PERCENT === 'number') ? window.SB_FEE_PERCENT : 9; // % к сумме пополнения
+  const LIMITS = { min: 100, max: 45000 }; // руб
+
+  /* === HTML-разметка блока (монтируем в конец узкой колонки) === */
+  SB.mount(`
+    <section class="pay-section" id="sb-pay">
+      <!-- 1) Сумма пополнения -->
+      <div class="field amount-field">
+        <label for="topupAmount" class="field__label">Укажите сумму пополнения</label>
+        <input id="topupAmount"
+               class="field__input"
+               type="text"
+               inputmode="numeric"
+               autocomplete="off"
+               placeholder="не менее 100 руб и не более 45 000 руб."
+               maxlength="5" />
+      </div>
+
+      <!-- 2) Сумма к зачислению -->
+      <div class="field credit-field" aria-live="polite">
+        <label class="field__label">Сумма к зачислению в Steam</label>
+        <div class="credit__box">
+          <span class="credit__icon" id="creditIcon" aria-hidden="true">₽</span>
+          <span class="credit__value" id="creditValue">—</span>
+          <span class="credit__unit" id="creditUnit">Рубль</span>
+        </div>
+      </div>
+
+      <!-- 3) Кнопка оплаты -->
+      <button type="button" class="pay-btn" id="payBtn" disabled>Оплатить</button>
+    </section>
+  `);
+
+  /* === Логика === */
+  const $ = (s, r) => (r||document).querySelector(s);
+  const nfRu = new Intl.NumberFormat('ru-RU');
+
+  const amountInput  = $('#topupAmount');
+  const payBtn       = $('#payBtn');
+  const creditIcon   = $('#creditIcon');
+  const creditValue  = $('#creditValue');
+  const creditUnit   = $('#creditUnit');
+  const regionGroup  = $('.region-buttons');
+
+  function getActiveRegion(){
+    const btn = regionGroup?.querySelector('.region-btn.is-active');
+    return btn ? btn.getAttribute('data-region') : 'ru'; // ru | kz | cis
+  }
+
+  function setCreditCurrency(region){
+    const map = {
+  cis: { unit: '$', src: '../../assets/icons/icon4.png' },
+  kz:  { unit: '₸',  src: '../../assets/icons/icon4.png' },
+  ru:  { unit: '₽',  src: '../../assets/icons/icon4.png' },
+};
+const cfg = map[region] || map.ru;
+
+// переключаемся на режим картинки
+creditIcon.classList.add('is-img');
+creditIcon.setAttribute('aria-hidden', 'true');
+creditIcon.innerHTML = `<img src="${cfg.src}" alt="" />`;
+creditUnit.textContent = cfg.unit;
+  }
+
+  function sanitizeDigits(s){ return (s||'').replace(/\D+/g, ''); }
+
+  function clamp(n){
+    if (isNaN(n)) return NaN;
+    if (n < LIMITS.min) return LIMITS.min;
+    if (n > LIMITS.max) return LIMITS.max;
+    return n;
+  }
+
+  function updateUI(){
+    const raw = sanitizeDigits(amountInput.value);
+    if (raw !== amountInput.value) amountInput.value = raw;
+    const amount = raw ? parseInt(raw, 10) : NaN;
+
+    // Валюта для "к зачислению" зависит от региона
+    setCreditCurrency(getActiveRegion());
+
+    if (!amount || isNaN(amount) || amount < LIMITS.min || amount > LIMITS.max){
+      creditValue.textContent = '';
+      payBtn.textContent = 'Оплатить';
+      payBtn.disabled = true;
+      return;
+    }
+
+    // Пока без конвертации: показываем ту же сумму (интеграцию добавим позже)
+    creditValue.textContent = nfRu.format(amount);
+
+    // Итог к оплате = сумма + процент
+    const pct  = Number(window.SB_FEE_PERCENT || 9.0);
+    const total = Math.round(amount * (1 + pct/100));
+    payBtn.textContent = `Оплатить ${nfRu.format(total)} ₽`;
+    payBtn.disabled = false;
+  }
+
+  // Слушатели
+  amountInput.addEventListener('input', updateUI);
+  amountInput.addEventListener('blur', function(){
+    const n = parseInt(sanitizeDigits(amountInput.value) || '0', 10);
+    if (!n) return updateUI();
+    const clamped = clamp(n);
+    if (clamped !== n) amountInput.value = String(clamped);
+    updateUI();
+  });
+
+  regionGroup?.addEventListener('click', (e) => {
+    if (e.target.closest('.region-btn')) updateUI();
+  });
+
+  // Первичная отрисовка
+  updateUI();
+});
+</script>
+
+</body>
+</html>
