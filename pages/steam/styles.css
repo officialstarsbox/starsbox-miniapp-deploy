@@ -54,7 +54,7 @@ body.steam-page{
 }
 .notice-overlay[hidden]{ display: none; }
 .notice-modal{
-  width: min(520px, 92vw);
+  width: min(320px, 92vw);
   background: var(--notice-bg);
   color: var(--text);
   border: 1px solid var(--card-brd);
