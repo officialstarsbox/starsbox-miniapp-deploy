@@ -1,0 +1,54 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarsBox — Покупка Telegram Stars</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="stars-page">
+  <!-- =========================== Топбар =========================== -->
+  <header class="topbar">
+    <button type="button" class="back-btn" id="backBtn" aria-label="Назад"></button>
+    <h1 class="title">Telegram Stars</h1>
+  </header>
+
+  <!-- ====================== Контентная колонка ===================== -->
+  <main class="wrap" id="pageRoot">
+    <!-- Первый элемент: поле юзернейма -->
+    <section class="group-card" id="user-card">
+      <div class="field tg-user-field">
+        <div class="field__row">
+  <label for="tgUsername" class="field__label">Получатель</label>
+  <div class="field__actions">
+    <button type="button" class="text-btn" id="pickUserBtn">выбрать в Telegram</button>
+    <button type="button" class="text-btn" id="fillSelfBtn">купить себе</button>
+  </div>
+</div>
+
+        <!-- Инпут с иконкой 20×20 и плейсхолдером -->
+        <div class="input-with-icon">
+          <span class="user-icon" aria-hidden="true">
+            <!-- Положи сюда свою иконку 20×20; путь можно поменять в разметке или в JS -->
+            <img src="../../assets/icons/профиль.png" width="15" height="15" alt="">
+          </span>
+          <input
+            id="tgUsername"
+            class="field__input input--with-left-icon"
+            type="text"
+            inputmode="latin"
+            autocomplete="off"
+            placeholder="Укажите username получателя"
+            maxlength="64"
+            aria-describedby="tgUsernameHelp"
+          />
+        </div>
+        <p class="field__help" id="tgUsernameHelp">Допустимы латиница, цифры и нижнее подчёркивание</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

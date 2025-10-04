@@ -1,0 +1,194 @@
+/* =========================================================
+   ТЕМА (значения — те же, что на странице Steam)
+   ========================================================= */
+.stars-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Доп. палитра (впрок, как на Steam) */
+  --cis-banner-bg: rgba(255,255,255,.06);
+  --help-bg: #121a33;
+
+  /* Единые отступы */
+  --block-gap: 16px; /* между секциями в .wrap */
+  --panel-gap: 12px; /* между элементами внутри .group-card */
+}
+
+/* =========================================================
+   БАЗА + ФОН (фиксированный, «бесконечный»)
+   ========================================================= */
+html, body { height: 100%; }
+body.stars-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+/* статичная подложка — не двигается при скролле */
+body.stars-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар
+   ========================================================= */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  /* ключ: горизонтальные паддинги ровно как у .wrap */
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{ margin: 0; text-align: center; font-size: 18px; font-weight: 400; }
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Контентная колонка и базовые отступы
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* =========================================================
+   Групповые подложки (единообразно с Steam)
+   ========================================================= */
+.group-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: var(--panel-gap);
+}
+
+/* =========================================================
+   Поля/лейблы/кнопки-тексты
+   ========================================================= */
+.field{ display: grid; gap: 8px; }
+.field__row{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.field__label{ font-weight: 400; font-size: 14px; }
+.text-btn{
+  background: transparent; border: none; color: #5266ff;
+  font-weight: 400; font-size: 13px; cursor: pointer; padding: 0 2px; border-radius: 8px;
+  transition: background .2s, transform .06s;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Инпут с иконкой (20×20)
+   ========================================================= */
+.input-with-icon{
+  display: grid;
+  grid-template-columns: 28px 1fr; /* иконка + поле */
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--btn-bg);
+  border: 0px solid var(--btn-brd);
+}
+.user-icon{
+  width: 20px; height: 20px;
+  display: inline-grid; place-items: center;
+}
+.user-icon img{
+  display: block;
+  width: 15px; height: 15px;
+}
+.field__input{
+  width: 100%;
+  min-height: 24px;
+  padding: 0;                  /* контролируем отступы контейнером .input-with-icon */
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 16px;
+  outline: none;
+}
+.field__input::placeholder{ color: var(--muted); }
+.field__input:focus{}
+.input-with-icon:focus-within{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* Хелп-текст под полем */
+.field__help{
+  margin: 0;
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* справа от лейбла — контейнер для двух текст-кнопок */
+.field__actions{ display:flex; gap:12px; align-items:center; }
+
+/* уже есть .text-btn — переиспользуем */
+
+/* маленькая подсказка об ожидании выбора */
+.hint{
+  display:block;
+  margin-top:8px;
+  font-size:12px;
+  line-height:1.4;
+  color: var(--muted);
+}
+
+
+
+
+
+
