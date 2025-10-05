@@ -19,33 +19,183 @@
     <section class="group-card" id="user-card">
       <div class="field tg-user-field">
         <div class="field__row">
-  <label for="tgUsername" class="field__label">Получатель</label>
-  <div class="field__actions">
-    <button type="button" class="text-btn" id="pickUserBtn">выбрать в Telegram</button>
-    <button type="button" class="text-btn" id="fillSelfBtn">купить себе</button>
-  </div>
-</div>
+          <label for="tgUsername" class="field__label">Получатель</label>
+          <button type="button" class="text-btn" id="buyForMeBtn">купить себе💙</button>
+        </div>
 
         <!-- Инпут с иконкой 20×20 и плейсхолдером -->
         <div class="input-with-icon">
-          <span class="user-icon" aria-hidden="true">
-            <!-- Положи сюда свою иконку 20×20; путь можно поменять в разметке или в JS -->
-            <img src="../../assets/icons/профиль.png" width="15" height="15" alt="">
-          </span>
-          <input
-            id="tgUsername"
-            class="field__input input--with-left-icon"
-            type="text"
-            inputmode="latin"
-            autocomplete="off"
-            placeholder="Укажите username получателя"
-            maxlength="64"
-            aria-describedby="tgUsernameHelp"
-          />
-        </div>
-        <p class="field__help" id="tgUsernameHelp">Допустимы латиница, цифры и нижнее подчёркивание</p>
-      </div>
+  <span class="input-icon" aria-hidden="true">
+    <img src="../../assets/icons/профиль.png" alt="">
+  </span>
+  <input
+    id="tgUsername"
+    class="field__input field__input--with-icon"
+    type="text"
+    inputmode="latin"
+    autocomplete="off"
+    placeholder="Укажите username получателя"
+    maxlength="64"
+    aria-describedby="tgUsernameHelp"
+  />
     </section>
+    <!-- ============== Кол-во звёзд ============== -->
+<section class="group-card" id="stars-amount-card">
+  <div class="field amount-field">
+    <div class="field__row">
+      <label for="starsAmount" class="field__label">Количество звезд</label>
+      <!-- справа можно будет вывести подсказку/ссылку при необходимости -->
+      <span aria-hidden="true"></span>
+    </div>
+
+    <div class="input-with-icon">
+  <span class="input-icon" aria-hidden="true">
+    <img src="../../assets/icons/icon3.png" alt="">
+  </span>
+  <input
+    id="starsAmount"
+    class="field__input field__input--with-icon"
+    type="text"
+    inputmode="numeric"
+    autocomplete="off"
+    placeholder="Укажите от 50 до 20 000"
+    maxlength="5"
+  />
+</div>
+  </div>
+</section>
+<!-- ====================== Пакеты ====================== -->
+<section class="packs-section" id="packsSection">
+  <p class="packs-title">Или выберите один из пакетов</p>
+
+  <div class="packs-list" id="packsList" data-collapsed="true">
+    <!-- первые 4 пакета (видимы всегда) -->
+    <button class="pack-item" type="button"
+            data-stars="50" data-price="85"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">50&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">85&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item" type="button"
+            data-stars="100" data-price="170"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">100&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">170&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item" type="button"
+            data-stars="200" data-price="340"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">200&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">340&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item" type="button"
+            data-stars="500" data-price="850"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">500&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">850&nbsp;₽</span></span>
+    </button>
+
+    <!-- ещё 4 пакета (по умолчанию скрыты, показываются при разворачивании) -->
+    <button class="pack-item is-extra" type="button"
+            data-stars="1000" data-price="1700"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">1&nbsp;000&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">1&nbsp;700&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item is-extra" type="button"
+            data-stars="2500" data-price="4250"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">2&nbsp;500&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">4&nbsp;250&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item is-extra" type="button"
+            data-stars="5000" data-price="8500"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">5&nbsp;000&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">8&nbsp;500&nbsp;₽</span></span>
+    </button>
+
+    <button class="pack-item is-extra" type="button"
+            data-stars="10000" data-price="17000"
+            data-icon="../../assets/icons/icon2.png"
+            data-icon-active="../../assets/icons/icon3.png">
+      <span class="pack-left">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-name">10&nbsp;000&nbsp;звёзд</span>
+      </span>
+      <span class="pack-right"><span class="pack-price">17&nbsp;000&nbsp;₽</span></span>
+    </button>
+  </div>
+
+  <button type="button" class="packs-toggle" id="packsToggle" aria-expanded="false">
+  Показать все пакеты
+</button>
+</section>
+<!-- ==== Итоговая стоимость ==== -->
+<section class="total-card" id="totalCard" data-rate="1.7">
+  <div class="field total-field">
+    <label class="field__label">Итого к оплате</label>
+    <div class="total__value" id="totalValue" aria-live="polite">0,00 руб.</div>
+  </div>
+</section>
+<!-- Платёжные действия -->
+<section class="pay-actions" id="payActions">
+  <button type="button" class="pay-btn pay-btn--sbp" id="paySbpBtn">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить по СБП</span>
+      <img class="btn-icon" src="../../assets/icons/icon10.png" alt="" width="20" height="20">
+    </span>
+  </button>
+
+  <button type="button" class="pay-btn pay-btn--crypto" id="payCryptoBtn">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить криптовалютой</span>
+      <img class="btn-icon" src="../../assets/icons/icon9.png" alt="" width="20" height="20">
+    </span>
+  </button>
+</section>
+<section class="legal-panel" aria-live="polite">
+  <p class="legal-panel__text">
+    Нажимая кнопку оплаты, вы принимаете условия
+    <a href="../offer/index.html">Публичной оферты</a> и
+    <a href="../policy/index.html">Политики обработки персональных данных</a>,
+    а также даёте согласие на обработку персональных данных.
+  </p>
+</section>
+
   </main>
 
   <script src="app.js"></script>
