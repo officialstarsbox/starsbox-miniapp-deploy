@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telegram Подарок — Оформление</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="gift-page">
+  <!-- =========================== Топбар =========================== -->
+  <header class="topbar">
+    <button type="button" class="back-btn" id="backBtn" aria-label="Назад"></button>
+    <h1 class="title">Оформление подарка</h1>
+  </header>
+
+  <!-- ====================== Контентная колонка ===================== -->
+  <main class="wrap" id="pageRoot">
+    <!-- сюда добавим форму и детали подарка на следующих шагах -->
+    <!-- ============== Превью выбранного подарка ============== -->
+<section class="gift-preview">
+  <div class="gift-card" id="giftCard">
+    <!-- Картинка подарка (размер регулируется через --gift-img-size) -->
+    <img
+      class="gift-img"
+      src="../../../assets/gifts/кольцо.gif"
+      alt="Выбранный подарок"
+    />
+
+    <!-- «Подарок от …» с круглым аватаром бренда -->
+    <div class="gift-from">
+      <span class="gift-from__label">Подарок от</span>
+      <span class="gift-from__brand">
+        <span class="brand-avatar">
+          <img
+            src="../../../assets/icons/logo17.png"
+            alt="StarsBox"
+            loading="lazy"
+          />
+        </span>
+        <span class="brand-name">StarsBox | Gift</span>
+      </span>
+    </div>
+
+    <!-- Дескрипшен. Текст можно будет менять из JS (см. app.js) -->
+    <p
+      class="gift-desc"
+      id="giftDesc"
+      data-default="Сообщение для получателя">Сообщение для получателя
+    </p>
+
+    <!-- Неактивная кнопка с анимацией звёздочек -->
+    <div class="ghost-btn" role="button" aria-disabled="true" tabindex="-1">
+      <span class="ghost-btn__label">Просмотр</span>
+      <span class="ghost-btn__sparkles" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i>
+      </span>
+    </div>
+  </div>
+</section>
+<!-- ===== Получатель подарка ===== -->
+<section class="group-card is-plain" id="user-card">
+  <div class="field tg-user-field">
+    <div class="field__row">
+      <label for="tgUsername" class="field__label">Получатель</label>
+      <button type="button" class="text-btn" id="buyForMeBtn">купить себе💙</button>
+    </div>
+
+    <div class="input-with-icon">
+      <span class="input-icon" aria-hidden="true">
+        <!-- Поставь свою иконку (20×20/15×15 — задаётся в CSS переменной) -->
+        <img src="../../../assets/icons/профиль.png" alt="" width="15" height="15" />
+      </span>
+
+      <input
+        id="tgUsername"
+        class="field__input field__input--with-icon"
+        type="text"
+        inputmode="latin"
+        autocomplete="off"
+        placeholder="Укажите username получателя"
+        maxlength="64"
+      />
+    </div>
+  </div>
+</section>
+<!-- ===== Отправитель ===== -->
+<section class="group-card is-plain" id="sender-section">
+  <div class="sender-block" id="senderBlock">
+    <div class="field sender-field">
+      <div class="field__row">
+        <label for="senderInput" class="field__label">Отправитель</label>
+        <button type="button" class="text-btn" id="fillMyUsernameBtn">указать мой юзернейм💙</button>
+      </div>
+
+      <div class="input-with-icon">
+        <span class="input-icon" aria-hidden="true">
+          <img src="../../../assets/icons/профиль.png" alt="" width="15" height="15" />
+        </span>
+
+        <input
+          id="senderInput"
+          class="field__input field__input--with-icon field__input--with-counter"
+          type="text"
+          inputmode="text"
+          placeholder="Укажите username отправителя"
+          autocomplete="off"
+          maxlength="24"
+        />
+
+        <!-- счётчик внутри поля -->
+        <span class="input-counter"><span id="senderCount">0</span>/24</span>
+      </div>
+
+      <div class="info-panel" id="senderInfo">
+        Вы можете указать юзернейм отправителя или написать в свободной форме.
+        Например: «От лучшего друга!»
+      </div>
+    </div>
+  </div>
+</section>
+<section class="group-card is-plain" id="message-section">
+  <div class="field">
+    <div class="field__row">
+      <label for="messageInput" class="field__label">Сообщение</label>
+      <span aria-hidden="true"></span>
+    </div>
+
+    <div class="message-box">
+      <textarea
+        id="messageInput"
+        class="message-textarea"
+        placeholder="Напишите короткое сообщение получателю"
+        maxlength="91"></textarea>
+
+      <span class="message-counter">
+        <span id="messageCount">0</span>/91
+      </span>
+    </div>
+  </div>
+</section>
+<!-- ===== Инфо-панели ===== -->
+<section class="info-group">
+  <div class="info-panel info-panel--warning">
+    <h3 class="info-panel__title">Предупреждение</h3>
+    <p class="info-panel__text">
+      Если у получателя включена функция «Сообщения за звёзды» — он не получит
+      текст из полей «Отправитель» и «Сообщение».
+    </p>
+  </div>
+
+  <div class="info-panel info-panel--notice">
+    <h3 class="info-panel__title">Важная информация при отправке</h3>
+    <p class="info-panel__text">
+      Все подарки отправляются от имени нашего сервиса <strong>StarsBox | Gift</strong>.
+    </p>
+  </div>
+</section>
+<!-- ===== Итого к оплате ===== -->
+<section class="group-card is-plain" id="totalCard">
+  <div class="total">
+    <div class="total__title">Итого к оплате</div>
+    <div class="total__value" id="totalValue">0,00 руб.</div>
+  </div>
+</section>
+<!-- ===== Платёжные кнопки ===== -->
+<section class="group-card is-plain" id="paySection">
+  <div class="pay-actions" style="--pay-gap:12px">
+    <button type="button" class="pay-btn" id="paySbpBtn" disabled aria-disabled="true">
+      <span class="pay-btn__center">
+        <span class="pay-btn__label">Оплатить по СБП</span>
+        <img class="pay-btn__icon" src="../../../assets/icons/icon10.png" alt="" width="20" height="20">
+      </span>
+    </button>
+
+    <button type="button" class="pay-btn" id="payCryptoBtn" disabled aria-disabled="true">
+      <span class="pay-btn__center">
+        <span class="pay-btn__label">Оплатить криптовалютой</span>
+        <img class="pay-btn__icon" src="../../../assets/icons/icon9.png" alt="" width="20" height="20">
+      </span>
+    </button>
+  </div>
+</section>
+<!-- ===== Юридический блок ===== -->
+<section class="legal-panel" aria-live="polite">
+  <p class="legal-panel__text">
+    Нажимая кнопку оплаты, вы принимаете условия
+    <a href="../../offer/index.html">Публичной оферты</a> и
+    <a href="../../policy/index.html">Политики обработки персональных данных</a>,
+    а также даёте согласие на обработку персональных данных.
+  </p>
+</section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

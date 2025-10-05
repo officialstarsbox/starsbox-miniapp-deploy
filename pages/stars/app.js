@@ -147,25 +147,61 @@
     });
 
     // ===== Итоговая стоимость =====
-    const nfRub2 = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const totalCard  = document.getElementById('totalCard');
-    const totalValue = document.getElementById('totalValue');
+    // ===== Итоговая стоимость + валидация диапазона =====
+const STARS_MIN = 50;
+const STARS_MAX = 20000;
 
-    function getStarRate(){
-      const fromWin  = Number(window.STAR_RATE);
-      if (!isNaN(fromWin) && fromWin > 0) return fromWin;
-      const fromAttr = Number(totalCard?.dataset?.rate);
-      if (!isNaN(fromAttr) && fromAttr > 0) return fromAttr;
-      return 1.7;
-    }
+const nfRub2 = new Intl.NumberFormat('ru-RU', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2
+});
 
-    function updateTotal(){
-      const qty  = Number((starsAmount?.value || '').replace(/\D+/g, ''));
-      const rate = getStarRate();
-      const sum  = qty > 0 ? qty * rate : 0;
-      if (totalValue) totalValue.textContent = `${nfRub2.format(sum)} руб.`;
-    }
-    updateTotal(); // первичная инициализация
+const totalCard  = document.getElementById('totalCard');
+const totalValue = document.getElementById('totalValue');
+
+// Найдём платежные кнопки (поменяй селектор, если у тебя другие id)
+const payButtons = Array.from(document.querySelectorAll('#paySbpBtn, #payCryptoBtn'));
+function setPayEnabled(on){
+  payButtons.forEach(btn => {
+    if (!btn) return;
+    btn.disabled = !on;
+    btn.classList.toggle('is-disabled', !on);
+  });
+}
+
+function getStarRate(){
+  const fromWin  = Number(window.STAR_RATE);
+  if (!isNaN(fromWin) && fromWin > 0) return fromWin;
+  const fromAttr = Number(totalCard?.dataset?.rate);
+  if (!isNaN(fromAttr) && fromAttr > 0) return fromAttr;
+  return 1.7;
+}
+
+function updateTotal(){
+  const qtyRaw = (document.getElementById('starsAmount')?.value || '');
+  const qty    = Number(qtyRaw.replace(/\D+/g, ''));
+
+  // проверяем диапазон
+  const valid = qty >= STARS_MIN && qty <= STARS_MAX;
+
+  if (!valid){
+    if (totalValue) totalValue.textContent = '—';
+    setPayEnabled(false);
+    return;
+  }
+
+  const rate = getStarRate();
+  const sum  = qty * rate; // qty точно > 0, т.к. >= 50
+  if (totalValue) totalValue.textContent = `${nfRub2.format(sum)} руб.`;
+  setPayEnabled(sum > 0);
+}
+
+// пересчитываем при любом вводе/изменении количества
+document.getElementById('starsAmount')?.addEventListener('input', updateTotal);
+
+// первичная инициализация
+setPayEnabled(false);
+updateTotal();
 
     // ===== «Купить себе» — username берём в момент клика =====
     const buySelfBtn = $('#buyForMeBtn') || $('#buySelfBtn');
