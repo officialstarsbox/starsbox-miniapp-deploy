@@ -204,4 +204,34 @@ function updateTotal(){
 starsAmountEl?.addEventListener('input', updateTotal);
 // если где-то меняешь цену динамически — вызови updateTotal()
 updateTotal(); // первичный вывод
+
+// «Купить себе» — всегда навешиваем обработчик и читаем username в момент клика
+const buySelfBtn = document.querySelector('#buyForMeBtn') || document.querySelector('#buySelfBtn');
+const usernameInput = document.querySelector('#tgUsername');
+
+function getSelfUsername(){
+  const tg = window.Telegram && window.Telegram.WebApp;
+  tg?.ready?.(); // не помешает
+  const u = tg?.initDataUnsafe?.user?.username;
+  if (u) return String(u).replace(/[^a-zA-Z0-9_]/g, '').slice(0, 32);
+  // локальные тесты: ?tg_username=YourName
+  try{
+    const q = new URLSearchParams(location.search).get('tg_username');
+    return q ? String(q).replace(/[^a-zA-Z0-9_]/g, '').slice(0, 32) : null;
+  }catch{ return null; }
+}
+
+if (buySelfBtn && usernameInput){
+  buySelfBtn.addEventListener('click', () => {
+    const me = getSelfUsername();
+    if (!me){
+      // у пользователя нет публичного @username
+      window.Telegram?.WebApp?.showToast?.('В вашем профиле Telegram не указан username');
+      return;
+    }
+    usernameInput.value = '@' + me;
+    usernameInput.dispatchEvent(new Event('input', { bubbles: true }));
+    usernameInput.blur();
+  });
+}
 })();

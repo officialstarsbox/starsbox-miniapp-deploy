@@ -429,6 +429,16 @@ body.stars-page::before{
 }
 .legal-panel__text a:hover{ opacity: .95; }
 
+/* Нижний «воздух» под контентной колонкой (учитывает safe-area на iOS) */
+.stars-page{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  .stars-page{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.stars-page .wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}
 
 
 
