@@ -230,3 +230,61 @@
 
   renderTotal();
 })();
+// Универсально читаем username пользователя из Telegram или из ?tg_username
+function readSelfUsername(){
+  try{
+    const tg = window.Telegram && window.Telegram.WebApp;
+    tg?.ready?.();
+    const u = tg?.initDataUnsafe?.user?.username;
+    if (u) return String(u).trim();
+  }catch{}
+
+  // локальная отладка: /page.html?tg_username=YourName
+  try{
+    const q = new URLSearchParams(location.search).get('tg_username');
+    if (q) return String(q).trim();
+  }catch{}
+
+  return null;
+}
+
+// мягкий показ тоста (если есть API)
+function toast(msg){
+  window.Telegram?.WebApp?.showToast?.(msg);
+}
+
+// ===== «Купить себе» (подставить @username в поле получателя) =====
+(function(){
+  const btn   = document.getElementById('buyForMeBtn');
+  const input = document.getElementById('tgUsername');
+  if (!btn || !input) return;
+
+  btn.addEventListener('click', () => {
+    const me = readSelfUsername();
+    if (!me){ toast('В вашем профиле Telegram не указан username'); return; }
+
+    // нормализация как на странице со звёздами
+    const core = me.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 32);
+    input.value = core ? '@' + core : '';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.blur();
+  });
+})();
+
+// ===== «указать мой юзернейм» (в поле Отправитель, лимит 24) =====
+(function(){
+  const btn   = document.getElementById('fillMyUsernameBtn');
+  const input = document.getElementById('senderInput');
+  if (!btn || !input) return;
+
+  btn.addEventListener('click', () => {
+    const me = readSelfUsername();
+    if (!me){ toast('В вашем профиле Telegram не указан username'); return; }
+
+    // поле отправителя допускает любые символы, но мы вставляем корректный @username
+    const val = '@' + me.replace(/[^a-zA-Z0-9_]/g, '').slice(0, 23); // 1 символ уже займёт '@'
+    input.value = val.slice(0, 24);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.blur();
+  });
+})();
