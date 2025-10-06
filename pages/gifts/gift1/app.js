@@ -15,14 +15,6 @@
 
   // ---------- init ----------
   ready(() => {
-    // Назад
-    const backBtn = $('#backBtn');
-    if (backBtn){
-      const url = new URL(location.href);
-      const back = url.searchParams.get('back');
-      backBtn.addEventListener('click', () => back ? (location.href = back) : history.back());
-    }
-
     // Инициализация описания (query → data-default → текущий)
     const descEl = $('#giftDesc');
     if (descEl){

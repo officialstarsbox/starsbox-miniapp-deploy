@@ -25,14 +25,6 @@
   }
 
   ready(function () {
-    // ===== back =====
-    const backBtn = $('#backBtn');
-    if (backBtn){
-      const url = new URL(window.location.href);
-      const back = url.searchParams.get('back');
-      backBtn.addEventListener('click', () => back ? (window.location.href = back) : history.back());
-    }
-
     // ===== username =====
     const usernameInput = $('#tgUsername');
     if (usernameInput){

@@ -29,14 +29,6 @@
 
   // ---------------------- main ----------------------
   ready(function(){
-    // Back button
-    const backBtn = $('#backBtn');
-    if (backBtn){
-      const url = new URL(window.location.href);
-      const back = url.searchParams.get('back');
-      backBtn.addEventListener('click', () => back ? (window.location.href = back) : window.history.back());
-    }
-
     // Region toggle
     const regionGroup = $('#regionGroup');
     regionGroup?.addEventListener('click', (e) => {
