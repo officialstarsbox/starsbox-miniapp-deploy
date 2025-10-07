@@ -1,0 +1,392 @@
+/* =========================================================
+   ТЕМА (самостоятельная, без импортов)
+   ========================================================= */
+.premium-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+   /* Цвета */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Отступы */
+  --block-gap: 16px; /* между секциями в .wrap */
+  --panel-gap: 12px; /* между элементами внутри .group-card */
+}
+
+/* =========================================================
+   БАЗА + ФОН (фиксированный)
+   ========================================================= */
+html, body { height: 100%; }
+body.premium-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+body.premium-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар (как на продуктовых страницах)
+   ========================================================= */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  /* горизонтальные паддинги = как у .wrap */
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+}
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Контентная колонка и базовые контейнеры
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* ===== Поля/лейблы/текст-кнопка ===== */
+.field{ display: grid; gap: 8px; }
+.field__row{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.field__label{ font-weight: 400; font-size: 14px; }
+.text-btn{
+  background: transparent; border: 0; color: #5266ff;
+  font-size: 13px; padding: 0 2px; cursor: pointer; border-radius: 8px;
+  transition: background .2s, transform .06s;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ===== Инпут с левой иконкой (единые параметры для этой страницы) ===== */
+.premium-page{
+  --input-h: 40px;        /* высота поля */
+  --icon-size: 15px;      /* размер иконки */
+  --input-pad-x: 20px;    /* отступ слева у контейнера поля */
+  --icon-gap: 15px;       /* зазор между иконкой и текстом */
+}
+
+.input-with-icon{
+  position: relative;
+  border-radius: 14px;
+  background: var(--btn-bg);
+  border: 0px solid var(--btn-brd);
+}
+.input-with-icon:focus-within{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* абсолютная иконка — видима, но не перехватывает клики */
+.input-icon{
+  position: absolute;
+  left: var(--input-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: inline-grid;
+  place-items: center;
+  pointer-events: none;
+}
+.input-icon img{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: block;
+  pointer-events: none;
+}
+
+/* само поле */
+.field__input{
+  width: 100%;
+  height: var(--input-h);
+  border: 0; outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  padding: 0;              /* левый отступ дадим классом ниже */
+  box-sizing: border-box;
+}
+.field__input::placeholder{ color: var(--muted); }
+
+/* место под иконку слева (единая формула) */
+.field__input--with-icon{
+  padding-left: calc(var(--input-pad-x) + var(--icon-size) + var(--icon-gap));
+}
+
+/* ===== Пакеты подписки (как на Stars, но заново) ===== */
+.premium-page{
+  --pack-pad-y: 10px;
+  --pack-pad-x: 20px;
+  --pack-gap: 10px;
+  --pack-radius: 14px;
+  --pack-icon-size: 15px;
+}
+
+.subs-packs{
+  display: grid;
+  gap: var(--pack-gap);
+}
+
+.pack-item{
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* иконка — текст — цена */
+  align-items: center;
+  gap: 15px;
+
+  padding: var(--pack-pad-y) var(--pack-pad-x);
+  border-radius: var(--pack-radius);
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+
+  transition: background .2s, border-color .2s, transform .06s, box-shadow .2s;
+}
+
+.pack-item:hover{ background: var(--btn-hover); }
+.pack-item:active{ transform: translateY(1px); }
+.pack-item:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.pack-item.is-active{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.45);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+.pack-icon{
+  width: var(--pack-icon-size);
+  height: var(--pack-icon-size);
+  display: inline-grid;
+  place-items: center;
+  pointer-events: none;
+}
+.pack-icon img{
+  width: var(--pack-icon-size);
+  height: var(--pack-icon-size);
+  display: block;
+  pointer-events: none;
+}
+
+.pack-title{
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.pack-price{
+  font-size: 14px;
+  opacity: .95;
+  white-space: nowrap;
+}
+
+/* ===== Инфо-панель на белой полупрозрачной подложке ===== */
+.premium-page{
+  --info-radius: 14px;
+  --info-pad-y: 12px;
+  --info-pad-x: 14px;
+}
+
+.info-panel{
+  border-radius: var(--info-radius);
+  padding: var(--info-pad-y) var(--info-pad-x);
+  border: 1px solid var(--card-brd);
+  background: rgba(255,255,255,.10); /* полупрозрачная белая подложка */
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+  color: var(--text);
+}
+
+.info-panel__title{
+  margin: 0 0 6px 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.info-panel__text{
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
+/* ===== Итого к оплате (как на других страницах) ===== */
+.total{
+  display: grid;
+  justify-items: center;  /* заголовок над суммой, по центру */
+  gap: 6px;
+  padding: 5px 0 12px;
+  border-bottom: 1px solid var(--card-brd); /* подчёркивание на всю ширину */
+}
+
+.total__title{
+  font-size: 14px;
+  color: var(--text);
+  opacity: .9;
+}
+
+.total__value{
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: .2px;
+  color: var(--text);
+}
+
+/* Параметр отступа между текстом и иконкой в кнопках */
+.premium-page{ --btn-icon-gap: 10px; }
+
+/* Контейнер c кнопками — вертикально одна под другой */
+.pay-actions{
+  display: grid;
+  gap: 10px; /* расстояние между кнопками */
+}
+
+/* Базовый стиль платёжной кнопки */
+.pay-btn{
+  width: 100%;
+  min-height: 40px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: .2px;
+  cursor: pointer;
+
+  /* ЦЕНТРОВАНИЕ как единого блока */
+  display: grid;           /* <— ключевой трюк */
+  place-items: center;     /* центрируем .btn-inner */
+  text-align: center;
+
+  transition: background .2s, border-color .2s, transform .06s, box-shadow .2s;
+}
+.pay-btn:hover{ background: var(--btn-hover); }
+.pay-btn:active{ transform: translateY(1px); }
+.pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{ opacity: .6; cursor: not-allowed; filter: grayscale(.2); }
+
+/* Внутренний блок с текстом и иконкой */
+.btn-inner{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--btn-icon-gap);  /* <— настраиваемый отступ */
+  line-height: 1;
+}
+
+/* Иконка кнопки */
+.btn-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Варианты кнопок (можно изменить под свой бренд) */
+.pay-btn--sbp{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.pay-btn--sbp:hover{
+  /* лёгкое высветление */
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+
+.pay-btn--crypto{
+  background: transparent;            /* прозрачная подложка */
+  border-color: rgba(255,255,255,.35);/* белесая обводка */
+}
+.pay-btn--crypto:hover{
+  background: rgba(255,255,255,.06);
+}
+
+/* ===== Юридическая панель ===== */
+.legal-panel{
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--card-brd);
+}
+
+.legal-panel__text{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: left;
+}
+
+.legal-panel__text a{
+  color: #9fb2ff;
+  text-decoration: underline;
+  font-weight: 400;
+}
+.legal-panel__text a:hover{ opacity: .95; }
+
+/* «Воздух» снизу (safe-area) */
+.premium-page{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  .premium-page{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.premium-page .wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}
