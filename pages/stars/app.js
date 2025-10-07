@@ -138,8 +138,7 @@
       activePackEl = null;
     });
 
-    // ===== Итоговая стоимость =====
-    // ===== Итоговая стоимость + валидация диапазона =====
+// ===== Итоговая стоимость + валидация и включение оплаты по username =====
 const STARS_MIN = 50;
 const STARS_MAX = 20000;
 
@@ -150,14 +149,15 @@ const nfRub2 = new Intl.NumberFormat('ru-RU', {
 
 const totalCard  = document.getElementById('totalCard');
 const totalValue = document.getElementById('totalValue');
-
-// Найдём платежные кнопки (поменяй селектор, если у тебя другие id)
+const starsEl    = document.getElementById('starsAmount');
 const payButtons = Array.from(document.querySelectorAll('#paySbpBtn, #payCryptoBtn'));
+
 function setPayEnabled(on){
   payButtons.forEach(btn => {
     if (!btn) return;
     btn.disabled = !on;
     btn.classList.toggle('is-disabled', !on);
+    btn.setAttribute('aria-disabled', String(!on));
   });
 }
 
@@ -169,27 +169,31 @@ function getStarRate(){
   return 1.7;
 }
 
+function hasValidRecipient(){
+  const v = (document.getElementById('tgUsername')?.value || '').trim();
+  return /^@[A-Za-z0-9_]{1,32}$/.test(v);
+}
+
 function updateTotal(){
-  const qtyRaw = (document.getElementById('starsAmount')?.value || '');
-  const qty    = Number(qtyRaw.replace(/\D+/g, ''));
+  const qty = Number((starsEl?.value || '').replace(/\D+/g, ''));
+  const inRange = qty >= STARS_MIN && qty <= STARS_MAX;
 
-  // проверяем диапазон
-  const valid = qty >= STARS_MIN && qty <= STARS_MAX;
-
-  if (!valid){
+  if (!inRange){
     if (totalValue) totalValue.textContent = '—';
     setPayEnabled(false);
     return;
   }
 
-  const rate = getStarRate();
-  const sum  = qty * rate; // qty точно > 0, т.к. >= 50
+  const sum = qty * getStarRate();
   if (totalValue) totalValue.textContent = `${nfRub2.format(sum)} руб.`;
-  setPayEnabled(sum > 0);
+
+  const canPay = sum > 0 && hasValidRecipient();
+  setPayEnabled(canPay);
 }
 
-// пересчитываем при любом вводе/изменении количества
-document.getElementById('starsAmount')?.addEventListener('input', updateTotal);
+// пересчёт при изменении количества И при изменении получателя
+starsEl?.addEventListener('input', updateTotal);
+document.getElementById('tgUsername')?.addEventListener('input', updateTotal);
 
 // первичная инициализация
 setPayEnabled(false);

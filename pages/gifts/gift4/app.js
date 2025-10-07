@@ -172,56 +172,61 @@
   });
 })();
 // ===== ИТОГО К ОПЛАТЕ + активация кнопок =====
-(function(){
-  const totalEl  = document.getElementById('totalValue');
-  const payBtns  = [document.getElementById('paySbpBtn'), document.getElementById('payCryptoBtn')].filter(Boolean);
+(function () {
+  const totalEl   = document.getElementById('totalValue');
+  const totalCard = document.getElementById('totalCard');
+  const unameEl   = document.getElementById('tgUsername');
+  const payBtns   = [document.getElementById('paySbpBtn'), document.getElementById('payCryptoBtn')].filter(Boolean);
 
   if (!totalEl) return;
 
-  const nfRub2 = new Intl.NumberFormat('ru-RU', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-
-  function getGiftPrice(){
-    const fromWin   = Number(window.GIFT_PRICE);
-    if (!Number.isNaN(fromWin) && fromWin > 0) return fromWin;
-
-    const q         = new URLSearchParams(location.search).get('price');
-    const fromQuery = Number(q);
-    if (!Number.isNaN(fromQuery) && fromQuery > 0) return fromQuery;
-
-    const fromData  = Number(document.getElementById('giftCard')?.dataset?.price);
+  // 1) Цена подарка: data-атрибут → query (?price=) → текст в #totalValue (например "25,00 руб.")
+  function getGiftPrice() {
+    // data-price на карточке итога (желательно так и делать)
+    const fromData = Number(totalCard?.dataset?.price);
     if (!Number.isNaN(fromData) && fromData > 0) return fromData;
 
-    return 0;
+    // ?price= в URL
+    const q = new URLSearchParams(location.search).get('price');
+    const fromQuery = Number(q?.replace(',', '.'));
+    if (!Number.isNaN(fromQuery) && fromQuery > 0) return fromQuery;
+
+    // парсим то, что уже отрендерено в #totalValue
+    const raw = (totalEl.textContent || '').replace(/[^\d,.-]/g, '').replace(',', '.');
+    const fromText = parseFloat(raw);
+    return Number.isFinite(fromText) ? fromText : 0;
   }
 
-  function updatePayButtons(){
-    const enabled = getGiftPrice() > 0;
+  // 2) Валиден ли получатель (@ + 1..32 символов [A-Za-z0-9_])
+  function hasValidRecipient() {
+    const v = (unameEl?.value || '').trim();
+    return /^@[A-Za-z0-9_]{1,32}$/.test(v);
+  }
+
+  // 3) Включение/выключение кнопок
+  function updatePayButtons() {
+    const enabled = getGiftPrice() > 0 && hasValidRecipient();
     payBtns.forEach(b => {
       b.disabled = !enabled;
       b.setAttribute('aria-disabled', String(!enabled));
     });
   }
 
-  function renderTotal(){
+  // 4) Отрисовка суммы (если нужно привести формат) + первичное состояние кнопок
+  const nfRub2 = new Intl.NumberFormat('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function renderTotal() {
     const price = getGiftPrice();
     totalEl.textContent = `${nfRub2.format(price)} руб.`;
     updatePayButtons();
   }
 
-  // Публичный сеттер цены — если захочешь менять её динамически
-  window.setGiftPrice = function setGiftPrice(v){
-    const num = Number(v);
-    if (!Number.isNaN(num) && num >= 0){
-      window.GIFT_PRICE = num;
-      renderTotal();
-    }
-  };
+  // Слушаем изменения получателя (в т.ч. при «купить себе», т.к. там диспатчится 'input')
+  unameEl?.addEventListener('input', updatePayButtons);
 
+  // Первичный рендер
   renderTotal();
 })();
+
 // Универсально читаем username пользователя из Telegram или из ?tg_username
 function readSelfUsername(){
   try{

@@ -467,6 +467,9 @@ body.gift-page::before{
   color: var(--text);
 }
 
+/* Параметр отступа между текстом и иконкой в кнопках */
+.gift-page{ --btn-icon-gap: 10px; }
+
 /* ===== Платёжные кнопки ===== */
 .pay-actions{
   display: grid;
@@ -474,38 +477,62 @@ body.gift-page::before{
 }
 
 .pay-btn{
-  display: grid;            /* центрируем внутренний блок */
-  place-items: center;
   width: 100%;
-  padding: 12px 14px;
+  min-height: 40px;
+  padding: 12px 16px;
   border-radius: 14px;
   border: 1px solid var(--btn-brd);
   background: var(--btn-bg);
   color: var(--text);
+  font-weight: 400;
+  letter-spacing: .2px;
   cursor: pointer;
-  transition: background .2s, transform .06s, border-color .2s;
+
+  /* ЦЕНТРОВАНИЕ как единого блока */
+  display: grid;           /* <— ключевой трюк */
+  place-items: center;     /* центрируем .btn-inner */
+  text-align: center;
+
+  transition: background .2s, border-color .2s, transform .06s, box-shadow .2s;
 }
 .pay-btn:hover{ background: var(--btn-hover); }
 .pay-btn:active{ transform: translateY(1px); }
 .pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{ opacity: .6; cursor: not-allowed; filter: grayscale(.2); }
 
-/* центрируем как единое целое и задаём регулируемый зазор текст↔иконка */
-.pay-btn__center{
+/* Внутренний блок с текстом и иконкой */
+.btn-inner{
   display: inline-flex;
   align-items: center;
-  gap: var(--pay-gap, 10px); /* меняй отступ тут */
+  gap: var(--btn-icon-gap);  /* <— настраиваемый отступ */
+  line-height: 1;
 }
 
-.pay-btn__icon{
+/* Иконка кнопки */
+.btn-icon{
+  width: 20px;
+  height: 20px;
   display: block;
-  width: 20px; height: 20px;
+  flex-shrink: 0;
 }
 
-/* неактивное состояние */
-.pay-btn[disabled]{
-  opacity: .55;
-  cursor: default;
-  pointer-events: none;
+/* Варианты кнопок (можно изменить под свой бренд) */
+.pay-btn--sbp{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.pay-btn--sbp:hover{
+  /* лёгкое высветление */
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+
+.pay-btn--crypto{
+  background: transparent;            /* прозрачная подложка */
+  border-color: rgba(255,255,255,.35);/* белесая обводка */
+}
+.pay-btn--crypto:hover{
+  background: rgba(255,255,255,.06);
 }
 
 /* Юридическая панель под кнопками оплаты */

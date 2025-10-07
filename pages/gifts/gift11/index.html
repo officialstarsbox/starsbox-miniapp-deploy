@@ -159,26 +159,24 @@
 <section class="group-card is-plain" id="totalCard">
   <div class="total">
     <div class="total__title">Итого к оплате</div>
-    <div class="total__value" id="totalValue">0,00 руб.</div>
+    <div class="total__value" id="totalValue">164,00 руб.</div>
   </div>
 </section>
 <!-- ===== Платёжные кнопки ===== -->
-<section class="group-card is-plain" id="paySection">
-  <div class="pay-actions" style="--pay-gap:12px">
-    <button type="button" class="pay-btn" id="paySbpBtn" disabled aria-disabled="true">
-      <span class="pay-btn__center">
-        <span class="pay-btn__label">Оплатить по СБП</span>
-        <img class="pay-btn__icon" src="../../../assets/icons/icon10.png" alt="" width="20" height="20">
-      </span>
-    </button>
+<section class="pay-actions" id="payActions">
+  <button type="button" class="pay-btn pay-btn--sbp" id="paySbpBtn">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить по СБП</span>
+      <img class="btn-icon" src="../../../assets/icons/icon10.png" alt="" width="20" height="20">
+    </span>
+  </button>
 
-    <button type="button" class="pay-btn" id="payCryptoBtn" disabled aria-disabled="true">
-      <span class="pay-btn__center">
-        <span class="pay-btn__label">Оплатить криптовалютой</span>
-        <img class="pay-btn__icon" src="../../../assets/icons/icon9.png" alt="" width="20" height="20">
-      </span>
-    </button>
-  </div>
+  <button type="button" class="pay-btn pay-btn--crypto" id="payCryptoBtn">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить криптовалютой</span>
+      <img class="btn-icon" src="../../../assets/icons/icon9.png" alt="" width="20" height="20">
+    </span>
+  </button>
 </section>
 <!-- ===== Юридический блок ===== -->
 <section class="legal-panel" aria-live="polite">
