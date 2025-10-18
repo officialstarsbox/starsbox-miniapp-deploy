@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarsBox — Главная</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="home-page">
+  <!-- ===== Топбар ===== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <img id="userPhoto" class="avatar" src="assets/icons/logo17.png" alt="Профиль">
+      <div class="userbox">
+        <div id="userFullName" class="userbox__name">—</div>
+        <div id="userUsername" class="userbox__username">—</div>
+      </div>
+      <!-- справа твоя иконка (поменяй src на свою) -->
+      <img id="brandIcon" class="brand-icon" src="assets/icons/settings2.png" alt="StarsBox">
+    </div>
+  </header>
+
+  <!-- ===== Контентная колонка (дальше сюда добавим панели продуктов) ===== -->
+  <main class="wrap" id="pageRoot">
+   <section class="news">
+  <h2 class="section-title">Новости и акции</h2>
+
+  <div class="news-rail" id="newsRail">
+    <!-- Карточка: внутренняя ссылка -->
+    <a class="news-card"
+       href="./pages/stars/index.html"
+       aria-label="Покупайте звезды">
+      <span class="news-card__bg" style="--img:url('./assets/backgrounds/stars3.png')"></span>
+      <span class="news-card__title">Покупайте звезды</span>
+    </a>
+
+    <!-- Карточка: внутренняя или внешняя — можно target="_blank" -->
+    <a class="news-card"
+       href="./pages/steam/index.html"
+       aria-label="Пополняйте Steam">
+      <span class="news-card__bg" style="--img:url('./assets/backgrounds/steam.jpg')"></span>
+      <span class="news-card__title">Пополняйте Steam</span>
+    </a>
+
+    <a class="news-card" href="./pages/ton/index.html" aria-label="Покупайте TON">
+      <span class="news-card__bg" style="--img:url('./assets/backgrounds/ton.png')"></span>
+      <span class="news-card__title">Покупайте Ton</span>
+    </a>
+
+    <!-- Ещё карточки — добавляй просто ниже; старые уедут вправо -->
+    <a class="news-card" href="./pages/gifts/index.html" aria-label="Подарки для друзей">
+      <span class="news-card__bg" style="--img:url('./assets/backgrounds/gifts.png')"></span>
+      <span class="news-card__title">Подарки для друзей</span>
+    </a>
+  </div>
+
+  <div class="section-divider" aria-hidden="true"></div>
+</section>
+<section class="product-panels" aria-label="Выберите продукт">
+  <h2 class="sec-title">Выберите продукт</h2>
+
+  <div class="panels-grid">
+    <!-- Большая панель (шире, выше) -->
+    <a class="panel-card panel--lg"
+       href="pages/stars/index.html"
+       data-bg="assets/backgrounds/stars3.png">
+      <div class="panel-bg"></div>
+      <div class="panel-overlay"></div>
+
+      <div class="panel-text">
+        <h3 class="panel-title">Купить звезды</h3>
+        <p class="panel-sub">Быстрое пополнение</p>
+      </div>
+
+      <div class="panel-pill">
+        <img src="assets/icons/icon3.png" alt="">
+      </div>
+    </a>
+
+    <!-- Маленькая -->
+    <a class="panel-card panel--sm"
+       href="pages/ton/index.html"
+       data-bg="assets/backgrounds/ton.png">
+      <div class="panel-bg"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-text">
+        <h3 class="panel-title">Купить TON</h3>
+        <p class="panel-sub">Валюта Telegram</p>
+      </div>
+      <div class="panel-pill">
+        <img src="assets/icons/icon17.png" alt="">
+      </div>
+    </a>
+
+    <!-- Средняя 1 -->
+    <a class="panel-card panel--md"
+       href="pages/gifts/index.html"
+       data-bg="assets/backgrounds/gifts.png">
+      <div class="panel-bg"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-text">
+        <h3 class="panel-title">Подарки</h3>
+        <p class="panel-sub">Себе и друзьям</p>
+      </div>
+      <div class="panel-pill">
+        <img src="assets/icons/icon15.png" alt="">
+      </div>
+    </a>
+
+    <!-- Средняя 2 -->
+    <a class="panel-card panel--md"
+       href="pages/premium/index.html"
+       data-bg="assets/backgrounds/stars3.png">
+      <div class="panel-bg"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-text">
+        <h3 class="panel-title">Premium</h3>
+        <p class="panel-sub">Подписка в два клика</p>
+      </div>
+      <div class="panel-pill">
+        <img src="assets/icons/icon16.png" alt="">
+      </div>
+    </a>
+
+    <!-- Полноширинная -->
+    <a class="panel-card panel--full"
+       href="pages/steam/index.html"
+       data-bg="assets/backgrounds/steam2.jpg">
+      <div class="panel-bg"></div>
+      <div class="panel-overlay"></div>
+      <div class="panel-text">
+        <h3 class="panel-title">Пополняйте Steam</h3>
+        <p class="panel-sub">По самому выгодному курсу</p>
+      </div>
+      <div class="panel-pill">
+        <img src="assets/icons/icon4.png" alt="">
+      </div>
+    </a>
+  </div>
+</section>
+  </main>
+
+  <!-- Telegram WebApp SDK (для получения данных пользователя) -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+

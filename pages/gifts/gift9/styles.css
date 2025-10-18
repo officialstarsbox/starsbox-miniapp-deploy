@@ -1,0 +1,572 @@
+/* =========================================================
+   ТЕМА (самостоятельная, без импортов)
+   ========================================================= */
+.gift-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Доп. переменные под будущие блоки (как на других страницах) */
+  --cis-banner-bg: rgba(255,255,255,.06);
+  --help-bg: #121a33;
+
+  /* Единые отступы */
+  --block-gap: 16px; /* между секциями в .wrap */
+  --panel-gap: 12px; /* между элементами внутри .group-card */
+}
+
+/* =========================================================
+   БАЗА + ФОН (фиксированный)
+   ========================================================= */
+html, body { height: 100%; }
+body.gift-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+/* статичная подложка — не скроллится */
+body.gift-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар
+   ========================================================= */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{ margin: 0; text-align: center; font-size: 18px; font-weight: 400; }
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Контентная колонка
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* Универсальная карточная подложка (на будущее шаги) */
+.group-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: var(--panel-gap);
+}
+
+/* ===================== Настраиваемые параметры ===================== */
+.gift-page{
+  /* размеры можно менять на свой вкус */
+  --gift-img-size: 90px;
+  --brand-avatar-size: 20px;
+
+  /* визуал карточки */
+  --card-radius: 14px;
+
+  /* скорость анимации звёздочек (меньше — быстрее) */
+  --sparkle-speed: 3.2s;
+}
+
+/* ===================== Карточка подарка ===================== */
+.gift-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: var(--card-radius);
+  padding: 18px 16px 20px;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.gift-img{
+  width: var(--gift-img-size);
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* «Подарок от …» */
+.gift-from{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.gift-from__label{ color: var(--text); font-weight: 600; }
+.gift-from__brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.brand-avatar{
+  width: var(--brand-avatar-size);
+  height: var(--brand-avatar-size);
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid; place-items: center;
+  background: rgba(255,255,255,.06);
+}
+.brand-avatar img{
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.brand-name{ color: var(--text); font-weight: 600; }
+
+/* Описание (меняемое из JS) */
+.gift-desc{
+  margin: 2px 0 0px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+/* ===================== «Просмотр» (некликабельно) ===================== */
+.ghost-btn{
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.28);
+  background: transparent;
+  color: var(--text);
+  font-size: 8px;
+  font-weight: 400;
+  letter-spacing: .2px;
+  pointer-events: none;           /* не кликабельна */
+  user-select: none;
+  overflow: visible;
+}
+.ghost-btn__label{ position: relative; z-index: 2; }
+
+/* Контейнер звёздочек — центр кнопки */
+.ghost-btn__sparkles{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Звёздочки */
+.ghost-btn__sparkles i{
+  position: absolute;
+  font-style: normal;
+  width: 6px; height: 6px;
+  background: radial-gradient(circle at 40% 40%, #fff, rgba(255,255,255,.2) 60%, transparent 70%);
+  border-radius: 50%;
+  opacity: 0;
+  animation: sparkle-fly var(--sparkle-speed) linear infinite;
+}
+
+/* немного разнообразия: углы и задержки */
+.ghost-btn__sparkles i:nth-child(1){ --dx: -22px; --dy: -30px; animation-delay: .0s; }
+.ghost-btn__sparkles i:nth-child(2){ --dx:  18px; --dy: -36px; animation-delay: .5s; }
+.ghost-btn__sparkles i:nth-child(3){ --dx: -28px; --dy: -18px; animation-delay: 1.0s; }
+.ghost-btn__sparkles i:nth-child(4){ --dx:  26px; --dy: -20px; animation-delay: 1.5s; }
+.ghost-btn__sparkles i:nth-child(5){ --dx:   0px; --dy: -40px; animation-delay: 2.0s; }
+
+@keyframes sparkle-fly{
+  0%   { transform: translate(0,0) scale(.2); opacity: 0; }
+  10%  { opacity: .9; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1); opacity: 0; }
+}
+
+/* ===== Поля/лейблы/текст-кнопка ===== */
+.field{ display: grid; gap: 8px; }
+.field__row{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.field__label{ font-weight: 400; font-size: 14px; }
+.text-btn{
+  background: transparent; border: 0; color: #5266ff;
+  font-size: 13px; padding: 0 2px; cursor: pointer; border-radius: 8px;
+  transition: background .2s, transform .06s;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ===== Инпут с левой иконкой (параметры единые) ===== */
+:root,
+.gift-page{
+  --input-h: 40px;          /* высота поля */
+  --icon-size: 15px;     /* размер иконки */
+  --input-pad-x: 20px;   /* отступ слева блока ввода */
+  --icon-gap: 15px;      /* зазор между иконкой и текстом */
+}
+.input-with-icon{
+  position: relative;
+  border-radius: 14px;
+  background: var(--btn-bg);
+  border: 0px solid var(--btn-brd);
+}
+
+.input-with-icon:focus-within{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* абсолютная иконка — видима, но не перехватывает клики */
+.input-icon{
+  position: absolute;
+  left: var(--input-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: inline-grid;
+  place-items: center;
+  pointer-events: none;
+}
+.input-icon img{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: block;
+  pointer-events: none;
+}
+
+/* само поле */
+.field__input{
+  width: 100%;
+  height: var(--input-h);
+  border: 0; outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  padding: 0; /* горизонталь слева добиваем классом ниже */
+  box-sizing: border-box;
+}
+/* добавляем место под иконку слева по общей формуле */
+.field__input--with-icon{
+  padding-left: calc(var(--input-pad-x) + var(--icon-size) + var(--icon-gap));
+}
+.field__input::placeholder{ color: var(--muted); }
+
+.gift-page .group-card.is-plain{
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;      /* при желании верни паддинг, если нужен внутренний отступ */
+}
+
+/* ===== Отправитель: контейнер и инфо-панель ===== */
+#sender-section{ display: grid; gap: 12px; }
+.sender-block{ display: grid; gap: 12px; }
+
+.info-panel{
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--card-brd);
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Убираем карточную подложку у «плоских» блоков */
+.gift-page .group-card.is-plain{
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* Счётчик внутри поля, прижат вправо (зеркально иконке слева) */
+.input-counter{
+  position: absolute;
+  right: var(--input-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  z-index: 2;
+  line-height: 1;
+}
+
+/* размеры поля сообщения */
+.gift-page{
+  --msg-height: 80px;       /* высота как на скрине */
+  --msg-pad-x: 15px;        /* горизонтальные отступы */
+  --msg-pad-y: 10px;        /* вертикальные отступы */
+}
+
+/* контейнер textarea */
+.message-box{
+  position: relative;
+  border-radius: 14px;
+  background: var(--btn-bg);
+  border: 0px solid var(--btn-brd);
+}
+.message-box:focus-within{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* большая текстовая область */
+.message-textarea{
+  display: block;
+  width: 100%;
+  min-height: var(--msg-height);
+  padding: var(--msg-pad-y) calc(var(--msg-pad-x) + 48px) var(--msg-pad-y) var(--msg-pad-x);
+  border: 0; outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.45;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;    /* не выезжает по горизонтали */
+}
+.message-textarea::placeholder{ color: var(--muted); }
+
+/* счётчик внизу справа */
+.message-counter{
+  position: absolute;
+  right: var(--msg-pad-x);
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  line-height: 1;
+}
+
+.gift-desc{
+  overflow-wrap: anywhere;   /* перенос длинных слов/юзернеймов */
+  word-break: break-word;    /* страховка для некоторых браузеров */
+}
+
+/* Группа инфо-панелей */
+.info-group{
+  display: grid;
+  gap: 5px;          /* одинаковый вертикальный интервал между панелями */
+}
+
+/* Базовый вид панели */
+.info-panel{
+  --panel-radius: 14px;
+  --panel-pad-y: 12px;
+  --panel-pad-x: 14px;
+
+  border-radius: var(--panel-radius);
+  padding: var(--panel-pad-y) var(--panel-pad-x);
+  border: 1px solid var(--card-brd);
+  background: rgba(255,255,255,.06);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* Заголовок и текст */
+.info-panel__title{
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.3;
+}
+.info-panel__text{
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.45;
+  color: var(--text);
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Варианты оформления (как на скрине) */
+.info-panel--warning{
+  /* сливово-бордовый тон */
+  --title-color: #f3dfe6;
+  background: rgba(168, 52, 109, .18);
+  border-color: rgba(255, 120, 165, .45);
+}
+.info-panel--warning .info-panel__title{ color: var(--title-color); }
+
+.info-panel--notice{
+  /* тёплый коричневый тон */
+  --title-color: #f2e7d6;
+  background: rgba(165, 132, 76, .20);
+  border-color: rgba(230, 197, 143, .38);
+}
+.info-panel--notice .info-panel__title{ color: var(--title-color); }
+
+/* ===== Итого к оплате (как на странице звёзд) ===== */
+.total{
+  display: grid;
+  justify-items: center;      /* заголовок над суммой, по центру */
+  gap: 6px;
+  padding: 5px 0 12px;
+  border-bottom: 1px solid var(--card-brd); /* подчёркивание на всю ширину */
+}
+
+.total__title{
+  font-size: 14px;
+  color: var(--text);
+  opacity: .9;
+}
+
+.total__value{
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: .2px;
+  color: var(--text);
+}
+
+/* Параметр отступа между текстом и иконкой в кнопках */
+.gift-page{ --btn-icon-gap: 10px; }
+
+/* ===== Платёжные кнопки ===== */
+.pay-actions{
+  display: grid;
+  gap: 10px;                /* расстояние между кнопками */
+}
+
+.pay-btn{
+  width: 100%;
+  min-height: 40px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: .2px;
+  cursor: pointer;
+
+  /* ЦЕНТРОВАНИЕ как единого блока */
+  display: grid;           /* <— ключевой трюк */
+  place-items: center;     /* центрируем .btn-inner */
+  text-align: center;
+
+  transition: background .2s, border-color .2s, transform .06s, box-shadow .2s;
+}
+.pay-btn:hover{ background: var(--btn-hover); }
+.pay-btn:active{ transform: translateY(1px); }
+.pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{ opacity: .6; cursor: not-allowed; filter: grayscale(.2); }
+
+/* Внутренний блок с текстом и иконкой */
+.btn-inner{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--btn-icon-gap);  /* <— настраиваемый отступ */
+  line-height: 1;
+}
+
+/* Иконка кнопки */
+.btn-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Варианты кнопок (можно изменить под свой бренд) */
+.pay-btn--sbp{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.pay-btn--sbp:hover{
+  /* лёгкое высветление */
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+
+.pay-btn--crypto{
+  background: transparent;            /* прозрачная подложка */
+  border-color: rgba(255,255,255,.35);/* белесая обводка */
+}
+.pay-btn--crypto:hover{
+  background: rgba(255,255,255,.06);
+}
+
+/* Юридическая панель под кнопками оплаты */
+.legal-panel{
+  margin-top: 12px;             /* отступ от блока кнопок */
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--card-brd);
+}
+
+.legal-panel__text{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: left;             /* можно center, если захочешь */
+}
+
+.legal-panel__text a{
+  color: #9fb2ff;               /* в стилистике ссылок страницы */
+  text-decoration: underline;
+  font-weight: 400;
+}
+.legal-panel__text a:hover{ opacity: .95; }
+
+/* Нижний «воздух» под контентной колонкой (учитывает safe-area на iOS) */
+.stars-page{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  .stars-page{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.stars-page .wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}
+

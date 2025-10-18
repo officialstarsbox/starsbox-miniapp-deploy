@@ -1,0 +1,294 @@
+﻿/* =========================================================
+   ТЕМА (самостоятельно, без импортов)
+   ========================================================= */
+.home-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+
+  --focus:       #5266ff;
+
+  --block-gap: 16px;
+}
+
+html, body { height: 100%; }
+body.home-page{
+  margin: 0;
+  color: var(--text);
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* фон */
+body.home-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар (НЕ sticky)
+   ========================================================= */
+.topbar{
+  padding: 20px 0;
+  border-bottom: 0px solid var(--card-brd);
+  background: rgba(9, 13, 24, 0);
+}
+.topbar__inner{
+  width: var(--form-w);
+  margin: 0 auto;
+  padding: 0 6px;
+  display: grid;
+  grid-template-columns: 44px 1fr 32px; /* аватар | имя+юзер | иконка справа */
+  align-items: center;
+  gap: 25px;
+  box-sizing: border-box;
+}
+
+/* аватар */
+.avatar{
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: rgba(255,255,255,.08);
+  border: 0px solid var(--card-brd);
+}
+
+/* блок с именем */
+.userbox{
+  min-width: 0; /* чтобы работали ellipsis */
+  display: grid;
+  gap: 0px;
+
+}
+.userbox__name{
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* доп. защита */
+}
+.userbox__username{
+  font-size: 17px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* правая иконка */
+.brand-icon{
+  width: 30px; height: 30px;
+  display: block;
+  justify-self: end;
+  opacity: .95;
+}
+
+/* =========================================================
+   Контентная колонка
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 0px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* ===== Новости и акции ===== */
+.news{ display:grid; gap:10px; }
+.section-title{
+  margin:0;
+  font-size:16px;
+  font-weight:400;
+  color:var(--text, #e6e9f0);
+  text-align:left;            /* выравнивание по левому краю сетки */
+}
+
+/* Лента карточек: 3 целых + «хвост» 4-й */
+.news-rail{
+  --card-w: 130px;            /* ширина карточки (меняй при желании) */
+  --card-h: 90px;            /* высота карточки */
+  --rail-gap: 10px;           /* расстояние между карточками */
+
+  display:flex;
+  gap: var(--rail-gap);
+  overflow-x:auto;
+  padding: 6px;               /* внутренний отступ ленты */
+  margin: 0 -6px;             /* «растягиваем» ленту на всю ширину wrap */
+  padding-right: calc(6px + 24px);   /* оставляем место для «хвоста» 4-й */
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* скрыть полосы прокрутки, но оставить сам скролл */
+.news-rail::-webkit-scrollbar{ display:none; }
+.news-rail{ scrollbar-width:none; }
+
+/* Карточка-линк */
+.news-card{
+  position:relative;
+  flex: 0 0 var(--card-w);
+  height: var(--card-h);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+
+  border: 1px solid rgba(255, 255, 255, 0.462);
+  scroll-snap-align: start;
+  transform: translateZ(0);
+}
+
+/* Фоновая картинка */
+.news-card__bg{
+  position:absolute; inset:0;
+  background: center/cover no-repeat var(--img, none);
+  z-index: 1; /* ниже затемнения и текста */
+}
+
+/* ЗАТЕМНЕНИЕ теперь через ::after, поверх картинки */
+.news-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.208) 0%, rgba(0, 0, 0, 0.816) 70%);
+  pointer-events:none;
+  z-index: 2;
+}
+
+/* Текст карточки поверх всех слоёв */
+.news-card__title{
+  position:absolute; left:10px; right:10px; bottom:10px;
+  font-size:14px; line-height:1.2;
+  color:#fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  overflow-wrap:anywhere;
+  z-index: 3;
+}
+
+/* Ховер — слегка усилить свечение кольца */
+.news-card:hover{
+  box-shadow:
+    inset 0 0 0 1px rgba(159,178,255,.18),
+    0 0 0 var(--ring-gap) var(--bg-color),
+    0 0 0 calc(var(--ring-gap) + var(--ring-size)) rgba(140,160,255,.60);
+}
+
+/* Разделитель секции */
+.section-divider{
+  height:1px;
+  background: rgba(255,255,255,.12);
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+/* ====== Секция панелей продуктов ====== */
+.product-panels{
+  display: grid;
+  gap: 10px;
+}
+.product-panels .sec-title{
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Сетка: видно 3 карточки и кусочек 4-й на узких экранах */
+.panels-grid{
+  display: grid;
+  grid-auto-flow: dense;
+  grid-template-columns: repeat(12, minmax(0, 1fr)); /* minmax(0,1fr) отрубает min-content-расширение */
+  gap: 5px;
+  overflow-x: visible; /* или просто убери строку */
+  padding-bottom: 4px;
+}
+
+/* Базовая карточка */
+.panel-card{
+  position: relative;
+  display: block;
+  height: 30px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  isolation: isolate;
+  transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+/* фон (картинка) */
+.panel-bg{
+  position: absolute; inset: 0;
+  background: center/cover no-repeat;
+  z-index: 0;
+  filter: opacity(10%);
+}
+
+/* белый полупрозрачный фильтр поверх изображения */
+.panel-overlay{
+  position: absolute; inset: 0;
+  background: rgba(44, 44, 44, 0.112);
+  z-index: 1;
+}
+
+/* Текстовый блок */
+.panel-text{
+  position: relative;
+  z-index: 2;
+  padding: 14px 16px 54px 16px;                /* нижний отступ под пилюлю */
+}
+.panel-title{
+  margin: 0 0 1px;
+  font-size: 16px;
+  font-weight: 600;
+  text-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.panel-sub{
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Пилюля с иконками (авто-ширина) */
+.panel-pill{
+  --pill-pad-x: 12px;
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--pill-pad-x);
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(0,0,0,.25);
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset;
+  z-index: 2;
+}
+.panel-pill img{
+  width: 18px; height: 18px; display: block;
+}
+
+/* Размеры/спаны карточек (12-колоночная сетка) */
+.panel--lg   { grid-column: span 7; min-height: 130px; }
+.panel--sm   { grid-column: span 5; min-height: 130px; }
+.panel--md   { grid-column: span 6; min-height: 130px; }
+.panel--full { grid-column: 1 / -1; min-height: 130px; }
