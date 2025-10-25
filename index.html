@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarsBox — Главная</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="home-page">
+  <!-- ===== Топбар ===== -->
+  <header class="topbar">
+    <div class="topbar__inner">
+      <img id="userPhoto" class="avatar" src="assets/icons/logo17.png" alt="Профиль">
+      <div class="userbox">
+        <div id="userFullName" class="userbox__name">—</div>
+        <div id="userUsername" class="userbox__username">—</div>
+      </div>
+      <img id="brandIcon" class="brand-icon" src="assets/icons/settings2.png" alt="StarsBox">
+    </div>
+  </header>
+
+  <!-- ===== Контент ===== -->
+  <main class="wrap" id="pageRoot">
+    <!-- Новости -->
+    <section class="news">
+      <h2 class="section-title">Новости и акции</h2>
+
+      <div class="news-rail" id="newsRail">
+        <a class="news-card" href="./pages/stars/index.html" aria-label="Покупайте звезды">
+          <span class="news-card__bg" style="--img:url('./assets/backgrounds/stars3.png')"></span>
+          <span class="news-card__title">Покупайте звезды</span>
+        </a>
+
+        <a class="news-card" href="./pages/steam/index.html" aria-label="Пополняйте Steam">
+          <span class="news-card__bg" style="--img:url('./assets/backgrounds/steam.jpg')"></span>
+          <span class="news-card__title">Пополняйте Steam</span>
+        </a>
+
+        <a class="news-card" href="./pages/ton/index.html" aria-label="Покупайте TON">
+          <span class="news-card__bg" style="--img:url('./assets/backgrounds/ton.png')"></span>
+          <span class="news-card__title">Покупайте Ton</span>
+        </a>
+
+        <a class="news-card" href="./pages/gifts/index.html" aria-label="Подарки для друзей">
+          <span class="news-card__bg" style="--img:url('./assets/backgrounds/gifts.png')"></span>
+          <span class="news-card__title">Подарки для друзей</span>
+        </a>
+      </div>
+
+      <div class="section-divider" aria-hidden="true"></div>
+    </section>
+
+    <!-- Панели продуктов -->
+    <section class="product-panels" aria-label="Выберите продукт">
+      <h2 class="sec-title">Выберите продукт</h2>
+
+      <div class="panels-grid">
+        <!-- Звезды -->
+        <a class="panel panel--lg panel--stars" href="pages/stars/index.html">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Купить звезды</div>
+              <div class="panel__sub">Быстрое пополнение</div>
+            </div>
+            <div class="panel__pill">
+              <img src="assets/icons/icon3.png" alt="">
+            </div>
+          </div>
+        </a>
+
+        <!-- TON -->
+        <a class="panel panel--sm panel--ton" href="pages/ton/index.html">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Купить TON</div>
+              <div class="panel__sub">Валюта Telegram</div>
+            </div>
+            <div class="panel__pill">
+              <img src="assets/icons/icon17.png" alt="">
+            </div>
+          </div>
+        </a>
+
+        <!-- Подарки -->
+        <a class="panel panel--md panel--gifts" href="pages/gifts/index.html">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Подарки</div>
+              <div class="panel__sub">Себе и друзьям</div>
+            </div>
+            <div class="panel__pill">
+              <img src="assets/icons/icon15.png" alt="">
+            </div>
+          </div>
+        </a>
+
+        <!-- Premium -->
+        <a class="panel panel--md panel--premium" href="pages/premium/index.html">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Premium</div>
+              <div class="panel__sub">Подписка в два клика</div>
+            </div>
+            <div class="panel__pill">
+              <img src="assets/icons/icon16.png" alt="">
+            </div>
+          </div>
+        </a>
+
+        <!-- Steam (на всю ширину) -->
+        <a class="panel panel--full panel--steam" href="pages/steam/index.html">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Пополняйте Steam</div>
+              <div class="panel__sub">По самому выгодному курсу</div>
+            </div>
+            <div class="panel__pill">
+              <img src="assets/icons/icon4.png" alt="">
+            </div>
+          </div>
+        </a>
+
+        <!-- Referral (на всю ширину, как Steam) -->
+        <a class="panel panel--full panel--ref" href="pages/ref/index.html" aria-label="Реферальная программа">
+          <div class="panel__inner">
+            <div>
+              <div class="panel__title">Реферальная программа</div>
+              <div class="panel__sub">Зарабатывай с нами</div>
+            </div>
+            <div class="panel__pill">
+              <!-- можно заменить иконку на любую из ваших -->
+              <img src="assets/icons/акции.png" alt="">
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Telegram WebApp SDK -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
+

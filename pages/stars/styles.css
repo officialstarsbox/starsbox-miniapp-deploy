@@ -1,0 +1,442 @@
+/* =========================================================
+   ТЕМА (значения — те же, что на странице Steam)
+   ========================================================= */
+.stars-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Доп. палитра (впрок, как на Steam) */
+  --cis-banner-bg: rgba(255,255,255,.06);
+  --help-bg: #121a33;
+
+  /* Единые отступы */
+  --block-gap: 16px; /* между секциями в .wrap */
+  --panel-gap: 12px; /* между элементами внутри .group-card */
+}
+
+/* =========================================================
+   БАЗА + ФОН (фиксированный, «бесконечный»)
+   ========================================================= */
+html, body { height: 100%; }
+body.stars-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+/* статичная подложка — не двигается при скролле */
+body.stars-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар
+   ========================================================= */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  /* ключ: горизонтальные паддинги ровно как у .wrap */
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{ margin: 0; text-align: center; font-size: 18px; font-weight: 400; }
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Контентная колонка и базовые отступы
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+/* =========================================================
+   Поля/лейблы/кнопки-тексты
+   ========================================================= */
+.field{ display: grid; gap: 8px; }
+.field__row{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.field__label{ font-weight: 400; font-size: 14px; }
+.text-btn{
+  background: transparent; border: none; color: #5266ff;
+  font-weight: 400; font-size: 13px; cursor: pointer; padding: 0 2px; border-radius: 8px;
+  transition: background .2s, transform .06s;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ===== ЕДИНЫЕ НАСТРОЙКИ ДЛЯ ВСЕХ ПОЛЕЙ С ИКОНКОЙ ===== */
+.stars-page{
+  --input-h: 40px;          /* высота поля */
+  --icon-size: 15px;        /* размер иконки */
+  --input-pad-x: 20px;      /* базовый горизонтальный паддинг */
+  --icon-gap: 15px;         /* зазор между иконкой и текстом */
+}
+
+/* контейнер поля */
+.input-with-icon{
+  position: relative;
+  border-radius: 14px;
+  background: var(--btn-bg);
+  border: 0px solid var(--btn-brd);
+}
+
+/* само поле */
+.field__input{
+  width: 100%;
+  height: var(--input-h);
+  padding: 0 var(--input-pad-x);
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* место под иконку слева одинаковое везде */
+.field__input--with-icon{
+  padding-left: calc(var(--input-pad-x) + var(--icon-size) + var(--icon-gap));
+}
+
+/* иконка поверх, клики не перехватывает */
+.input-icon{
+  position: absolute;
+  left: var(--input-pad-x);
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: inline-grid;
+  place-items: center;
+  pointer-events: none;
+}
+.input-icon img{
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* фокус-стейт контейнера по фокусу инпута */
+.input-with-icon:focus-within{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* ====================== Пакеты ====================== */
+:root{
+  --pack-gap: 10px;
+  --pack-pad-y: 10px;
+  --pack-pad-x: 20px;
+}
+
+/* заголовок секции */
+.packs-title{
+  margin: 0 0 10px 0;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* список пакетов — равномерные вертикальные интервалы */
+.packs-list{
+  display: grid;
+  gap: var(--pack-gap);
+}
+
+/* одна строка-пакет (горизонтальная, слева иконка+текст, справа цена) */
+.pack-item{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+
+  padding: var(--pack-pad-y) var(--pack-pad-x);
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  cursor: pointer;
+
+  text-align: left;
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .06s;
+}
+.pack-item:hover{ background: var(--btn-hover); }
+.pack-item:active{ transform: translateY(1px); }
+.pack-item:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* внутренняя левая часть */
+.pack-left{
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 15px;
+  justify-content: start;            /* явное прижатие к левому краю */
+  justify-items: start;
+}
+.pack-icon{
+  width: var(--icon-size);
+  height: var(--icon-size);
+  display: inline-grid;
+  place-items: center;
+}
+.pack-icon img{
+  display: block;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  pointer-events: none;
+}
+.pack-name{ font-size: 15px; }
+
+/* правая часть — цена */
+.pack-right{ 
+  font-size: 14px;
+  font-weight: 400;
+  justify-self: end;
+}
+
+/* активный пакет (стили как у активных region-btn) */
+.pack-item.is-active{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+
+/* скрываем "дополнительные" пакеты, если список свёрнут */
+.packs-list[data-collapsed="true"] .pack-item.is-extra{ display: none; }
+
+/* Кнопка "Показать/Свернуть все пакеты" */
+.packs-toggle{
+  width: 100%;
+  min-height: 30px;
+  padding: 10px 14px;
+  margin-top: 10px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  background: transparent;                 /* прозрачная подложка */
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.55); /* белая обводка */
+  border-radius: 14px;
+
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .06s;
+}
+
+.packs-toggle:hover{
+  background: rgba(255,255,255,.06);       /* лёгкая подсветка при ховере */
+  border-color: rgba(255,255,255,.75);
+}
+
+.packs-toggle:active{
+  transform: translateY(1px);
+}
+
+.packs-toggle:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* необязательно: когда список раскрыт, можно слегка подсветить кнопку */
+.packs-toggle[aria-expanded="true"]{
+  border-color: rgba(255,255,255,.75);
+}
+
+/* Итоговая стоимость */
+.total-card{ /* без подложки */
+  display: grid;
+  gap: var(--panel-gap);
+}
+
+/* Блок "Итого к оплате": заголовок над суммой, всё по центру,
+   подчёркивание — на всю ширину блока */
+.total-field{
+  display: flex;
+  flex-direction: column; /* заголовок над суммой */
+  align-items: center;    /* центрируем контент по горизонтали */
+  text-align: center;
+  gap: 6px;
+  padding-bottom: 12px;              /* место под линию */
+  width: 100%;                        /* растянуть на всю строку */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.473); /* линия по всей ширине блока */
+}
+
+.total-field .field__label{
+  margin: 0;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* У суммы — без собственной линии */
+.total__value{
+  font-size: 18px;
+  font-weight: 400;
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+/* Параметр отступа между текстом и иконкой в кнопках */
+.stars-page{ --btn-icon-gap: 10px; }
+
+/* Контейнер c кнопками — вертикально одна под другой */
+.pay-actions{
+  display: grid;
+  gap: 10px; /* расстояние между кнопками */
+}
+
+/* Базовый стиль платёжной кнопки */
+.pay-btn{
+  width: 100%;
+  min-height: 40px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  color: var(--text);
+  font-weight: 400;
+  letter-spacing: .2px;
+  cursor: pointer;
+
+  /* ЦЕНТРОВАНИЕ как единого блока */
+  display: grid;           /* <— ключевой трюк */
+  place-items: center;     /* центрируем .btn-inner */
+  text-align: center;
+
+  transition: background .2s, border-color .2s, transform .06s, box-shadow .2s;
+}
+.pay-btn:hover{ background: var(--btn-hover); }
+.pay-btn:active{ transform: translateY(1px); }
+.pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{ opacity: .6; cursor: not-allowed; filter: grayscale(.2); }
+
+/* Внутренний блок с текстом и иконкой */
+.btn-inner{
+  display: inline-flex;
+  align-items: center;
+  gap: var(--btn-icon-gap);  /* <— настраиваемый отступ */
+  line-height: 1;
+}
+
+/* Иконка кнопки */
+.btn-icon{
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* Варианты кнопок (можно изменить под свой бренд) */
+.pay-btn--sbp{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.pay-btn--sbp:hover{
+  /* лёгкое высветление */
+  background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%);
+}
+
+.pay-btn--crypto{
+  background: transparent;            /* прозрачная подложка */
+  border-color: rgba(255,255,255,.35);/* белесая обводка */
+}
+.pay-btn--crypto:hover{
+  background: rgba(255,255,255,.06);
+}
+
+/* Юридическая панель под кнопками оплаты */
+.legal-panel{
+  margin-top: 12px;             /* отступ от блока кнопок */
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--card-brd);
+}
+
+.legal-panel__text{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: left;             /* можно center, если захочешь */
+}
+
+.legal-panel__text a{
+  color: #9fb2ff;               /* в стилистике ссылок страницы */
+  text-decoration: underline;
+  font-weight: 400;
+}
+.legal-panel__text a:hover{ opacity: .95; }
+
+/* Нижний «воздух» под контентной колонкой (учитывает safe-area на iOS) */
+.stars-page{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  .stars-page{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.stars-page .wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}
+
+
+
+
+
+
+

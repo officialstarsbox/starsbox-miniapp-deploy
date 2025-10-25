@@ -1,0 +1,364 @@
+﻿/* =========================================================
+   ТЕМА (самостоятельно, без импортов)
+   ========================================================= */
+.home-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+
+  --focus:       #5266ff;
+
+  --block-gap: 16px;
+}
+
+/* защита от горизонтальной прокрутки и учёт паддингов в ширине */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: hidden; }
+
+html, body { height: 100%; }
+body.home-page{
+  margin: 0;
+  color: var(--text);
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* фон */
+body.home-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: #11182C;
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   Топбар (НЕ sticky)
+   ========================================================= */
+.topbar{
+  padding: 20px 0;
+  border-bottom: 0px solid var(--card-brd);
+  background: rgba(9, 13, 24, 0);
+}
+.topbar__inner{
+  width: var(--form-w);
+  margin: 0 auto;
+  padding: 0 6px;
+  display: grid;
+  grid-template-columns: 44px 1fr 32px; /* аватар | имя+юзер | иконка справа */
+  align-items: center;
+  gap: 25px;
+  box-sizing: border-box;
+}
+
+/* аватар */
+.avatar{
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  background: rgba(255,255,255,.08);
+  border: 0px solid var(--card-brd);
+}
+
+/* блок с именем */
+.userbox{
+  min-width: 0; /* чтобы работали ellipsis */
+  display: grid;
+  gap: 0px;
+
+}
+.userbox__name{
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; /* доп. защита */
+}
+.userbox__username{
+  font-size: 17px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* правая иконка */
+.brand-icon{
+  width: 30px; height: 30px;
+  display: block;
+  justify-self: end;
+  opacity: .95;
+}
+
+/* =========================================================
+   Контентная колонка
+   ========================================================= */
+.wrap{
+  max-width: var(--form-w);   /* вместо width */
+  width: 100%;
+  box-sizing: border-box;     /* паддинги внутри ширины */
+  margin: 0 auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* ===== Новости и акции ===== */
+.news{ display:grid; gap:10px; }
+.section-title{
+  margin:0;
+  font-size:16px;
+  font-weight:400;
+  color:var(--text, #e6e9f0);
+  text-align:left;            /* выравнивание по левому краю сетки */
+}
+
+/* Лента карточек: 3 целых + «хвост» 4-й */
+.news-rail{
+  --card-w: 130px;            /* ширина карточки (меняй при желании) */
+  --card-h: 90px;            /* высота карточки */
+  --rail-gap: 10px;           /* расстояние между карточками */
+
+  display:flex;
+  gap: var(--rail-gap);
+  overflow-x:auto;
+  padding: 6px;               /* внутренний отступ ленты */
+  margin: 0 -6px;             /* «растягиваем» ленту на всю ширину wrap */
+  padding-right: calc(6px + 24px);   /* оставляем место для «хвоста» 4-й */
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* скрыть полосы прокрутки, но оставить сам скролл */
+.news-rail::-webkit-scrollbar{ display:none; }
+.news-rail{ scrollbar-width:none; }
+
+/* Карточка-линк */
+.news-card{
+  position:relative;
+  flex: 0 0 var(--card-w);
+  height: var(--card-h);
+  border-radius: 14px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+
+  border: 1px solid rgba(255, 255, 255, 0.462);
+  scroll-snap-align: start;
+  transform: translateZ(0);
+}
+
+/* Фоновая картинка */
+.news-card__bg{
+  position:absolute; inset:0;
+  background: center/cover no-repeat var(--img, none);
+  z-index: 1; /* ниже затемнения и текста */
+}
+
+/* ЗАТЕМНЕНИЕ теперь через ::after, поверх картинки */
+.news-card::after{
+  content:"";
+  position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.208) 0%, rgba(0, 0, 0, 0.816) 70%);
+  pointer-events:none;
+  z-index: 2;
+}
+
+/* Текст карточки поверх всех слоёв */
+.news-card__title{
+  position:absolute; left:10px; right:10px; bottom:10px;
+  font-size:14px; line-height:1.2;
+  color:#fff;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
+  overflow-wrap:anywhere;
+  z-index: 3;
+}
+
+/* Ховер — слегка усилить свечение кольца */
+.news-card:hover{
+  box-shadow:
+    inset 0 0 0 1px rgba(159,178,255,.18),
+    0 0 0 var(--ring-gap) var(--bg-color),
+    0 0 0 calc(var(--ring-gap) + var(--ring-size)) rgba(140,160,255,.60);
+}
+
+/* Разделитель секции */
+.section-divider{
+  height:1px;
+  background: rgba(255,255,255,.12);
+  border-radius: 1px;
+  margin-top: 4px;
+}
+
+/* ===== БАЗА: сетка с панелями ===== */
+.panels-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0,1fr));
+  gap:10px;
+}
+
+/* размеры по сетке (как и раньше) */
+.panel--lg   { grid-column: span 7; min-height: 130px; }
+.panel--md   { grid-column: span 6; min-height: 130px; }
+.panel--sm   { grid-column: span 5; min-height: 130px; }
+.panel--full   { grid-column: 1 / -1; min-height: 130px; }
+
+/* ===== СТИЛЬ ПАНЕЛИ (один в один «темный, бархатный» фон) ===== */
+.panel{
+  /* индивидуально настраиваемые переменные */
+  --panel-radius: 14px;
+  --bg-top:   #0f1630;        /* верхний цвет фона */
+  --bg-bot:   #0b1226;        /* нижний цвет фона */
+  --border-o: rgba(255,255,255,.10);  /* общий бордер */
+  --border-i: rgba(255,255,255,.06);  /* внутренний светлый штрих */
+  --glow-2:   rgba(82, 148, 255, .18);  /* нижнее мягкое свечение */
+
+  position:relative;
+  display:block;
+  border-radius: var(--panel-radius);
+  overflow:hidden;
+  text-decoration:none;
+  color:inherit;
+  isolation:isolate;
+
+  /* собственно фон */
+  background:
+    radial-gradient(120% 140% at 10% 120%, var(--glow-2) 0%, transparent 65%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bot) 100%);
+
+  /* тонкий объем и рамки как на скрине */
+  border: 0px solid var(--border-o);
+  box-shadow:
+    inset 0 1px 0 var(--border-i),
+    inset 0 -1px 0 rgba(255,255,255,.03),
+    0 8px 28px rgba(0,0,0,.42);
+}
+
+/* легкая реакция на ховер/фокус */
+.panel:hover{
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 var(--border-i),
+    inset 0 -1px 0 rgba(255,255,255,.04),
+    0 10px 34px rgba(0,0,0,.48);
+  border-color: rgba(255,255,255,.14);
+}
+.panel:focus-visible{
+  outline: 2px solid rgba(120,150,255,.55);
+  outline-offset: 2px;
+  border-color: rgba(120,150,255,.45);
+}
+
+/* Внутренний контент панели (текст слева, иконка справа) */
+.panel__inner{
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 16px 16px 54px 16px; /* место под пилюлю */
+  min-height: 30px; 
+}
+
+.sec-title{
+  margin:0 0 20px;
+  font-size:16px;
+  font-weight:400;
+  letter-spacing:.2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+
+.panel__title{
+  margin:0 0 4px;
+  font-size:16px;
+  font-weight:500;
+  letter-spacing:.2px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
+}
+.panel__sub{
+  margin:0;
+  font-size:13px;
+  color:#9aa0a6;
+}
+
+/* Пилюля с иконкой справа (как на скрине) */
+.panel__pill{
+  position: absolute;    /* было: static */
+  right: 10px;
+  bottom: 1px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.18);
+  background: rgba(0,0,0,.25);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+.panel__pill img{ width:18px; height:18px; display:block; }
+
+/* ===== ПЕРСОНАЛИЗАЦИЯ КАЖДОЙ ПАНЕЛИ (через переменные) ===== */
+/* Пример темы для Premium (фиолетовый блик) */
+.panel--premium{
+  --bg-top:#10183a;
+  --bg-bot:#0b1329;
+  --glow-1: rgba(152, 112, 255, .28);
+  --glow-2: rgba(92, 170, 255,  .15);
+}
+
+/* Пример темы для Подарков (холодный блик) */
+.panel--gifts{
+  --bg-top:#0f182f;
+  --bg-bot:#0a1023;
+  --glow-1: rgba(146, 174, 255, .26);
+  --glow-2: rgba(110, 219, 255, 0.114);
+}
+
+/* Пример темы для Подарков (холодный блик) */
+.panel--stars{
+  --bg-top:#10183a;
+  --bg-bot:#0b1329;
+  border: 1px solid rgba(255, 162, 0, 0.244); 
+  --glow-1: rgba(152, 112, 255, .28);
+  --glow-2: rgba(92, 170, 255,  .15);
+}
+
+/* Пример темы для Подарков (холодный блик) */
+.panel--ton{
+  --bg-top:#0f182f;
+  --bg-bot:#0a1023;
+  --glow-1: rgba(146, 174, 255, .26);
+  --glow-2: rgba(110, 219, 255, 0.114);
+}
+
+/* Пример темы для Подарков (холодный блик) */
+.panel--steam{
+  --bg-top:#0f182f;
+  --bg-bot:#0a1023;
+  border: 1px solid rgba(2, 0, 148, 0.271); 
+  --glow-1: rgba(146, 174, 255, .26);
+  --glow-2: rgba(110, 219, 255, .18);
+}
+
+/* ===== Реферальная программа (изолированная тема, как у Steam по размеру/фону) ===== */
+.panel--ref{
+  /* локальные переменные только для этой панели */
+  --bg-top:#0f182f;
+  --bg-bot:#0a1023;
+  --glow-1: rgba(146, 174, 255, .26);
+  --glow-2: rgba(110, 219, 255, .18);
+
+  /* тонкая рамка — чуть “золотистая”, чтобы отличалась от Steam; можно убрать/поменять */
+  border: 1px solid rgba(255, 196, 0, 0.25);
+}

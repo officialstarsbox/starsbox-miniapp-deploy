@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Оплата успешна — StarsBox</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root{
+      --bg:#0e1220;
+      --card:#14234d;
+      --fg:#ffffff;
+      --muted:#b7c1d6;
+      --success:#22c55e;
+      --btn:#2b6de9;
+      --btn-text:#ffffff;
+      --btn-ghost-bg:#ffffff;
+      --btn-ghost-fg:#0f172a;
+      --radius:22px;
+      --shadow:0 12px 35px rgba(0,0,0,.35);
+    }
+    * { box-sizing: border-box }
+    html,body { height: 100% }
+    body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font: 16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+    }
+    .wrap{
+      min-height:100%;
+      display:grid;
+      place-items:center;
+      padding:24px;
+    }
+    .card{
+      width:min(540px, 100%);
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:28px 22px;
+      box-shadow:var(--shadow);
+      text-align:center;
+    }
+
+    /* big check in a circle */
+    .icon{
+      width:70px; height:70px; margin:0 auto 14px;
+      border-radius:50%;
+      background:rgba(255,255,255,.08);
+      display:grid; place-items:center;
+    }
+    .icon svg{ width:50px; height:50px; display:block; }
+    .icon path{ stroke:#ffffff; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round }
+
+    h1{
+      margin:8px 0 30px;
+      font-size:25px; font-weight:400;
+      letter-spacing:.2px;
+    }
+
+    .kv{
+      display:grid; gap:8px;
+      width:100%;
+      margin:0 auto 8px; padding:0;
+      list-style:none;
+    }
+    .kv li{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:10px 12px;
+      background:rgba(255,255,255,.06);
+      border-radius:12px;
+      font-size:14px;
+    }
+    .kv li span{ color:var(--muted) }
+    .kv li b{ color:#fff; font-weight:400 }
+    .status-good{ color:var(--success) }
+
+    .actions{ display:grid; gap:12px; margin-top:18px }
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      border-radius:14px; padding:14px 16px;
+      font-size:14px; font-weight:400; text-decoration:none;
+      display:block; width:100%;
+    }
+    .btn-primary{ background:var(--btn); color:var(--btn-text) }
+    .btn-ghost{ background:var(--btn-ghost-bg); color:var(--btn-ghost-fg) }
+
+    .btn .arrow{ margin-left:.4em }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="dialog" aria-labelledby="title" aria-modal="true">
+      <div class="icon" aria-hidden="true">
+        <!-- check icon -->
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M5 12.5 L10 17 L19 8"></path>
+        </svg>
+      </div>
+
+      <h1 id="title">Оплата прошла успешно</h1>
+
+      <ul class="kv" aria-live="polite">
+        <li><span>Заказ:</span><b id="orderId">—</b></li>
+        <li><span>Статус:</span><b class="status-good">Оплачено</b></li>
+      </ul>
+
+      <div class="actions">
+        <a id="backBtn" class="btn btn-ghost" href="#" rel="noopener">Вернуться в приложение</a>
+        <a id="supportBtn" class="btn btn-primary" href="#" rel="noopener">Написать в поддержку <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // такие же значения, как в fail-странице
+    const BOT_USERNAME = 'StarssBox_bot';                // без @
+    const SUPPORT_URL  = 'https://t.me/starsbox_support';
+
+    // читаем orderId из query/hash
+    const qp = new URLSearchParams(location.search);
+    const hp = new URLSearchParams(location.hash.slice(1));
+    const orderId =
+      qp.get('orderId') || qp.get('order_id') ||
+      hp.get('orderId') || hp.get('order_id') || '';
+
+    document.getElementById('orderId').textContent = orderId || '—';
+
+    // deep-link назад в мини-апп
+    const startParam = orderId ? `resume:${encodeURIComponent(orderId)}` : 'resume';
+    const tmeLink    = `https://t.me/${BOT_USERNAME}?startapp=${encodeURIComponent(startParam)}`;
+    const tgLink     = `tg://resolve?domain=${BOT_USERNAME}&startapp=${encodeURIComponent(startParam)}`;
+
+    const backBtn    = document.getElementById('backBtn');
+    const supportBtn = document.getElementById('supportBtn');
+
+    backBtn.href    = tmeLink;
+    supportBtn.href = SUPPORT_URL;
+
+    try {
+      if (window.Telegram && Telegram.WebApp && typeof Telegram.WebApp.openTelegramLink === 'function') {
+        backBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          Telegram.WebApp.openTelegramLink(tmeLink);
+        });
+        supportBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          Telegram.WebApp.openTelegramLink(SUPPORT_URL);
+        });
+      } else {
+        backBtn.addEventListener('click', (e) => {
+          if (!/t.me/.test(backBtn.href)) return;
+          backBtn.href = tgLink;
+        }, { once:true });
+      }
+    } catch {}
+
+    try { Telegram?.WebApp?.ready?.(); } catch {}
+  </script>
+</body>
+</html>

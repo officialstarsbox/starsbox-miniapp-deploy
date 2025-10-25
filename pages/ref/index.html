@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Реферальная программа — StarsBox</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    *,*::before,*::after{ box-sizing:border-box }
+    html,body{ height:100%; overflow-x:hidden }
+
+    /* ===== ТЕМА ===== */
+    .ref-page{
+      --form-w: clamp(320px, 92vw, 520px);
+
+      --bg:#090d18; --text:#e6e9f0; --muted:#9aa0a6;
+      --card:#0b0e1b; --card-brd:rgba(255,255,255,.12);
+
+      --btn-bg:rgba(255,255,255,.06);
+      --btn-brd:rgba(255,255,255,.18);
+      --btn-hover:rgba(255,255,255,.10);
+      --btn-active:rgba(82,102,255,.18);
+      --focus:#5266ff;
+
+      --block-gap:16px;
+    }
+
+    body.ref-page{
+      margin:0; color:var(--text);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:var(--bg); min-height:100%; position:relative;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    body.ref-page::before{
+      content:""; position:fixed; inset:0; z-index:-1;
+      background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+      background-repeat:no-repeat; background-size:cover; pointer-events:none;
+    }
+
+    .topbar{
+      position:sticky; top:0; display:grid; grid-template-columns:44px 1fr 44px;
+      align-items:center; gap:8px; padding:14px calc((100vw - var(--form-w))/2) 14px;
+      background:rgba(9,13,24,.7); backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--card-brd); z-index:10;
+    }
+    .title{ margin:0; text-align:center; font-size:18px; font-weight:400 }
+    .topbar-spacer{ width:44px; height:40px }
+    .back-btn{
+      justify-self:start; width:40px; height:40px; border:1px solid var(--btn-brd);
+      background:var(--btn-bg); border-radius:14px; display:inline-grid; place-items:center;
+      cursor:pointer; text-decoration:none; transition:background .2s, border-color .2s, transform .06s;
+    }
+    .back-btn::before{
+      content:""; width:10px; height:10px; border-left:2px solid var(--text); border-bottom:2px solid var(--text);
+      transform:translateX(1px) rotate(45deg);
+    }
+    .back-btn:hover{ background:var(--btn-hover) }
+    .back-btn:active{ transform:translateY(1px) }
+    .back-btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px }
+
+    .wrap{ width:100%; max-width:var(--form-w); margin:20px auto 40px; padding:0 6px 20px }
+    .wrap>*+*{ margin-top:var(--block-gap) }
+
+    .group-card{
+      border-radius:14px; padding:14px; border:1px solid var(--card-brd);
+      background:rgba(255,255,255,.06); box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+    }
+    .muted{ color:var(--muted) }
+    .sec-title{ margin:0 0 8px; font-size:14px; font-weight:400 }
+
+    .btn{
+      min-height:40px; width:100%; border-radius:14px; border:1px solid var(--btn-brd);
+      background:var(--btn-bg); color:var(--text); cursor:pointer;
+      display:inline-grid; place-items:center; transition:background .2s, border-color .2s, transform .06s, box-shadow .2s, opacity .2s;
+      user-select:none;
+    }
+    .btn:hover{ background:var(--btn-hover) } .btn:active{ transform:translateY(1px) }
+    .btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px }
+    .btn--primary{ background:var(--btn-active); border-color:rgba(82,102,255,.4); box-shadow:0 0 0 2px rgba(82,102,255,.18) inset }
+    .btn--sm{ min-height:34px; width:auto; padding:0 12px }
+
+    .inp{
+      width:100%; height:40px; border-radius:14px; border:1px solid var(--btn-brd);
+      background:var(--btn-bg); color:var(--text); padding:0 12px; font-size:14px;
+    }
+
+    .link-btn{
+      background:transparent; border:0; color:#9fb2ff;
+      font-size:13px; padding:0 2px; cursor:pointer; border-radius:8px; transition:background .2s;
+    }
+    .link-btn:hover{ background:rgba(255,255,255,.06) }
+    .link-btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px }
+
+    .balance{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:10px }
+    .balance__val{ font-size:22px; line-height:1.2 }
+
+    .ref-field{ display:grid; gap:8px }
+    .ref-actions{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+
+    .stats-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    #ratesModal .stats-grid{ margin-bottom:10px; }
+    .stat-card{
+      border-radius:14px; padding:12px; border:1px solid rgba(255,255,255,.12);
+      background: radial-gradient(120% 140% at 10% 120%, rgba(82,148,255,.16) 0%, transparent 65%),
+                  linear-gradient(180deg, #0f1630 0%, #0b1226 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(255,255,255,.03), 0 8px 28px rgba(0,0,0,.42);
+    }
+    .stat-title{ margin:0 0 6px; font-size:12px; color:var(--muted) }
+    .stat-value{ margin:0; font-size:18px }
+
+    .table{ width:100%; border-collapse:collapse; font-size:14px; table-layout:fixed }
+    .table th,.table td{ padding:10px; border-bottom:1px solid rgba(255,255,255,.08); text-align:left; vertical-align:top; word-break:break-word }
+    .table th{ color:var(--muted); font-weight:500 }
+
+    .modal{ position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45); z-index:50 }
+    .modal.is-open{ display:grid }
+    .modal__card{
+      position: relative;
+      width:min(520px, 92vw); border-radius:16px; padding:16px; background:rgba(15,22,40,.98);
+      border:1px solid rgba(255,255,255,.12); box-shadow:0 12px 40px rgba(0,0,0,.45);
+      max-height: 90vh; overflow:auto;
+    }
+    .modal__title{ margin:0 0 10px; font-size:16px; font-weight:500 }
+    .form{ display:grid; gap:10px }
+    .field{ display:grid; gap:6px }
+    .field label{ font-size:13px; color:var(--muted) }
+    .row-2{ display:grid; grid-template-columns:1fr auto; gap:8px }
+    .err{ margin:0; font-size:12px; color:#ffffff; min-height:1.1em }
+    .modal__actions{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px }
+    .close-x{ position:absolute; right:12px; top:12px; width:28px; height:28px; border-radius:10px; border:1px solid var(--btn-brd); background:var(--btn-bg) }
+    .close-x:before,.close-x:after{ content:""; position:absolute; left:50%; top:50%; width:12px; height:2px; background:#fff; transform-origin:center }
+    .close-x:before{ transform:translate(-50%,-50%) rotate(45deg) } .close-x:after{ transform:translate(-50%,-50%) rotate(-45deg) }
+
+    .note-card{
+      border-radius: 14px;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,.18);
+      margin-top: 0px;
+    }
+    .note-card--light{ background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.30); }
+    .note-card--gold{ background: rgba(210,160,30,.18); border-color: rgba(255,210,100,.45); color:#ffe9b0; font-size:13px; margin-top:0; }
+    .note-card__text{ margin:0; font-size:13px; line-height:1.1; color:inherit; }
+
+    .tbl-actions{ margin-top:10px; display:grid }
+    .tbl-actions .btn[hidden]{ display:none }
+
+    .ref-page{ --bottom-space: clamp(24px, 6vh, 64px) }
+    @supports(padding: env(safe-area-inset-bottom)){
+      .ref-page{ --bottom-space: calc(32px + env(safe-area-inset-bottom)) }
+    }
+    .wrap::after{ content:""; display:block; height:var(--bottom-space) }
+  </style>
+</head>
+<body class="ref-page">
+  <header class="topbar">
+    <a class="back-btn" href="../../index.html" aria-label="Назад"></a>
+    <h1 class="title">Реферальная программа</h1>
+    <div class="topbar-spacer" aria-hidden="true"></div>
+  </header>
+
+  <main class="wrap">
+    <section class="group-card">
+      <h2 class="sec-title muted">Баланс</h2>
+      <div class="balance">
+        <div id="balanceValue" class="balance__val">0 ₽</div>
+        <button id="withdrawOpen" class="btn btn--primary btn--sm">Вывести</button>
+      </div>
+    </section>
+
+    <section class="group-card">
+      <h2 class="sec-title muted">Ваша реферальная ссылка</h2>
+      <div class="ref-field">
+        <input class="inp" id="refLink" readonly value="—" />
+        <div class="ref-actions">
+          <button class="btn" id="copyBtn">Копировать</button>
+          <button class="btn btn--primary" id="shareBtn">Поделиться</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="group-card">
+      <h2 class="sec-title muted" style="margin-bottom:6px">Реферальные начисления</h2>
+      <p class="muted" style="margin:0 0 8px">
+        <button class="link-btn" id="ratesOpen" type="button">Актуальные ставки по каждому продукту сервиса</button>
+      </p>
+    </section>
+
+    <section class="group-card">
+      <h2 class="sec-title muted">Статистика</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><p class="stat-title">Рефералы</p><p class="stat-value" id="st_total">0</p></div>
+        <div class="stat-card"><p class="stat-title">Совершивших покупку</p><p class="stat-value" id="st_active">0</p></div>
+        <div class="stat-card"><p class="stat-title">Заработано</p><p class="stat-value" id="st_earned">0</p></div>
+        <div class="stat-card"><p class="stat-title">Средний бонус</p><p class="stat-value" id="st_avg">0</p></div>
+      </div>
+    </section>
+
+    <section class="group-card">
+      <h2 class="sec-title muted">Ваши рефералы</h2>
+      <table class="table" id="refsTable">
+        <thead><tr><th>Реферал</th><th>Покупок</th><th>Оплачено</th></tr></thead>
+        <tbody id="refsBody"></tbody>
+      </table>
+      <div class="tbl-actions">
+        <button id="refsMore" class="btn">Показать ещё</button>
+      </div>
+    </section>
+
+    <section class="group-card">
+      <h2 class="sec-title muted">Начисления</h2>
+      <table class="table" id="tbl">
+        <thead><tr><th>Дата</th><th>Сумма</th><th>Бонус</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="tbl-actions">
+        <button id="ledgerMore" class="btn">Показать ещё</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== Модалка вывода ===== -->
+  <div class="modal" id="wdModal" aria-hidden="true">
+    <div class="modal__card">
+      <button class="close-x" id="wdClose" aria-label="Закрыть"></button>
+      <h3 class="modal__title">Запросить вывод</h3>
+
+      <form class="form" id="wdForm" onsubmit="return false">
+        <div class="field">
+          <label for="wdAddr">TON-кошелёк</label>
+          <input id="wdAddr" class="inp" placeholder="UQ… или 0:…" inputmode="text" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="wdAmount">Сумма (₽)</label>
+          <div class="row-2">
+            <input id="wdAmount" class="inp" type="text" inputmode="decimal" placeholder="0,00" autocomplete="off" />
+            <button type="button" class="btn" id="fillAll">Весь баланс</button>
+          </div>
+          <p class="err" id="wdErr"></p>
+        </div>
+        <div class="note-card note-card--gold">
+          Минимальная сумма вывода 5&nbsp;000&nbsp;₽
+        </div>
+        <div class="modal__actions">
+          <button type="button" class="btn" id="wdCancel">Отмена</button>
+          <button type="submit" class="btn btn--primary" id="wdSend">Запросить вывод</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== Модалка ставок ===== -->
+  <div class="modal" id="ratesModal" aria-hidden="true">
+    <div class="modal__card">
+      <button class="close-x" id="ratesClose" aria-label="Закрыть"></button>
+      <h3 class="modal__title">Актуальные ставки</h3>
+
+      <div class="stats-grid" id="ratesGrid"></div>
+
+      <div class="note-card note-card--light">
+        <p class="note-card__text">
+          Все реферальные бонусы рассчитываются от фактической оплаченной суммы заказа реферала.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    const tg = window.Telegram?.WebApp; tg?.ready?.();
+
+    // === НАСТРОЙКИ ===
+    const API_BASE = 'https://api.starsbox.org';
+    const BOT_USERNAME = 'StarssBox_bot';
+    const SUPPORT_USERNAME = 'Starsbox_support';
+
+    // === МИНИМАЛЬНАЯ СУММА ВЫВОДА ===
+    const MIN_WITHDRAW_MINOR = 5000 * 100; // 5 000 ₽ в копейках
+
+    // === КЕШ РЕФКОДА (единый ключ + cookie) ===
+    const REF_KEY = 'sb_ref_code';
+    function cacheRef(code){
+      try{
+        const v = String(code||'').trim().toLowerCase();
+        if (!/^r[0-9a-z]{1,31}$/.test(v)) return;
+        localStorage.setItem(REF_KEY, v);
+        document.cookie = 'sb_ref=' + v + '; Path=/; Max-Age=' + (60*60*24*365) + '; SameSite=Lax';
+      }catch{}
+    }
+
+    // === base64url payload ===
+    const b64url = {
+      enc: (str) => btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/,''),
+    };
+    const buildRefPayload = (refCode) => 'x' + b64url.enc(JSON.stringify({ rc: refCode }));
+
+    // fallback-энкодер (если бэк вдруг не вернул код)
+    function encodeRefCode(n){
+      const abc = "0123456789abcdefghijklmnopqrstuvwxyz";
+      n = Math.floor(Number(n)||0);
+      let s = "";
+      while(n){ s = abc[n%36] + s; n = Math.floor(n/36); }
+      return "r" + (s || "0");
+    }
+
+    // ===== Утилиты денег/форматов =====
+    const nfRub = new Intl.NumberFormat('ru-RU', { style:'currency', currency:'RUB', maximumFractionDigits:2 });
+    const rubFmt = (minor) => nfRub.format((Number(minor||0)/100));
+    const toMinor = (val) => {
+      const n = Number(String(val).replace(',', '.').replace(/\s+/g,''));
+      if (!isFinite(n) || n < 0) return null;
+      return Math.round(n * 100);
+    };
+    const pctFmt = (v) => {
+      if (v == null) return '—';
+      const s = String(v).trim();
+      if (s.endsWith('%')) return s;
+      const n = Number(s);
+      if (!isFinite(n)) return s;
+      const p = (n > 0 && n < 1) ? n * 100 : n;
+      const r = Math.round(p * 100) / 100;
+      return (r % 1 === 0 ? r.toFixed(0) : r.toFixed(2)) + '%';
+    };
+
+    // ===== Состояние =====
+    let MY_ID = tg?.initDataUnsafe?.user?.id || null;
+    let MY_USERNAME = tg?.initDataUnsafe?.user?.username || '';
+    let balanceMinor = 0;
+    let myRefLink = '';
+
+    function resolveMyIdIfMissing(){
+      if (MY_ID) return MY_ID;
+      const q = new URLSearchParams(location.search);
+      const v = q.get('uid'); if (v) MY_ID = parseInt(v,10);
+      return MY_ID;
+    }
+
+    async function jget(url){
+      const r = await fetch(url, { headers:{ 'Accept':'application/json' } });
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    }
+    function setText(id, t){ const el = document.getElementById(id); if (el) el.textContent = t; }
+
+    // ====== INIT ======
+    async function init(){
+      if (!resolveMyIdIfMissing()){
+        alert('Откройте страницу из мини-аппа Telegram, не удалось определить Telegram ID.');
+        return;
+      }
+
+      // Баланс + реф.код
+      try{
+        const me = await jget(`${API_BASE}/ref/me?tg_user_id=${encodeURIComponent(MY_ID)}`);
+        if (me?.ok){
+          balanceMinor = Number(me.balance_minor||0);
+          document.getElementById('balanceValue').textContent = rubFmt(balanceMinor);
+        }
+        const refCode = me?.ref_code || me?.referral_code || me?.code || encodeRefCode(MY_ID);
+        const payload = buildRefPayload(refCode);
+        myRefLink = `https://t.me/${BOT_USERNAME.replace(/^@/,'')}?startapp=${payload}`;
+        document.getElementById('refLink').value = myRefLink;
+        cacheRef(refCode);
+      }catch(e){
+        // локальный фолбэк: всё равно покажем валидную ссылку
+        const refCode = encodeRefCode(MY_ID);
+        const payload = buildRefPayload(refCode);
+        myRefLink = `https://t.me/${BOT_USERNAME.replace(/^@/,'')}?startapp=${payload}`;
+        document.getElementById('refLink').value = myRefLink;
+        cacheRef(refCode);
+      }
+
+      // Статистика
+      try{
+        const st = await jget(`${API_BASE}/ref/stats?tg_user_id=${encodeURIComponent(MY_ID)}`);
+        setText('st_total',  st.total_refs ?? '0');
+        setText('st_active', st.active_refs ?? '0');
+        setText('st_earned', rubFmt(st.total_bonus_minor ?? 0));
+        setText('st_avg',    rubFmt(st.avg_bonus_minor ?? 0));
+      }catch(e){}
+
+      // ===== Рефералы (постранично) =====
+      const refsBody   = document.getElementById('refsBody');
+      const refsMore   = document.getElementById('refsMore');
+      let refsOffset   = 0;
+      const REFS_LIMIT = 50;
+      let refsDone     = false;
+      let refsLoading  = false;
+
+      async function loadRefsPage(){
+        if (refsLoading || refsDone) return;
+        refsLoading = true;
+        refsMore.disabled = true;
+
+        try{
+          const url = `${API_BASE}/ref/referrals?tg_user_id=${encodeURIComponent(MY_ID)}&limit=${REFS_LIMIT}&offset=${refsOffset}`;
+          const rr  = await jget(url);
+
+          const items = Array.isArray(rr.items) ? rr.items : [];
+          if (refsOffset === 0 && items.length === 0){
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="3" class="muted">Пока нет рефералов</td>`;
+            refsBody.appendChild(tr);
+            refsDone = true;
+            refsMore.hidden = true;
+            return;
+          }
+
+          for (const it of items){
+            const tr  = document.createElement('tr');
+            const id  = (it.tg_user_id != null) ? it.tg_user_id : (it.user_id ?? it.id ?? '—');
+            tr.innerHTML = `<td>${id}</td>
+                            <td>${it.orders_count ?? 0}</td>
+                            <td>${rubFmt(it.total_paid_minor ?? 0)}</td>`;
+            refsBody.appendChild(tr);
+          }
+
+          refsOffset += items.length;
+          if (items.length < REFS_LIMIT){ refsDone = true; refsMore.hidden = true; }
+        }catch(e){
+          // мягкая деградация: показать кнопку повторить
+          tg?.showToast?.('Не удалось загрузить рефералов');
+        }finally{
+          refsLoading = false;
+          refsMore.disabled = false;
+        }
+      }
+
+      refsMore?.addEventListener('click', loadRefsPage);
+
+      // ===== Начисления (постранично) =====
+      const ledgerBody   = document.getElementById('tbody');
+      const ledgerMore   = document.getElementById('ledgerMore');
+      let ledgerOffset   = 0;
+      const LEDGER_LIMIT = 50;
+      let ledgerDone     = false;
+      let ledgerLoading  = false;
+
+      async function loadLedgerPage(){
+        if (ledgerLoading || ledgerDone) return;
+        ledgerLoading = true;
+        ledgerMore.disabled = true;
+
+        try{
+          const url = `${API_BASE}/ref/ledger?tg_user_id=${encodeURIComponent(MY_ID)}&limit=${LEDGER_LIMIT}&offset=${ledgerOffset}`;
+          const lg  = await jget(url);
+
+          const items = Array.isArray(lg.items) ? lg.items : [];
+          if (ledgerOffset === 0 && items.length === 0){
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="3" class="muted">Начислений пока нет</td>`;
+            ledgerBody.appendChild(tr);
+            ledgerDone = true;
+            ledgerMore.hidden = true;
+            return;
+          }
+
+          for (const it of items){
+            const tr = document.createElement('tr');
+            const dt = new Date(it.created_at);
+            tr.innerHTML = `<td class="muted">${dt.toLocaleString('ru-RU')}</td>
+                            <td>${rubFmt(it.amount_minor)}</td>
+                            <td><b>${rubFmt(it.bonus_minor)}</b></td>`;
+            ledgerBody.appendChild(tr);
+          }
+
+          ledgerOffset += items.length;
+          if (items.length < LEDGER_LIMIT){ ledgerDone = true; ledgerMore.hidden = true; }
+        }catch(e){
+          tg?.showToast?.('Не удалось загрузить начисления');
+        }finally{
+          ledgerLoading = false;
+          ledgerMore.disabled = false;
+        }
+      }
+
+      ledgerMore?.addEventListener('click', loadLedgerPage);
+    await loadRefsPage();
+    await loadLedgerPage();
+    }
+
+    // ====== Реф-ссылка: share / copy ======
+    document.getElementById('shareBtn').addEventListener('click', () => {
+      const url = myRefLink || document.getElementById('refLink').value.trim();
+      if (!url) return;
+      const text = 'Покупай Звёзды, Premium и Подарки по лучшим ценам. Пополняй Steam по топ-курсу. Врывайся!';
+      const share = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+      if (tg?.openTelegramLink) tg.openTelegramLink(share);
+      else window.open(share, '_blank');
+    });
+
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const url = myRefLink || document.getElementById('refLink').value.trim();
+      if (!url) return;
+      try {
+        await navigator.clipboard.writeText(url);
+        tg?.showToast?.('Ссылка скопирована');
+      } catch {
+        tg?.showAlert?.('Скопируйте ссылку вручную:\n' + url);
+      }
+    });
+
+    // ====== Вывод средств ======
+    const wdModal = document.getElementById('wdModal');
+    const openBtn = document.getElementById('withdrawOpen');
+    const closeBtns = [document.getElementById('wdClose'), document.getElementById('wdCancel')];
+    const addrInp = document.getElementById('wdAddr');
+    const amtInp  = document.getElementById('wdAmount');
+    const errBox  = document.getElementById('wdErr');
+    const fillAll = document.getElementById('fillAll');
+    const form    = document.getElementById('wdForm');
+    const sendBtn = document.getElementById('wdSend');
+
+    function openModal(m){ m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); }
+    function closeModal(m){ m.classList.remove('is-open'); m.setAttribute('aria-hidden','true'); }
+
+    function isTonAddress(s){ const x=String(s||'').trim(); return /^(UQ|EQ|kQ|0:)/i.test(x) && x.length>=20; }
+    function updateSubmitState(){
+      const minor = toMinor(amtInp.value);
+      const enough = minor !== null && minor >= MIN_WITHDRAW_MINOR && minor <= balanceMinor;
+      sendBtn.disabled = !enough;
+    }
+
+    function openWd(){
+      openModal(wdModal);
+      errBox.textContent=''; amtInp.value=''; addrInp.value=''; addrInp.focus();
+      updateSubmitState();
+    }
+
+    openBtn.addEventListener('click', openWd);
+    closeBtns.forEach(b=>b.addEventListener('click', ()=>closeModal(wdModal)));
+    wdModal.addEventListener('click', (e)=>{ if (e.target===wdModal) closeModal(wdModal); });
+    document.addEventListener('keydown', (e)=>{ if (e.key==='Escape' && wdModal.classList.contains('is-open')) closeModal(wdModal); });
+
+    fillAll.addEventListener('click', ()=>{
+      amtInp.value = (balanceMinor/100).toFixed(2).replace('.', ',');
+      errBox.textContent = (balanceMinor < MIN_WITHDRAW_MINOR) ? 'Минимальная сумма вывода — 5 000 ₽' : '';
+      updateSubmitState();
+      amtInp.focus();
+    });
+    amtInp.addEventListener('input', updateSubmitState);
+
+    function validateWd(){
+      errBox.textContent='';
+      const minor = toMinor(amtInp.value);
+      if (minor===null){ errBox.textContent='Укажите корректную сумму'; return null; }
+      if (minor<=0){ errBox.textContent='Сумма должна быть больше 0'; return null; }
+      if (minor < MIN_WITHDRAW_MINOR){ errBox.textContent = 'Минимальная сумма вывода — 5 000 ₽'; return null; }
+      if (minor>balanceMinor){ errBox.textContent='Недостаточно средств на балансе'; return null; }
+      if (!isTonAddress(addrInp.value)){ errBox.textContent='Укажите корректный TON-адрес'; return null; }
+      return minor;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const minor = validateWd();
+      if (minor === null) return;
+
+      const addr = addrInp.value.trim();
+      errBox.textContent = '';
+      sendBtn.disabled = true;
+
+      try {
+        const r = await fetch(`${API_BASE}/ref/withdraw`, {
+          method : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body   : JSON.stringify({
+            tg_user_id   : MY_ID,
+            amount_minor : minor,
+            ton_address  : addr
+          })
+        });
+
+        // бэк возвращает JSON и на ошибках — тоже, стараемся прочитать
+        const data = await r.json().catch(() => null);
+
+        // успех: ok:true
+        if (r.ok && data?.ok) {
+          // обновим баланс (бэк присылает balance_minor)
+          if (typeof data.balance_minor === 'number') {
+            balanceMinor = data.balance_minor;
+            const balEl = document.getElementById('balanceValue');
+            if (balEl) balEl.textContent = rubFmt(balanceMinor);
+          }
+
+          // мягкое подтверждение пользователю: ID заявки и статус от бэка
+          const pid = data.payout_id || '—';
+          const st  = data.status || 'requested';
+          tg?.showToast?.('Заявка на вывод отправлена в обработку');
+          tg?.showAlert?.(`Заявка создана\nID: ${pid}\nСтатус: ${st}`);
+
+          // закрываем модалку
+          closeModal(wdModal);
+          return;
+        }
+
+        // ошибки: показываем detail/сообщение бэка
+        const msg =
+          data?.detail ||
+          data?.error  ||
+          (r.status === 400 ? 'Недостаточно средств' : 'Не удалось создать заявку');
+        errBox.textContent = msg;
+
+      } catch (e) {
+        errBox.textContent = 'Сеть недоступна, попробуйте позже';
+      } finally {
+        sendBtn.disabled = false;
+      }
+    });
+
+    // ====== Ставки ======
+    const ratesModal = document.getElementById('ratesModal');
+    const ratesOpen = document.getElementById('ratesOpen');
+    const ratesClose = document.getElementById('ratesClose');
+    const ratesGrid = document.getElementById('ratesGrid');
+
+    function productList(){
+      return [
+        {key:'stars',   title:'Звёзды'},
+        {key:'gifts',   title:'Подарки'},
+        {key:'ton',     title:'TON'},
+        {key:'premium', title:'Premium'},
+        {key:'steam',   title:'Steam'},
+      ];
+    }
+
+    async function loadRates(){
+      let data = null;
+      try{
+        const r = await fetch(`${API_BASE}/ref/rates?tg_user_id=${encodeURIComponent(MY_ID)}`, { headers:{ 'Accept':'application/json' } });
+        if (r.ok) data = await r.json().catch(()=>null);
+      }catch{}
+
+      const map = {};
+      if (data){
+        if (Array.isArray(data.items)) data.items.forEach(it => map[it.product || it.key] = it.percent ?? it.value ?? it.rate);
+        else if (data.rates && typeof data.rates === 'object') Object.assign(map, data.rates);
+        else if (data.config?.ref?.rates) Object.assign(map, data.config.ref.rates);
+      }
+
+      ratesGrid.innerHTML = '';
+      productList().forEach(p=>{
+        const val = map[p.key];
+        const card = document.createElement('div');
+        card.className = 'stat-card';
+        card.innerHTML = `<p class="stat-title">${p.title}</p><p class="stat-value">${val==null?'—':pctFmt(val)}</p>`;
+        ratesGrid.appendChild(card);
+      });
+    }
+
+    function openModal(m){ m.classList.add('is-open'); m.setAttribute('aria-hidden','false'); }
+    function closeModal(m){ m.classList.remove('is-open'); m.setAttribute('aria-hidden','true'); }
+
+    ratesOpen.addEventListener('click', async ()=>{ await loadRates(); openModal(ratesModal); });
+    ratesClose.addEventListener('click', ()=>closeModal(ratesModal));
+    ratesModal.addEventListener('click', (e)=>{ if (e.target===ratesModal) closeModal(ratesModal); });
+    document.addEventListener('keydown', (e)=>{ if (e.key==='Escape' && ratesModal.classList.contains('is-open')) closeModal(ratesModal); });
+
+    // GO
+    init();
+  })();
+  </script>
+</body>
+</html>

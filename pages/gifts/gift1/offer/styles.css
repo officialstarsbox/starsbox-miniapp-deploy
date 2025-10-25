@@ -1,0 +1,178 @@
+/* =========================================================
+   ТЕМА (самостоятельно, без импортов)
+   ========================================================= */
+.offer-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета (как на других наших страницах) */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --focus:       #5266ff;
+
+  --block-gap: 16px;
+}
+
+html, body { height: 100%; }
+
+body.offer-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+  overflow-x: hidden; /* страхуемся от горизонтального скролла */
+}
+
+/* статичная подложка (фон) */
+body.offer-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* ============================ Топбар ============================ */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding: 14px 0;
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+
+.title{
+  margin: 0; text-align: center;
+  font-size: 18px; font-weight: 400;
+}
+
+/* Кнопка-назад как ссылка */
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+  text-decoration: none;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ========================== Контентная колонка ========================== */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* Базовая карточка (пригодится для будущих секций оферты) */
+.group-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+/* ===== Юридическая панель (оферта) ===== */
+.legal-card{ gap: 10px; }
+
+.legal-title{
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+.legal-meta{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.legal-body{
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.legal-list{
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  display: grid;
+  gap: 12px;
+}
+
+/* номеруем через <ol>, но выравниваем заголовки красиво */
+.legal-list > li{
+  border-top: 1px solid rgba(255,255,255,.08);
+  padding-top: 12px;
+}
+.legal-list > li:first-child{
+  border-top: 0;
+  padding-top: 0;
+}
+
+.legal-list h3{
+  margin: 0 0 6px 0;
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.legal-list p{
+  margin: 0;
+}
+.legal-list p + p{
+  margin-top: 6px;
+}
+
+/* ссылки в оферте */
+.legal-body a{
+  color: #7d8bff;
+  text-decoration: none;
+}
+.legal-body a:hover{
+  text-decoration: underline;
+}
+
+/* Свободное пространство внизу (безопасная зона) */
+:root{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  :root{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}

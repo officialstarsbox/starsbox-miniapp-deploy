@@ -1,0 +1,148 @@
+/* =================== ТЕМА (без импортов) =================== */
+.policy-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета (как на других страницах) */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --focus:       #5266ff;
+
+  --block-gap: 16px; /* между секциями в .wrap */
+}
+
+/* =================== БАЗА + ФОН =================== */
+*,
+*::before,
+*::after{ box-sizing: border-box; }
+
+html, body { height: 100%; }
+body.policy-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+body.policy-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =================== Топбар =================== */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 400;
+}
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =================== Контентная колонка =================== */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+/* Универсальная карточка (на будущее секции политики) */
+.group-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: 12px;
+}
+
+/* Документ: политика ПДн */
+.doc-panel { gap: 10px; }
+.doc-title{
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+.doc-meta{
+  color: var(--muted);
+  font-size: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--card-brd);
+}
+.doc-list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.doc-list li{ display: grid; gap: 6px; }
+.doc-list h3{
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.doc-list p{
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.doc-list a{ color: #9db1ff; text-decoration: none; }
+.doc-list a:hover{ text-decoration: underline; }
+
+/* Свободное пространство внизу (safe-area) */
+:root{ --bottom-space: clamp(24px, 6vh, 64px); }
+@supports (padding: env(safe-area-inset-bottom)){
+  :root{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+.wrap::after{
+  content: "";
+  display: block;
+  height: --bottom-space;
+}
