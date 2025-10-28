@@ -1,0 +1,398 @@
+/* =========================================================
+   ТЕМА
+   ========================================================= */
+.steam-page{
+  --form-w: clamp(320px, 92vw, 520px);
+
+  /* Цвета */
+  --bg:          #090d18;
+  --text:        #e6e9f0;
+  --muted:       #9aa0a6;
+  --card:        #0b0e1b;
+  --card-brd:    rgba(255,255,255,.12);
+  --btn-bg:      rgba(255,255,255,.06);
+  --btn-brd:     rgba(255,255,255,.18);
+  --btn-hover:   rgba(255,255,255,.10);
+  --btn-active:  rgba(82,102,255,.18);
+  --focus:       #5266ff;
+
+  /* Баннер СНГ */
+  --cis-banner-bg: rgba(255,255,255,.06);
+
+  /* Оверлеи */
+  --help-bg: #121a33;
+
+  /* Единые отступы */
+  --block-gap: 16px; /* между секциями в .wrap */
+  --panel-gap: 12px; /* между элементами внутри .group-card */
+}
+
+/* =========================================================
+   БАЗА + ФОН (фиксированный, "бесконечный")
+   ========================================================= */
+html, body { height: 100%; }
+body.steam-page{
+  margin: 0;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font: 16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background: var(--bg);
+  min-height: 100%;
+  position: relative;
+}
+/* статичная подложка — не двигается при скролле */
+body.steam-page::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* =========================================================
+   ОВЕРЛЕЙ «где найти логин?»
+   (закрывается кликом по фону; без кнопки)
+   ========================================================= */
+.help-overlay{
+  position: fixed; inset: 0; z-index: 1000;
+  display: grid; place-items: center;
+  background: rgba(9,13,24,.8);
+  backdrop-filter: blur(20px);
+}
+.help-overlay[hidden]{ display: none; }
+.help-modal{
+  width: min(366px, 94vw);
+  background:#1d1d1d3a;
+  color: var(--text);
+  border: 1px solid var(--card-brd);
+  border-radius: 14px;
+  padding: 16px;
+  text-align: left;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.help-title{ margin: 0 0 8px 0; font-weight: 400; font-size: 20px; }
+.help-text{ color: var(--muted); font-size: 16px; line-height: 1.5; margin-bottom: 12px; }
+.help-image{ margin: 8px 0 0; overflow: hidden; border: 1px solid var(--card-brd); }
+.help-image img{ display: block; width: 100%; height: auto; }
+
+/* =========================================================
+   Топбар
+   ========================================================= */
+.topbar{
+  position: sticky; top: 0;
+  display: grid; grid-template-columns: 44px 1fr 44px;
+  align-items: center; gap: 8px;
+  padding-top: 14px; padding-bottom: 14px;
+  padding-left:  calc((100vw - var(--form-w)) / 2 + 0px);
+  padding-right: calc((100vw - var(--form-w)) / 2 + 0px);
+  background: rgba(9,13,24,.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--card-brd);
+  z-index: 10;
+}
+.title{ margin: 0; text-align: center; font-size: 18px; font-weight: 400; }
+.back-btn{
+  justify-self: start;
+  width: 40px; height: 40px;
+  border: 1px solid var(--btn-brd);
+  background: var(--btn-bg);
+  border-radius: 14px;
+  display: inline-grid; place-items: center;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .06s;
+}
+.back-btn::before{
+  content: ""; width: 10px; height: 10px;
+  border-left: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+  transform: translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background: var(--btn-hover); }
+.back-btn:active{ transform: translateY(1px); }
+.back-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Контентная колонка и базовые отступы
+   ========================================================= */
+.wrap{
+  width: var(--form-w);
+  margin: 20px auto 40px;
+  padding: 0 6px 20px;
+}
+.wrap > * { margin: 0; }
+.wrap > * + * { margin-top: var(--block-gap); }
+
+.section-title{ font-size: 16px; font-weight: 400; }
+
+/* =========================================================
+   Кнопки регионов
+   ========================================================= */
+.region-buttons{
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+@media (max-width: 420px){ .region-buttons{ grid-template-columns: repeat(3, 1fr); } }
+.region-btn{
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 42px; padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--btn-brd);
+  background: rgba(41, 41, 41, 0.06); color: var(--text);
+  font-weight: 400; letter-spacing: .1px; user-select: none; cursor: pointer;
+  transition: background .2s, border-color .2s, box-shadow .2s, transform .06s;
+}
+.region-btn:hover{ background: var(--btn-hover); }
+.region-btn:active{ transform: translateY(1px); }
+.region-btn.is-active{
+  background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.region-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* =========================================================
+   Баннер СНГ
+   ========================================================= */
+.cis-banner{
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--cis-banner-bg);
+  border: 1px solid var(--card-brd);
+}
+.cis-banner__title{ margin: 0 0 6px 0; font-weight: 400; font-size: 14px; color: var(--text); }
+.cis-banner__text{ margin: 0; color: var(--muted); font-size: 14px; line-height: 1.45; }
+
+/* =========================================================
+   Групповые подложки
+   ========================================================= */
+.group-card{
+  background: var(--card);
+  border: 1px solid var(--card-brd);
+  border-radius: 16px;
+  padding: 14px;
+  display: grid;
+  gap: var(--panel-gap);
+}
+/* Внутри групп — убираем собственные подложки у .field */
+.group-card .field{
+  background: transparent;
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* =========================================================
+   Поля/лейблы/кнопки-тексты
+   ========================================================= */
+.field{ display: grid; gap: 8px; }
+.field__row{ display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 8px; }
+.field__label{ font-weight: 400; font-size: 14px; }
+.text-btn{
+  background: transparent; border: none; color: #5266ff;
+  font-weight: 400; font-size: 13px; cursor: pointer; padding: 0 2px; border-radius: 8px;
+  transition: background .2s, transform .06s;
+}
+.text-btn:hover{ background: rgba(255,255,255,.06); }
+.text-btn:active{ transform: translateY(1px); }
+.text-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+
+.field__input{
+  width: 100%; min-height: 44px; padding: 10px 12px;
+  border-radius: 12px;
+  border: 0px solid var(--btn-brd);
+  background: var(--btn-bg); color: var(--text); font-size: 16px; outline: none;
+  box-sizing: border-box; max-width: 100%; display: block;
+  transition: border-color .2s, background .2s, box-shadow .2s;
+}
+.field__input::placeholder{ color: var(--muted); }
+.field__input:focus{
+  border-color: rgba(82,102,255,.5);
+  box-shadow: 0 0 0 3px rgba(82,102,255,.18);
+}
+
+/* =========================================================
+   Инфо-панель внутри group-card
+   ========================================================= */
+.steam-info{
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--cis-banner-bg);
+  border: 1px solid var(--card-brd);
+}
+.steam-info__text{ margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
+.steam-link{
+  background: transparent; border: 0; padding: 0 2px; font: inherit; color: #5266ff; cursor: pointer;
+}
+.steam-link:hover{ opacity: .95; }
+
+/* =========================================================
+   Блок «к зачислению»
+   ========================================================= */
+.credit-field .credit__box{
+  display: flex; align-items: center; gap: 10px;
+  min-height: 15px; padding: 10px 12px;
+  border-radius: 14px; border: 1px solid var(--btn-brd); background: var(--btn-bg);
+}
+.credit__icon{
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1px solid var(--btn-brd);
+  display: inline-grid; place-items: center;
+  font-weight: 800; font-size: 14px; user-select: none;
+}
+.credit__icon.is-img{ border: none; background: transparent; padding: 0; }
+.credit__icon.is-img img{ display: block; width: 20px; height: 20px; }
+.credit__value{ font-size: 16px; font-weight: 400; }
+.credit__unit{ font-size: 17px; color: var(--muted); font-weight: 400; }
+
+/* =========================================================
+   Кнопка оплаты (вне подложки)
+   ========================================================= */
+.pay-btn{
+  width: 100%; min-height: 46px; padding: 12px 16px;
+  border-radius: 14px; border: 1px;
+  color:#ffffff; font-weight: 600; letter-spacing: .9px; cursor: pointer;
+  transition: transform .06s; background: var(--btn-active);
+  border-color: rgba(82,102,255,.4);
+  box-shadow: 0 0 0 2px rgba(82,102,255,.18) inset;
+}
+.pay-btn:hover{ background: color-mix(in srgb, var(--btn-active) 80%, #ffffff 20%); }
+.pay-btn:active{ transform: translateY(1px); }
+.pay-btn:focus-visible{ outline: 2px solid var(--focus); outline-offset: 2px; }
+.pay-btn[disabled]{ opacity: .6; cursor: not-allowed; filter: grayscale(.2); }
+
+/* =========================================================
+   Информационные оверлеи (создаются динамически)
+   ========================================================= */
+#overlay-root{ /* просто контейнер */ }
+.info-overlay{
+  position: fixed; inset: 0; z-index: 1500;
+  display: grid; place-items: center;
+  background: rgba(9,13,24,.8);
+  backdrop-filter: blur(20px);
+}
+.info-modal{
+  width: min(366px, 94vw);
+  background: #1d1d1d3a; color: var(--text);
+  border: 1px solid var(--card-brd);
+  border-radius: 14px; padding: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.info-title{ margin: 0 0 8px 0; font-weight: 400; font-size: 20px; }
+.info-text{ color: var(--muted); font-size: 16px; line-height: 1.5; }
+
+:root{
+  --modal-max: 520px;   /* максимум на десктопе */
+  --modal-min: 280px;   /* минимум, чтобы не ломалось */
+  --modal-gap: 16px;    /* поля от краёв экрана */
+}
+
+/* отступы внутри оверлея, чтобы панель не липла к краям */
+.help-overlay,
+.info-overlay{
+  padding: var(--modal-gap);
+}
+
+/* базовое поведение (десктоп / средние экраны) */
+.help-modal,
+.info-modal{
+  box-sizing: border-box;
+  width: clamp(var(--modal-min), 92svw, var(--modal-max));
+  max-width: calc(100svw - var(--modal-gap)*2);
+  max-height: 88svh;                /* до поры ограничиваем высоту */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* узкие экраны: «высокая» модалка, растягивается по высоте */
+@media (max-width: 520px){
+  /* оверлей становится скроллером, панель прижимается к верху,
+     но центрируется по горизонтали */
+  .help-overlay,
+  .info-overlay{
+    place-items: center;      /* = align-items:start + justify-items:center */
+    overflow: auto;                 /* скролл у оверлея */
+    min-height: 100svh;
+  }
+
+  /* панель растёт вместе с контентом без локального скролла */
+  .help-modal,
+  .info-modal{
+    width: calc(100% - var(--modal-gap)*2);  /* занимать всю доступную ширину */
+    max-height: none;                         /* снимаем ограничение по высоте */
+    height: auto;                             /* растём по содержимому */
+    margin: var(--modal-gap) 0;               /* зазор сверху/снизу внутри оверлея */
+    overflow: visible;                        /* скролл больше не нужен тут */
+  }
+}
+
+/* fallback для браузеров без svw/svh */
+@supports not (height: 1svh){
+  .help-modal,
+  .info-modal{
+    width: clamp(var(--modal-min), 92vw, var(--modal-max));
+    max-width: calc(100vw - var(--modal-gap)*2);
+    max-height: 88vh;
+  }
+  @media (max-width: 520px){
+    .help-overlay,
+    .info-overlay{ min-height: 100vh; }
+  }
+}
+
+/* чтобы картинки внутри панели не вылезали при сжатии */
+.help-modal img,
+.info-modal img{
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* сколько «воздуха» оставить внизу страницы */
+:root{
+  --bottom-space: clamp(24px, 6vh, 64px); /* дефолт */
+}
+/* на iOS/безрамочных — учитываем безопасную зону */
+@supports (padding: env(safe-area-inset-bottom)){
+  :root{ --bottom-space: calc(32px + env(safe-area-inset-bottom)); }
+}
+
+/* невидимый спейсер внизу колонки */
+.wrap::after{
+  content: "";
+  display: block;
+  height: var(--bottom-space);
+}
+
+/* чуть отделим кнопку от подложки над ней (если нужно) */
+.pay-btn{ margin-top: 12px; }
+
+/* Полупрозрачная подложка и текст под кнопкой оплаты */
+.steam-page{ --legal-bg: rgba(255,255,255,.08); }
+
+.legal-panel{
+  margin-top: 12px;         /* отступ от кнопки */
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--legal-bg);
+  border: 1px solid var(--card-brd);
+}
+
+.legal-panel__text{
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.legal-panel__text a{
+  color: #9fb2ff;           /* в стиле остальных ссылок */
+  text-decoration: underline;
+  font-weight: 400;
+}
+.legal-panel__text a:hover{ opacity: .95; }

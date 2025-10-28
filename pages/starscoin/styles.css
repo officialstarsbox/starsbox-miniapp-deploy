@@ -1,0 +1,196 @@
+/* ===== База темы ===== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; overflow-x: hidden; }
+
+.sc-page{
+  --form-w: clamp(320px, 92vw, 520px);
+  --bg: #090d18;
+  --text: #e6e9f0;
+  --muted:#9aa0a6;
+  --card:#0b0e1b;
+  --card-brd: rgba(255,255,255,.12);
+  --btn-bg: rgba(255,255,255,.06);
+  --btn-brd: rgba(255,255,255,.18);
+  --btn-hover: rgba(255,255,255,.10);
+  --btn-active: rgba(82,102,255,.18);
+  --focus:#5266ff;
+  --block-gap:16px;
+}
+
+body.sc-page{
+  margin:0; color:var(--text);
+  font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  background:var(--bg); min-height:100%;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+body.sc-page::before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background: radial-gradient(60% 100% at 50% 0%, #0e1530 0%, var(--bg) 70%);
+  background-repeat:no-repeat; background-size:cover; pointer-events:none;
+}
+
+/* ===== Топбар ===== */
+.topbar{
+  position: sticky; top:0; z-index:10;
+  display:grid; grid-template-columns:44px 1fr 44px;
+  align-items:center; gap:8px;
+  padding:14px calc((100vw - var(--form-w))/2) 14px;
+  background:rgba(9,13,24,.7); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--card-brd);
+}
+.title{ margin:0; text-align:center; font-size:18px; font-weight:400 }
+
+.back-btn{
+  justify-self:start; width:40px; height:40px;
+  border:1px solid var(--btn-brd);
+  background:var(--btn-bg);
+  border-radius:14px; display:inline-grid; place-items:center;
+  cursor:pointer; text-decoration:none;
+  transition:background .2s, border-color .2s, transform .06s;
+}
+.back-btn::before{
+  content:""; width:10px; height:10px;
+  border-left:2px solid var(--text);
+  border-bottom:2px solid var(--text);
+  transform:translateX(1px) rotate(45deg);
+}
+.back-btn:hover{ background:var(--btn-hover) }
+.back-btn:active{ transform:translateY(1px) }
+.back-btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px }
+
+/* ===== Контентная колонка ===== */
+.wrap{ width:100%; max-width:var(--form-w); margin:20px auto 40px; padding:0 6px 20px }
+.wrap>*+*{ margin-top:var(--block-gap) }
+.sec-title{ margin:0 0 10px; font-size:16px; font-weight:400 }
+
+/* ===== Карточка баланса ===== */
+.balance-card{
+  border-radius:16px; padding:16px; position:relative;
+  border:1px solid rgba(255,164,40,.55);
+  background:
+    radial-gradient(120% 140% at 10% 120%, rgba(255,164,40,.18) 0%, transparent 65%),
+    linear-gradient(180deg, #10183a 0%, #0b1329 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), inset 0 -1px 0 rgba(255,255,255,.03), 0 8px 28px rgba(0,0,0,.42);
+}
+.balance-card__caption{ margin:0 0 6px; font-size:13px; color:var(--muted) }
+.balance-card__value{ font-size:28px; font-weight:700; margin:0 0 10px; letter-spacing:.2px; }
+.balance-card__actions{ display:flex; gap:8px; flex-wrap:wrap }
+
+/* ===== Кнопки ===== */
+.btn{
+  min-height:40px; padding:0 14px; border-radius:14px;
+  border:1px solid var(--btn-brd);
+  background:var(--btn-bg);
+  color:var(--text); cursor:pointer; user-select:none;
+  display:inline-flex; align-items:center; gap:8px;
+  transition:background .2s, border-color .2s, transform .06s, box-shadow .2s;
+}
+.btn:hover{ background:var(--btn-hover) }
+.btn:active{ transform:translateY(1px) }
+.btn:focus-visible{ outline:2px solid var(--focus); outline-offset:2px }
+
+.btn--primary{
+  background:rgba(255,164,40,.18);
+  border-color:rgba(255,164,40,.7);
+  box-shadow:0 0 0 2px rgba(255,164,40,.16) inset;
+}
+.btn--primary:hover{ background:rgba(255,164,40,.26) }
+.btn--primary .plus{
+  display:inline-grid; place-items:center;
+  width:18px; height:18px; border-radius:50%;
+  background:#fff; color:#0b0e1b; font-weight:700; line-height:1;
+  box-shadow:0 1px 2px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.6);
+}
+
+/* ===== История операций ===== */
+.tx-section{ display:grid; gap:10px }
+.tx-list{ list-style:none; padding:0; margin:0; display:grid; gap:8px }
+
+.tx-item{
+  display:grid; grid-template-columns:32px 1fr auto; gap:10px; align-items:center;
+  padding:10px; border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
+}
+.tx-ico{
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,.35); display:grid; place-items:center;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+  font-size:14px;
+}
+.tx-main{ min-width:0 }
+.tx-title{ margin:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.tx-sub{ margin:2px 0 0; font-size:12px; color:var(--muted) }
+.tx-amt{ font-weight:700; white-space:nowrap; }
+.tx-amt--pos{ color:#8fffba }
+.tx-amt--neg{ color:#ff9b9b }
+
+.tx-empty{
+  display:grid; justify-items:center; gap:10px;
+  padding:18px; border-radius:16px;
+  border:1px dashed rgba(255,255,255,.20);
+  background:rgba(255,255,255,.04);
+}
+.tx-empty img{ width:120px; height:auto; opacity:.95; display:block }
+.tx-empty__title{ margin:0; font-size:18px; font-weight:700; color:var(--muted); text-align:center }
+
+/* ===== Модалка ===== */
+.modal{ position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.45); z-index:50 }
+.modal.is-open{ display:grid }
+.modal__card{
+  position: relative;
+  width:min(520px, 92vw); border-radius:16px; padding:16px; background:rgba(15,22,40,.98);
+  border:1px solid rgba(255,255,255,.12); box-shadow:0 12px 40px rgba(0,0,0,.45);
+}
+.modal__title{ margin:0 0 12px; font-size:16px; font-weight:500 }
+.modal__actions{ display:grid; grid-template-columns: 1fr; gap:8px; margin-top:12px }
+.modal__actions .btn{
+  width:100%;
+  justify-content: center;            /* центрируем текст и содержимое */
+}
+.close-x{ position:absolute; right:12px; top:12px; width:28px; height:28px; border-radius:10px; border:1px solid var(--btn-brd); background:var(--btn-bg) }
+.close-x:before,.close-x:after{ content:""; position:absolute; left:50%; top:50%; width:12px; height:2px; background:#fff; transform-origin:center }
+.close-x:before{ transform:translate(-50%,-50%) rotate(45deg) } .close-x:after{ transform:translate(-50%,-50%) rotate(-45deg) }
+
+/* ===== Поля обмена (фикс раскладки) ===== */
+.fields-row{
+  position: relative;                 /* добавили: для надёжного центрирования */
+  display:grid;
+  grid-template-columns: 1fr 40px 1fr;   /* поле | иконка | поле */
+  grid-template-rows: auto 42px;         /* заголовки | сами поля */
+  column-gap:10px;
+  row-gap:6px;
+}
+
+/* ЯВНО закрепляем поля по колонкам и растягиваем на обе строки */
+.field{ display:grid; gap:6px; }
+.field--left { grid-column:1; grid-row:1 / span 2; }
+.field--right{ grid-column:3; grid-row:1 / span 2; }
+.field label{ font-size:13px; color:var(--muted) }
+
+/* инпут с иконкой */
+.inp-with-ico{ position:relative }
+.inp{
+  width:100%; height:42px; border-radius:14px; border:1px solid var(--btn-brd);
+  background:var(--btn-bg); color:var(--text); padding:0 12px 0 42px; font-size:14px;
+}
+.inp[readonly]{ opacity:.9; cursor:not-allowed; user-select:none; }
+.inp-ico{
+  position:absolute; left:10px; top:50%; transform:translateY(-50%);
+  width:22px; height:22px; object-fit:contain; opacity:.95; pointer-events:none;
+}
+
+/* иконка обмена — строго в строке инпутов */
+.swap-ico{
+  grid-column: 1 / -1;               /* тянем на всю сетку */
+  grid-row: 2;                        /* на линии инпутов */
+  justify-self: center;               /* по центру по горизонтали */
+  align-self: center;                 /* по центру по вертикали */
+  width:32px; height:32px;
+  background:none; border:0; color:#fff;
+  font-weight:700; line-height:32px; font-size:20px;
+  pointer-events: none;               /* иконка «пассивная» */
+}
+
+.rate-note{ margin:10px 2px 0; font-size:12px; color:var(--muted); text-align:center; }

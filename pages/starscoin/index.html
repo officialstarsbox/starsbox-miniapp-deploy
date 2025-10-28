@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Пополнение StarsCoin — StarsBox</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="sc-page">
+  <!-- ===== Топбар ===== -->
+  <header class="topbar">
+    <a class="back-btn" id="backBtn" href="../../index.html" aria-label="Назад"></a>
+    <h1 class="title">Пополнить баланс StarsCoin</h1>
+  </header>
+
+  <!-- ===== Контент ===== -->
+  <main class="wrap">
+    <!-- Панель баланса -->
+    <section class="balance-card">
+      <p class="balance-card__caption">Баланс кошелька</p>
+      <div class="balance-card__value" id="scBalanceValue">20000 COIN</div>
+
+      <div class="balance-card__actions">
+        <button id="depositBtn" class="btn btn--primary">
+          Пополнить <span aria-hidden="true" class="plus">+</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- История операций -->
+    <section class="tx-section">
+      <h2 class="sec-title">История операций</h2>
+
+      <!-- Пустое состояние -->
+      <div id="txEmpty" class="tx-empty">
+        <img src="../../assets/gifts/брилиант.gif" alt="" />
+        <p class="tx-empty__title">Упс... История пуста</p>
+      </div>
+
+      <!-- Список транзакций -->
+      <ul id="txList" class="tx-list" hidden></ul>
+    </section>
+
+    <!-- ===== МОДАЛЬНОЕ ОКНО ОБМЕНА ===== -->
+    <div class="modal" id="exModal" aria-hidden="true">
+      <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+        <button class="close-x" id="exClose" aria-label="Закрыть"></button>
+        <h3 id="exTitle" class="modal__title">Обмен звёзд</h3>
+
+        <div class="fields-row">
+          <!-- Левая колонка -->
+          <div class="field field--left">
+            <label for="starsIn">Отдаёте stars</label>
+            <div class="inp-with-ico">
+              <!-- подставь свою иконку (скорее всего путь: ../../assets/icons/...) -->
+              <img class="inp-ico" src="../../assets/icons/icon3.png" alt="">
+              <input id="starsIn" class="inp" inputmode="numeric" pattern="[0-9]*" placeholder="0" autocomplete="off" />
+            </div>
+          </div>
+
+          <!-- Иконка обмена между полями -->
+          <div class="swap-ico" aria-hidden="true">⇄</div>
+
+          <!-- Правая колонка -->
+          <div class="field field--right">
+            <label for="coinsOut">Получаете coin</label>
+            <div class="inp-with-ico">
+              <!-- подставь свою иконку (скорее всего путь: ../../assets/icons/...) -->
+              <img class="inp-ico" src="../../assets/icons/icon2.png" alt="">
+              <input id="coinsOut" class="inp" placeholder="0" autocomplete="off" readonly />
+            </div>
+          </div>
+        </div>
+
+        <p class="rate-note" id="rateNote">Курс: 1 star = <b id="rateVal">1.00</b> coin</p>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--primary" id="exSubmit">Обменять 0 stars</button>
+        </div>
+      </div>
+    </div>
+    <!-- ===== /МОДАЛКА ===== -->
+  </main>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telegram Premium</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 1) SDK Telegram обязательно ДО app.js -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- 2) Твой общий файл с хелперами (абсолютный путь, чтобы работало из любой подпапки) -->
+  <script src="../../app.js" defer></script>
+</head>
+<body class="premium-page">
+  <!-- =========================== Топбар =========================== -->
+  <header class="topbar">
+    <!-- ВСТАВЬ СВОЮ ССЫЛКУ В href -->
+    <a class="back-btn" id="backBtn" href="../../index.html" aria-label="Назад"></a>
+    <h1 class="title">Telegram Premium</h1>
+  </header>
+
+  <!-- ====================== Контентная колонка ===================== -->
+  <main class="wrap" id="pageRoot">
+    <!-- сюда поэтапно добавим поля и секции -->
+     <!-- ===== Получатель ===== -->
+<section class="group-card" id="user-card">
+  <div class="field tg-user-field">
+    <div class="field__row">
+      <label for="tgUsername" class="field__label">Получатель</label>
+      <button type="button" class="text-btn" id="buyForMeBtn">купить себе💙</button>
+    </div>
+
+    <div class="input-with-icon">
+      <span class="input-icon" aria-hidden="true">
+        <!-- поменяй путь на свою иконку профиля (15×15/20×20 ок) -->
+        <img src="../../assets/icons/профиль.png" alt="" width="15" height="15" />
+      </span>
+
+      <input
+        id="tgUsername"
+        class="field__input field__input--with-icon"
+        type="text"
+        inputmode="latin"
+        autocomplete="off"
+        placeholder="Укажите username получателя"
+        maxlength="64"
+      />
+    </div>
+  </div>
+</section>
+<!-- ===== Срок действия подписки ===== -->
+<section class="group-card" id="durationCard">
+  <div class="field">
+    <div class="field__row">
+      <label class="field__label">Срок действия подписки</label>
+      <span aria-hidden="true"></span>
+    </div>
+
+    <div class="subs-packs" id="subsPacks">
+      <!-- 3 месяца -->
+      <button type="button"
+              class="pack-item"
+              aria-pressed="false"
+              data-months="3"
+              data-price="1300"
+              data-icon="../../assets/icons/icon2.png"
+              data-icon-active="../../assets/icons/icon16.png">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-title">3 месяца</span>
+        <span class="pack-price" data-price-el></span>
+      </button>
+
+      <!-- 6 месяцев -->
+      <button type="button"
+              class="pack-item"
+              aria-pressed="false"
+              data-months="6"
+              data-price="1700"
+              data-icon="../../assets/icons/icon2.png"
+              data-icon-active="../../assets/icons/icon16.png">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-title">6 месяцев</span>
+        <span class="pack-price" data-price-el></span>
+      </button>
+
+      <!-- 12 месяцев -->
+      <button type="button"
+              class="pack-item"
+              aria-pressed="false"
+              data-months="12"
+              data-price="3000"
+              data-icon="../../assets/icons/icon2.png"
+              data-icon-active="../../assets/icons/icon16.png">
+        <span class="pack-icon"><img alt="" width="20" height="20"></span>
+        <span class="pack-title">12 месяцев</span>
+        <span class="pack-price" data-price-el></span>
+      </button>
+    </div>
+  </div>
+</section>
+<!-- ===== Инфо: предупреждение о Premium ===== -->
+<section class="info-panel" role="note" aria-live="polite">
+  <h3 class="info-panel__title">Будьте внимательны</h3>
+  <p class="info-panel__text">
+    Подписка Premium может быть отправлена только пользователю без действующей подписки
+  </p>
+</section>
+<!-- ===== Итого к оплате ===== -->
+<section class="group-card is-plain" id="totalCard">
+  <div class="total">
+    <div class="total__title">Итого к оплате</div>
+    <div class="total__value" id="totalValue">0,00 руб.</div>
+  </div>
+</section>
+<!-- ===== Платёжные кнопки ===== -->
+<section class="pay-actions" id="payActions">
+  <button type="button" class="pay-btn pay-btn--sbp" id="paySbpBtn" disabled aria-disabled="true">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить по СБП</span>
+      <img class="btn-icon" src="../../assets/icons/icon10.png" alt="" width="20" height="20">
+    </span>
+  </button>
+
+  <button type="button" class="pay-btn pay-btn--crypto" id="payCryptoBtn" disabled aria-disabled="true">
+    <span class="btn-inner">
+      <span class="btn-text">Оплатить криптовалютой</span>
+      <img class="btn-icon" src="../../assets/icons/icon9.png" alt="" width="20" height="20">
+    </span>
+  </button>
+</section>
+<!-- ===== Юридический блок ===== -->
+<section class="legal-panel" aria-live="polite">
+  <p class="legal-panel__text">
+    Нажимая кнопку оплаты, вы принимаете условия
+    <a href="./offer/index.html">Публичной оферты</a> и
+    <a href="./policy/index.html">Политики обработки персональных данных</a>,
+    а также даёте согласие на обработку персональных данных.
+  </p>
+</section>
+  </main>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StarsBox — Пополнение Steam</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- 1) SDK Telegram обязательно ДО app.js -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- 2) Твой общий файл с хелперами (абсолютный путь, чтобы работало из любой подпапки) -->
+  <script src="../../app.js" defer></script>
+</head>
+<body class="steam-page" data-service-base="https://api.starsbox.org">
+  <!-- ========= Оверлей-подсказка «Где найти логин?» (без кнопки) ========= -->
+  <div class="help-overlay" id="loginHelp" role="dialog" aria-modal="true" aria-labelledby="loginHelpTitle" hidden>
+    <div class="help-modal" role="document">
+      <h2 id="loginHelpTitle" class="help-title">Как найти свой логин в Steam?</h2>
+      <div class="help-text">
+        <p>1. Откройте клиент Steam</p>
+        <p>2. Нажмите на имя пользователя в правом верхнем углу главной страницы.</p>
+        <p>3. В выпадающем меню выберите пункт «Об аккаунте».</p>
+      </div>
+      <div class="help-image">
+        <img src="../../assets/backgrounds/steam3.jpg" alt="Где найти логин в Steam" />
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================== Топбар =========================== -->
+  <header class="topbar">
+    <a class="back-btn" id="backBtn" href="../../index.html" aria-label="Назад"></a>
+    <h1 class="title">Пополнение Steam</h1>
+  </header>
+
+  <!-- ====================== Контентная колонка ===================== -->
+  <main class="wrap" id="pageRoot">
+    <h2 class="section-title">Выберите регион аккаунта</h2>
+
+    <div class="region-buttons" role="group" aria-label="Выбор региона Steam" id="regionGroup">
+      <button type="button" class="region-btn is-active" data-region="ru" aria-pressed="true">Россия</button>
+      <button type="button" class="region-btn" data-region="kz" aria-pressed="false">Казахстан</button>
+      <button type="button" class="region-btn" data-region="cis" aria-pressed="false">Страны СНГ</button>
+    </div>
+
+    <section class="cis-banner" aria-live="polite">
+      <p class="cis-banner__title">Какие страны входят в регион СНГ:</p>
+      <p class="cis-banner__text">
+        Азербайджан, Армения, Киргизия, Молдова, Беларусь, Таджикистан, Туркменистан, Узбекистан
+      </p>
+    </section>
+
+    <!-- ============== Группа 1: логин + инфо-панель ============== -->
+    <section class="group-card" id="account-card">
+      <div class="field form-login">
+        <div class="field__row">
+          <label for="steamLogin" class="field__label">Логин Steam</label>
+          <button type="button" class="text-btn" id="openLoginHelp">где найти логин?</button>
+        </div>
+        <input id="steamLogin"
+               class="field__input"
+               type="text"
+               inputmode="latin"
+               autocomplete="off"
+               placeholder="Введите логин"
+               maxlength="64" />
+      </div>
+
+      <section class="steam-info" aria-live="polite">
+        <p class="steam-info__text">
+          Перед пополнением ознакомьтесь с инструкциями для<button type="button" class="steam-link" data-info="new">новых аккаунтов</button>
+          и из
+          <button type="button" class="steam-link" data-info="regions">регионов Крым, ЛНР, ДНР</button>
+        </p>
+      </section>
+    </section>
+
+    <!-- ============== Группа 2: ввод суммы + к зачислению ============== -->
+    <section class="group-card" id="pay-card">
+      <div class="field amount-field">
+        <label for="topupAmount" class="field__label">Укажите сумму пополнения</label>
+        <input id="topupAmount"
+               class="field__input"
+               type="text"
+               inputmode="numeric"
+               autocomplete="off"
+               placeholder="От 100 до 45 000 руб"
+               maxlength="5" />
+      </div>
+
+      <div class="field credit-field" aria-live="polite">
+        <label class="field__label">Будет зачислено в Steam</label>
+        <div class="credit__box">
+          <span class="credit__icon" id="creditIcon" aria-hidden="true">₽</span>
+          <span class="credit__value" id="creditValue"></span>
+          <span class="credit__unit" id="creditUnit">Рубль</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Кнопка оплаты вне подложки -->
+    <button type="button" class="pay-btn" id="payBtn" disabled>Оплатить</button>
+    <section class="legal-panel">
+  <p class="legal-panel__text">
+    Нажимая кнопку оплаты, вы принимаете условия
+    <a href="./offer/index.html">Публичной оферты</a> и
+    <a href="./policy/index.html">Политики обработки персональных данных</a>,
+    а также даёте согласие на обработку персональных данных.
+  </p>
+</section>
+  </main>
+
+  <!-- Корневой узел для информационных оверлеев -->
+  <div id="overlay-root" aria-live="polite"></div>
+
+  <script src="steam.js"></script>
+</body>
+</html>
